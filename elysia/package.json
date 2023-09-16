@@ -6,6 +6,7 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
+    "@elysiajs/cors": "^0.6.0",
     "@types/pg": "^8.10.2",
     "elysia": "latest",
     "kysely": "^0.26.3",

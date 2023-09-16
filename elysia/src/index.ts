@@ -2,8 +2,9 @@ import { Elysia } from 'elysia'
 import { nanoid } from 'nanoid'
 import { db } from './database'
 import { createLinkSchema } from './zodSchema'
+import { cors } from '@elysiajs/cors'
 
-const app = new Elysia()
+const app = new Elysia().use(cors())
 
 app.get('/', () => 'Hello Elysia')
 app.get('/invalid', () => 'Invalid Shortener')
