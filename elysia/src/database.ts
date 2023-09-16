@@ -5,9 +5,9 @@ import { Kysely, PostgresDialect } from 'kysely'
 const dialect = new PostgresDialect({
 	pool: new Pool({
 		database: 'link-shortener',
-		host: '0.0.0.0',
-		user: 'postgres',
-		password: 'password',
+		host: Bun.env.host ?? '0.0.0.0',
+		user: Bun.env.user ?? 'postgres',
+		password: Bun.env.password ?? 'password',
 		port: 5432,
 		max: 10,
 	}),
