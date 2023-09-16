@@ -8,7 +8,7 @@ const dialect = new PostgresDialect({
 		host: Bun.env.host ?? '0.0.0.0',
 		user: Bun.env.user ?? 'postgres',
 		password: Bun.env.password ?? 'password',
-		port: 5432,
+		port: parseInt(Bun.env.port ?? '') ?? 5432,
 		max: 10,
 	}),
 })

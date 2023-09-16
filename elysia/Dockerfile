@@ -10,4 +10,6 @@ RUN bun install
 
 COPY . .
 
+EXPOSE 3000
+
 ENTRYPOINT [ "bun", "run", "./src/index.ts" ]
