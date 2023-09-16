@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label'
 import {
 	Table,
 	TableBody,
+	TableCaption,
 	TableCell,
 	TableHead,
 	TableHeader,
@@ -157,6 +158,9 @@ const ShortenerTable = ({ shorteners }: { shorteners: Shortener[] }) => {
 			</CardHeader>
 			<CardContent>
 				<Table>
+					{!shorteners.length && (
+						<TableCaption>No Shorteners</TableCaption>
+					)}
 					<TableHeader>
 						<TableRow>
 							<TableHead>Link</TableHead>
@@ -164,18 +168,22 @@ const ShortenerTable = ({ shorteners }: { shorteners: Shortener[] }) => {
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{shorteners.map((shortener) => (
-							<TableRow key={shortener.id}>
-								<TableCell>{shortener.link}</TableCell>
-								<TableCell
-									className='cursor-pointer select-none'
-									onClick={() =>
-										copyLinkToClipboard(shortener.code)
-									}>
-									{shortener.code}
-								</TableCell>
-							</TableRow>
-						))}
+						{shorteners.length ? (
+							shorteners.map((shortener) => (
+								<TableRow key={shortener.id}>
+									<TableCell>{shortener.link}</TableCell>
+									<TableCell
+										className='cursor-pointer select-none'
+										onClick={() =>
+											copyLinkToClipboard(shortener.code)
+										}>
+										{shortener.code}
+									</TableCell>
+								</TableRow>
+							))
+						) : (
+							<TableRow></TableRow>
+						)}
 					</TableBody>
 				</Table>
 			</CardContent>
