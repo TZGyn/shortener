@@ -6,6 +6,7 @@ import { createLinkSchema } from './zodSchema'
 const app = new Elysia()
 
 app.get('/', () => 'Hello Elysia')
+app.get('/invalid', () => 'Invalid Shortener')
 
 app.get('/link', async () => {
 	const shorteners = await db.selectFrom('shortener').selectAll().execute()
@@ -31,6 +32,21 @@ app.post('/link', async ({ body }) => {
 		.execute()
 
 	return { message: 'Success' }
+})
+
+app.get('/:shortenerCode', async ({ params: { shortenerCode }, set }) => {
+	const shortener = await db
+		.selectFrom('shortener')
+		.selectAll()
+		.where('code', '=', shortenerCode)
+		.execute()
+
+	if (!shortener.length) {
+		set.redirect = '/invalid'
+		return
+	}
+
+	set.redirect = shortener[0].link
 })
 
 app.listen(3000)
