@@ -26,7 +26,8 @@ import { useToast } from '@/components/ui/use-toast'
 
 import { useEffect, useState } from 'react'
 
-const backend_url = process.env.backend_url ?? 'http://192.168.100.40:3000'
+const backend_url =
+	import.meta.env.VITE_BACKEND_URL ?? 'http://192.168.100.40:3000'
 
 type Shortener = {
 	id: number
