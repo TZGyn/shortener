@@ -20,9 +20,13 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Toaster } from '@/components/ui/toaster'
+import { useToast } from '@/components/ui/use-toast'
+
 import { useEffect, useState } from 'react'
 
-const backend_url = 'http://192.168.100.40:1234'
+const backend_url = 'http://192.168.100.40:3000'
 
 type Shortener = {
 	id: number
@@ -57,6 +61,7 @@ export default function App() {
 			<div className='mx-auto mt-8 w-full max-w-6xl'>
 				<ShortenerTable shorteners={shorteners} />
 			</div>
+			<Toaster />
 		</ThemeProvider>
 	)
 }
@@ -79,6 +84,7 @@ const CreateShortener = ({
 }: {
 	getShorteners: () => Promise<void>
 }) => {
+	const [isOpen, setIsOpen] = useState<boolean>(false)
 	const [link, setLink] = useState<string>('')
 	const addShortener = async () => {
 		await fetch(backend_url + '/link', {
@@ -92,10 +98,13 @@ const CreateShortener = ({
 		}).then(() => {
 			getShorteners()
 			setLink('')
+			setIsOpen(false)
 		})
 	}
 	return (
-		<Dialog>
+		<Dialog
+			open={isOpen}
+			onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
 				<Button variant='outline'>Add Shortener</Button>
 			</DialogTrigger>
@@ -132,22 +141,43 @@ const CreateShortener = ({
 }
 
 const ShortenerTable = ({ shorteners }: { shorteners: Shortener[] }) => {
+	const { toast } = useToast()
+	const copyLinkToClipboard = async (code: string) => {
+		await navigator.clipboard.writeText(backend_url + '/' + code)
+		console.log(code)
+		toast({
+			title: 'Link Copied',
+			description: `Copied ${backend_url + '/' + code} To Clipboard`,
+		})
+	}
 	return (
-		<Table>
-			<TableHeader>
-				<TableRow>
-					<TableHead>Link</TableHead>
-					<TableHead>Shortener</TableHead>
-				</TableRow>
-			</TableHeader>
-			<TableBody>
-				{shorteners.map((shortener) => (
-					<TableRow key={shortener.id}>
-						<TableCell>{shortener.link}</TableCell>
-						<TableCell>{shortener.code}</TableCell>
-					</TableRow>
-				))}
-			</TableBody>
-		</Table>
+		<Card>
+			<CardHeader>
+				<CardTitle>Shorteners</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<Table>
+					<TableHeader>
+						<TableRow>
+							<TableHead>Link</TableHead>
+							<TableHead>Shortener</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						{shorteners.map((shortener) => (
+							<TableRow key={shortener.id}>
+								<TableCell>{shortener.link}</TableCell>
+								<TableCell
+									onClick={() =>
+										copyLinkToClipboard(shortener.code)
+									}>
+									{shortener.code}
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+			</CardContent>
+		</Card>
 	)
 }
