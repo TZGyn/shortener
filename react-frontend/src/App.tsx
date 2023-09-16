@@ -144,7 +144,6 @@ const ShortenerTable = ({ shorteners }: { shorteners: Shortener[] }) => {
 	const { toast } = useToast()
 	const copyLinkToClipboard = async (code: string) => {
 		await navigator.clipboard.writeText(backend_url + '/' + code)
-		console.log(code)
 		toast({
 			title: 'Link Copied',
 			description: `Copied ${backend_url + '/' + code} To Clipboard`,
@@ -168,6 +167,7 @@ const ShortenerTable = ({ shorteners }: { shorteners: Shortener[] }) => {
 							<TableRow key={shortener.id}>
 								<TableCell>{shortener.link}</TableCell>
 								<TableCell
+									className='cursor-pointer select-none'
 									onClick={() =>
 										copyLinkToClipboard(shortener.code)
 									}>
