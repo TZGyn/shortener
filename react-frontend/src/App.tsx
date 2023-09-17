@@ -25,6 +25,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/components/ui/use-toast'
 
+import { Copy } from 'lucide-react'
+
 import { useEffect, useState } from 'react'
 
 const backend_url =
@@ -60,8 +62,10 @@ export default function App() {
 			defaultTheme='dark'
 			storageKey='vite-ui-theme'>
 			<Navbar getShorteners={getShorteners} />
-			<div className='mx-auto mt-8 w-full max-w-6xl'>
-				<ShortenerTable shorteners={shorteners} />
+			<div className='flex justify-center px-2 pt-8'>
+				<div className='w-full max-w-6xl'>
+					<ShortenerTable shorteners={shorteners} />
+				</div>
 			</div>
 			<Toaster />
 		</ThemeProvider>
@@ -70,7 +74,7 @@ export default function App() {
 
 const Navbar = ({ getShorteners }: { getShorteners: () => Promise<void> }) => {
 	return (
-		<div className='flex justify-center border-b border-b-border'>
+		<div className='flex justify-center border-b border-b-border px-2'>
 			<div className='flex w-full max-w-6xl items-center justify-between py-2'>
 				<div className='font-bold'>Shortener</div>
 				<div className='flex items-center gap-2'>
@@ -177,7 +181,10 @@ const ShortenerTable = ({ shorteners }: { shorteners: Shortener[] }) => {
 										onClick={() =>
 											copyLinkToClipboard(shortener.code)
 										}>
-										{shortener.code}
+										<div className='flex justify-between gap-4 rounded bg-secondary/70 p-2'>
+											{shortener.code}
+											<Copy className='h-[1.2rem] w-[1.2rem]' />
+										</div>
 									</TableCell>
 								</TableRow>
 							))
