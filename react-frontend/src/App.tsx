@@ -21,13 +21,22 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/components/ui/use-toast'
 
-import { Copy, Loader2 } from 'lucide-react'
+import { Copy, Loader2, MoreHorizontal, Settings } from 'lucide-react'
 
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const backend_url =
 	import.meta.env.VITE_BACKEND_URL ?? 'http://192.168.100.40:3000'
@@ -167,6 +176,7 @@ const ShortenerTable = ({
 			description: `Copied ${backend_url + '/' + code} To Clipboard`,
 		})
 	}
+	const navigate = useNavigate()
 	return (
 		<Card>
 			<CardHeader>
@@ -184,6 +194,7 @@ const ShortenerTable = ({
 						<TableRow>
 							<TableHead>Link</TableHead>
 							<TableHead>Shortener</TableHead>
+							<TableHead></TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -200,6 +211,36 @@ const ShortenerTable = ({
 											{shortener.code}
 											<Copy className='h-[1.2rem] w-[1.2rem]' />
 										</div>
+									</TableCell>
+									<TableCell>
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<Button
+													variant='ghost'
+													className='h-8 w-8 p-0'>
+													<span className='sr-only'>
+														Open menu
+													</span>
+													<MoreHorizontal className='h-4 w-4' />
+												</Button>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent align='end'>
+												<DropdownMenuLabel>
+													Actions
+												</DropdownMenuLabel>
+												<DropdownMenuSeparator />
+												<DropdownMenuItem
+													onClick={() => {
+														navigate(
+															'/dashboard/' +
+																shortener.code
+														)
+													}}>
+													<Settings className='mr-2 h-4 w-4' />
+													View Details
+												</DropdownMenuItem>
+											</DropdownMenuContent>
+										</DropdownMenu>{' '}
 									</TableCell>
 								</TableRow>
 							))

@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid'
 import { db } from './database'
 import { createLinkSchema } from './zodSchema'
 import { cors } from '@elysiajs/cors'
+import { jsonArrayFrom } from 'kysely/helpers/postgres'
 
 const app = new Elysia().use(cors())
 
@@ -66,6 +67,30 @@ app.get(
 		set.redirect = shortener[0].link
 	}
 )
+
+app.get('/link/:shortenerCode', async ({ params: { shortenerCode } }) => {
+	const shorteners = await db
+		.selectFrom('shortener')
+		.select((shortener) => [
+			'id',
+			'code',
+			'link',
+			'created_at',
+			jsonArrayFrom(
+				shortener
+					.selectFrom('visitor')
+					.select([
+						'visitor.created_at as visited_at',
+						'visitor.country',
+					])
+					.whereRef('visitor.shortener_id', '=', 'shortener.id')
+			).as('visitors'),
+		])
+		.where('code', '=', shortenerCode)
+		.execute()
+
+	return { shorteners }
+})
 
 app.listen(3000)
 
