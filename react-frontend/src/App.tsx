@@ -45,6 +45,7 @@ type Shortener = {
 	id: number
 	link: string
 	code: string
+	visitor_count: string
 }
 
 export default function App() {
@@ -87,13 +88,24 @@ export default function App() {
 	)
 }
 
-const Navbar = ({ getShorteners }: { getShorteners: () => Promise<void> }) => {
+export const Navbar = ({
+	getShorteners,
+}: {
+	getShorteners?: () => Promise<void>
+}) => {
+	const navigate = useNavigate()
 	return (
 		<div className='flex justify-center border-b border-b-border px-2'>
 			<div className='flex w-full max-w-6xl items-center justify-between py-2'>
-				<div className='font-bold'>Shortener</div>
+				<div
+					className='cursor-pointer font-bold'
+					onClick={() => navigate('/')}>
+					Shortener
+				</div>
 				<div className='flex items-center gap-2'>
-					<CreateShortener getShorteners={getShorteners} />
+					{getShorteners && (
+						<CreateShortener getShorteners={getShorteners} />
+					)}
 					<ModeToggle />
 				</div>
 			</div>
@@ -114,7 +126,7 @@ const CreateShortener = ({
 			},
 			method: 'POST',
 			body: JSON.stringify({
-				link: link,
+				link: link.startsWith('https://') ? link : 'https://' + link,
 			}),
 		}).then(() => {
 			getShorteners()
@@ -194,6 +206,9 @@ const ShortenerTable = ({
 						<TableRow>
 							<TableHead>Link</TableHead>
 							<TableHead>Shortener</TableHead>
+							<TableHead className='text-right'>
+								Visitors
+							</TableHead>
 							<TableHead></TableHead>
 						</TableRow>
 					</TableHeader>
@@ -211,6 +226,9 @@ const ShortenerTable = ({
 											{shortener.code}
 											<Copy className='h-[1.2rem] w-[1.2rem]' />
 										</div>
+									</TableCell>
+									<TableCell className='text-right'>
+										{shortener.visitor_count}
 									</TableCell>
 									<TableCell>
 										<DropdownMenu>

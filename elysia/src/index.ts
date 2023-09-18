@@ -11,7 +11,18 @@ app.get('/', () => 'Hello Elysia')
 app.get('/invalid', () => 'Invalid Shortener')
 
 app.get('/link', async () => {
-	const shorteners = await db.selectFrom('shortener').selectAll().execute()
+	const shorteners = await db
+		.selectFrom('shortener')
+		.leftJoin('visitor', 'visitor.shortener_id', 'shortener.id')
+		.select(({ fn }) => [
+			'shortener.id',
+			'shortener.link',
+			'shortener.code',
+			'shortener.created_at',
+			fn.count<number>('visitor.id').as('visitor_count'),
+		])
+		.groupBy('shortener.id')
+		.execute()
 
 	return { shorteners }
 })
