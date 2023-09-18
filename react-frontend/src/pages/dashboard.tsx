@@ -25,7 +25,7 @@ export default function Dashboard() {
 		})
 
 		const data = (await response.json()).shorteners as Shortener[]
-		console.log(data)
+		console.log(isLoading)
 
 		setShorteners(data)
 		setIsLoading(false)
