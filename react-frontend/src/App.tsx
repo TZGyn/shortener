@@ -25,7 +25,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/components/ui/use-toast'
 
-import { Copy } from 'lucide-react'
+import { Copy, Loader2 } from 'lucide-react'
 
 import { useEffect, useState } from 'react'
 
@@ -40,8 +40,10 @@ type Shortener = {
 
 export default function App() {
 	const [shorteners, setShorteners] = useState<Shortener[]>([])
+	const [isLoading, setIsLoading] = useState<boolean>(false)
 
 	const getShorteners = async () => {
+		setIsLoading(true)
 		const response = await fetch(backend_url + '/link', {
 			method: 'GET',
 		})
@@ -49,6 +51,7 @@ export default function App() {
 		const data = (await response.json()).shorteners as Shortener[]
 
 		setShorteners(data)
+		setIsLoading(false)
 	}
 
 	useEffect(() => {
@@ -64,7 +67,10 @@ export default function App() {
 			<Navbar getShorteners={getShorteners} />
 			<div className='flex justify-center px-2 pt-8'>
 				<div className='w-full max-w-6xl'>
-					<ShortenerTable shorteners={shorteners} />
+					<ShortenerTable
+						shorteners={shorteners}
+						isLoading={isLoading}
+					/>
 				</div>
 			</div>
 			<Toaster />
@@ -146,7 +152,13 @@ const CreateShortener = ({
 	)
 }
 
-const ShortenerTable = ({ shorteners }: { shorteners: Shortener[] }) => {
+const ShortenerTable = ({
+	shorteners,
+	isLoading,
+}: {
+	shorteners: Shortener[]
+	isLoading: boolean
+}) => {
 	const { toast } = useToast()
 	const copyLinkToClipboard = async (code: string) => {
 		await navigator.clipboard.writeText(backend_url + '/' + code)
@@ -158,7 +170,10 @@ const ShortenerTable = ({ shorteners }: { shorteners: Shortener[] }) => {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Shorteners</CardTitle>
+				<CardTitle className='flex gap-2'>
+					<div>Shorteners</div>
+					{isLoading && <Loader2 className='animate-spin'></Loader2>}
+				</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<Table>
