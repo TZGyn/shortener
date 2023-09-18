@@ -35,20 +35,37 @@ app.post('/link', async ({ body }) => {
 	return { message: 'Success' }
 })
 
-app.get('/:shortenerCode', async ({ params: { shortenerCode }, set }) => {
-	const shortener = await db
-		.selectFrom('shortener')
-		.selectAll()
-		.where('code', '=', shortenerCode)
-		.execute()
+app.get(
+	'/:shortenerCode',
+	async ({ params: { shortenerCode }, set, request }) => {
+		const ip = request.headers.get('x-forwarded-for')
 
-	if (!shortener.length) {
-		set.redirect = '/invalid'
-		return
+		const geolocation = await (
+			await fetch(`https://api.ipbase.com/v2/info?ip=${ip}`)
+		).json()
+
+		const shortener = await db
+			.selectFrom('shortener')
+			.selectAll()
+			.where('code', '=', shortenerCode)
+			.orderBy('created_at', 'desc')
+			.execute()
+
+		const visitor_data = {
+			shortener_id: shortener[0].id,
+			country: geolocation.data.location.country.name as string,
+		}
+
+		await db.insertInto('visitor').values(visitor_data).execute()
+
+		if (!shortener.length) {
+			set.redirect = '/invalid'
+			return
+		}
+
+		set.redirect = shortener[0].link
 	}
-
-	set.redirect = shortener[0].link
-})
+)
 
 app.listen(3000)
 
