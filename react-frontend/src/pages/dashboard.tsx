@@ -33,6 +33,11 @@ const months = [
 ] as const
 
 type VisitorData = { name: string; total: number }
+type CountryData = {
+	country_code: string
+	country: string
+	visitor_count: string
+}
 let visitor_data: VisitorData[] = []
 months.forEach((months) => {
 	visitor_data.push({ name: months, total: 0 })
@@ -45,6 +50,7 @@ export default function Dashboard() {
 	const [shorteners, setShorteners] = useState<Shortener[]>([])
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const { shortenerId } = useParams()
+	const [countryVisitor, setCountryVisitor] = useState<CountryData[]>([])
 
 	const [visitorData, setVisitorData] = useState<VisitorData[]>(visitor_data)
 
@@ -53,11 +59,13 @@ export default function Dashboard() {
 		const response = await fetch(backend_url + '/link/' + shortenerId, {
 			method: 'GET',
 		})
+		const data = await response.json()
+		const shortenersData = data.shorteners as Shortener[]
+		const countryData = data.visitors as CountryData[]
 
-		const data = (await response.json()).shorteners as Shortener[]
-
-		setShorteners(data)
-		calculateShortenerData(data[0])
+		setShorteners(shortenersData)
+		setCountryVisitor(countryData)
+		calculateShortenerData(shortenersData[0])
 		setIsLoading(false)
 	}
 
@@ -140,6 +148,28 @@ export default function Dashboard() {
 								</CardHeader>
 								<CardContent className='pl-2'>
 									<Overview visitorData={visitorData} />
+								</CardContent>
+							</Card>
+							<Card className='col-span-3'>
+								<CardHeader>
+									<CardTitle>Top Countries</CardTitle>
+								</CardHeader>
+								<CardContent>
+									{countryVisitor.map((country) => {
+										return (
+											<div className='flex w-full items-center justify-between'>
+												<div className='flex w-1/2 items-center justify-between gap-2'>
+													<img
+														src={`https://flagsapi.com/${country.country_code}/flat/64.png`}
+													/>
+													<div>{country.country}</div>
+												</div>
+												<div>
+													{country.visitor_count}
+												</div>
+											</div>
+										)
+									})}
 								</CardContent>
 							</Card>
 						</div>

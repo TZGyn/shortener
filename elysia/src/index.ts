@@ -65,6 +65,7 @@ app.get(
 
 		const visitor_data = {
 			shortener_id: shortener[0].id,
+			country: geolocation.data.location.country.name as string,
 			country_code: geolocation.data.location.country.alpha2 as string,
 		}
 
@@ -104,10 +105,11 @@ app.get('/link/:shortenerCode', async ({ params: { shortenerCode } }) => {
 		.selectFrom('visitor')
 		.select(({ fn }) => [
 			'visitor.country_code',
+			'visitor.country',
 			fn.count<number>('visitor.id').as('visitor_count'),
 		])
 		.where('visitor.shortener_id', '=', shorteners[0].id)
-		.groupBy('visitor.country_code')
+		.groupBy(['visitor.country_code', 'visitor.country'])
 		.execute()
 
 	return { shorteners, visitors }
