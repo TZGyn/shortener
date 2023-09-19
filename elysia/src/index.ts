@@ -100,7 +100,17 @@ app.get('/link/:shortenerCode', async ({ params: { shortenerCode } }) => {
 		.where('code', '=', shortenerCode)
 		.execute()
 
-	return { shorteners }
+	const visitors = await db
+		.selectFrom('visitor')
+		.select(({ fn }) => [
+			'visitor.country_code',
+			fn.count<number>('visitor.id').as('visitor_count'),
+		])
+		.where('visitor.shortener_id', '=', shorteners[0].id)
+		.groupBy('visitor.country_code')
+		.execute()
+
+	return { shorteners, visitors }
 })
 
 app.listen(3000)
