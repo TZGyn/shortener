@@ -25,7 +25,7 @@ export type ShortenerUpdate = Updateable<ShortenerTable>
 export interface VisitorTable {
 	id: Generated<number>
 	shortener_id: number
-	country: string
+	country_code: string
 	created_at: ColumnType<Date, string | undefined, never>
 }
 
