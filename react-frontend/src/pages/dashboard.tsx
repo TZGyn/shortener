@@ -6,6 +6,9 @@ import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
+import { ArrowRight, Copy } from 'lucide-react'
+import { useToast } from '@/components/ui/use-toast'
+import { Toaster } from '@/components/ui/toaster'
 
 type Shortener = {
 	id: number
@@ -88,6 +91,15 @@ export default function Dashboard() {
 		console.log(visitorData)
 	}
 
+	const { toast } = useToast()
+	const copyLinkToClipboard = async (code: string) => {
+		await navigator.clipboard.writeText(backend_url + '/' + code)
+		toast({
+			title: 'Link Copied',
+			description: `Copied ${backend_url + '/' + code} To Clipboard`,
+		})
+	}
+
 	useEffect(() => {
 		if (!shorteners.length) {
 			getShorteners()
@@ -103,8 +115,19 @@ export default function Dashboard() {
 			<Navbar />
 			<div className='flex justify-center px-2 pt-8'>
 				<div className='max-w-6xl flex-1 space-y-4'>
-					<div className='text-lg font-bold'>
-						{backend_url + '/' + shortenerId}
+					<div className='flex flex-wrap items-center gap-4 text-lg font-bold'>
+						<div
+							className='cursor-pointer select-none'
+							onClick={() =>
+								copyLinkToClipboard(shorteners[0].code)
+							}>
+							<div className='flex items-center justify-between gap-4 rounded bg-secondary/70 p-2'>
+								{backend_url + '/' + shortenerId}
+								<Copy className='h-[1.2rem] w-[1.2rem]' />
+							</div>
+						</div>
+						<ArrowRight />
+						{shorteners[0]?.link}
 					</div>
 					<div className='space-y-4'>
 						<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
@@ -146,13 +169,15 @@ export default function Dashboard() {
 								<CardHeader>
 									<CardTitle>Visitors</CardTitle>
 								</CardHeader>
-								<CardContent className='pl-2'>
+								<CardContent className='w-full pl-2'>
 									<Overview visitorData={visitorData} />
 								</CardContent>
 							</Card>
-							<Card className='col-span-3'>
+							<Card className='col-span-4 lg:col-span-3'>
 								<CardHeader>
-									<CardTitle>Top Countries</CardTitle>
+									<CardTitle>
+										Top Countries By Vistors
+									</CardTitle>
 								</CardHeader>
 								<CardContent>
 									{countryVisitor.map((country) => {
@@ -176,6 +201,7 @@ export default function Dashboard() {
 					</div>
 				</div>
 			</div>
+			<Toaster />
 		</ThemeProvider>
 	)
 }
@@ -183,7 +209,7 @@ export default function Dashboard() {
 export function Overview({ visitorData }: { visitorData: VisitorData[] }) {
 	return (
 		<ResponsiveContainer
-			width='100%'
+			width={'95%'}
 			height={350}>
 			<BarChart data={visitorData}>
 				<XAxis
