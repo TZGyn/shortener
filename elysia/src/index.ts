@@ -27,10 +27,11 @@ app.get('/link', async () => {
 	return { shorteners }
 })
 
-app.post('/link', async ({ body }) => {
+app.post('/link', async ({ body, set }) => {
 	const createLink = createLinkSchema.safeParse(body)
 
 	if (!createLink.success) {
+		set.status = 400
 		return { message: 'Invalid Link', body }
 	}
 

@@ -10,6 +10,7 @@
     "@types/pg": "^8.10.2",
     "elysia": "latest",
     "kysely": "^0.26.3",
+    "magic-regexp": "^0.7.0",
     "nanoid": "^5.0.1",
     "pg": "^8.11.3",
     "zod": "^3.22.2"

@@ -119,7 +119,9 @@ const CreateShortener = ({
 }) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false)
 	const [link, setLink] = useState<string>('')
+	const [error, setError] = useState<string>('')
 	const addShortener = async () => {
+		setError('')
 		await fetch(backend_url + '/link', {
 			headers: {
 				'Content-Type': 'application/json',
@@ -128,7 +130,11 @@ const CreateShortener = ({
 			body: JSON.stringify({
 				link: link.startsWith('https://') ? link : 'https://' + link,
 			}),
-		}).then(() => {
+		}).then((response) => {
+			if (response.status === 400) {
+				setError('Invalid Url')
+				return
+			}
 			getShorteners()
 			setLink('')
 			setIsOpen(false)
@@ -163,6 +169,12 @@ const CreateShortener = ({
 							className='col-span-3'
 							onChange={(e) => setLink(e.target.value)}
 						/>
+					</div>
+					<div className='grid grid-cols-4 items-center gap-4'>
+						<Label
+							htmlFor='url'
+							className='text-left'></Label>
+						<div className='col-span-3 text-red-500'>{error}</div>
 					</div>
 				</div>
 				<DialogFooter>
