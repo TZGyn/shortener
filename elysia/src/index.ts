@@ -57,27 +57,32 @@ app.get(
 			await fetch(`https://api.ipbase.com/v2/info?ip=${ip}`)
 		).json()
 
-		const shortener = await db
-			.selectFrom('shortener')
-			.selectAll()
-			.where('code', '=', shortenerCode)
-			.orderBy('created_at', 'desc')
-			.execute()
+		try {
+			const shortener = await db
+				.selectFrom('shortener')
+				.selectAll()
+				.where('code', '=', shortenerCode)
+				.orderBy('created_at', 'desc')
+				.execute()
 
-		const visitor_data = {
-			shortener_id: shortener[0].id,
-			country: geolocation.data.location.country.name as string,
-			country_code: geolocation.data.location.country.alpha2 as string,
+			const visitor_data = {
+				shortener_id: shortener[0].id,
+				country: geolocation.data.location.country.name as string,
+				country_code: geolocation.data.location.country
+					.alpha2 as string,
+			}
+
+			await db.insertInto('visitor').values(visitor_data).execute()
+
+			if (!shortener.length) {
+				set.redirect = '/invalid'
+				return
+			}
+
+			set.redirect = shortener[0].link
+		} catch {
+			set.redirect = Bun.env.FALLBACK_URL
 		}
-
-		await db.insertInto('visitor').values(visitor_data).execute()
-
-		if (!shortener.length) {
-			set.redirect = '/invalid'
-			return
-		}
-
-		set.redirect = shortener[0].link
 	}
 )
 
