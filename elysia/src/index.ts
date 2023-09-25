@@ -5,6 +5,8 @@ import { createLinkSchema } from './zodSchema'
 import { cors } from '@elysiajs/cors'
 import { jsonArrayFrom } from 'kysely/helpers/postgres'
 
+const fallback_url = Bun.env.FALLBACK_URL ?? 'https://shortener.tzgyn.com'
+
 const app = new Elysia().use(cors())
 
 app.get('/', () => 'Hello Elysia')
@@ -81,7 +83,7 @@ app.get(
 
 			set.redirect = shortener[0].link
 		} catch {
-			set.redirect = Bun.env.FALLBACK_URL
+			set.redirect = fallback_url
 		}
 	}
 )
