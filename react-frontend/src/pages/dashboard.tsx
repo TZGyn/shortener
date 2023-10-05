@@ -108,6 +108,19 @@ export default function Dashboard() {
 
 	const thisMonth = new Date().getMonth()
 
+	const getVisitorGrowth = (visitorData: VisitorData[]) => {
+		const growth = visitorData[thisMonth]?.total
+			? visitorData[thisMonth].total -
+					visitorData[thisMonth - 1]?.total ?? 0
+			: 0
+
+		if (growth < 0) {
+			return `- ${Math.abs(growth)}`
+		}
+
+		return `+ ${growth}`
+	}
+
 	return (
 		<ThemeProvider
 			defaultTheme='dark'
@@ -153,13 +166,9 @@ export default function Dashboard() {
 										{visitorData[thisMonth]?.total ?? 0}
 									</div>
 									<p className='text-xs text-muted-foreground'>
-										{`+ ${
-											visitorData[thisMonth]?.total ??
-											0 -
-												visitorData[thisMonth - 1]
-													?.total ??
-											0
-										} since last month`}
+										{`${getVisitorGrowth(
+											visitorData
+										)} since last month`}
 									</p>
 								</CardContent>
 							</Card>
