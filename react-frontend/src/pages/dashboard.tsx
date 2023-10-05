@@ -1,6 +1,15 @@
 import { Navbar } from '@/App'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+	Table,
+	TableBody,
+	TableCaption,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from '@/components/ui/table'
 
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
@@ -189,21 +198,42 @@ export default function Dashboard() {
 									</CardTitle>
 								</CardHeader>
 								<CardContent>
-									{countryVisitor.map((country) => {
-										return (
-											<div className='flex w-full items-center justify-between'>
-												<div className='flex w-1/2 items-center justify-between gap-2'>
-													<img
-														src={`https://flagsapi.com/${country.country_code}/flat/64.png`}
-													/>
-													<div>{country.country}</div>
-												</div>
-												<div>
-													{country.visitor_count}
-												</div>
-											</div>
-										)
-									})}
+									<Table>
+										<TableHeader>
+											<TableRow>
+												<TableHead className='w-[100px]'></TableHead>
+												<TableHead>Country</TableHead>
+												<TableHead className='text-right'>
+													Visitor(s)
+												</TableHead>
+											</TableRow>
+										</TableHeader>
+										<TableBody>
+											{countryVisitor.map((country) => {
+												return (
+													<TableRow>
+														<TableCell>
+															<img
+																src={`https://flagsapi.com/${country.country_code}/flat/64.png`}
+															/>
+														</TableCell>
+														<TableCell>
+															<div>
+																{
+																	country.country
+																}
+															</div>
+														</TableCell>
+														<TableCell className='text-right'>
+															{
+																country.visitor_count
+															}
+														</TableCell>
+													</TableRow>
+												)
+											})}
+										</TableBody>
+									</Table>
 								</CardContent>
 							</Card>
 						</div>
