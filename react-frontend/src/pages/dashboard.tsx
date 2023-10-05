@@ -212,7 +212,7 @@ export default function Dashboard() {
 											{countryVisitor.map((country) => {
 												return (
 													<TableRow>
-														<TableCell>
+														<TableCell className='py-0'>
 															<img
 																src={`https://flagsapi.com/${country.country_code}/flat/64.png`}
 															/>
