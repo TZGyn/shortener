@@ -1,5 +1,4 @@
 import { ModeToggle } from '@/components/mode-toggle'
-import { ThemeProvider } from '@/components/theme-provider'
 import {
 	Dialog,
 	DialogContent,
@@ -29,11 +28,12 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/components/ui/use-toast'
 
-import { Copy, Loader2, MoreHorizontal, Settings } from 'lucide-react'
+import { Copy, Loader2, MoreHorizontal, Settings, User } from 'lucide-react'
 
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -71,28 +71,22 @@ export default function App() {
 	}, [])
 
 	return (
-		<ThemeProvider
-			defaultTheme='dark'
-			storageKey='vite-ui-theme'>
-			<Navbar getShorteners={getShorteners} />
+		<>
 			<div className='flex justify-center px-2 pt-8'>
 				<div className='w-full max-w-6xl'>
 					<ShortenerTable
 						shorteners={shorteners}
 						isLoading={isLoading}
+						getShorteners={getShorteners}
 					/>
 				</div>
 			</div>
 			<Toaster />
-		</ThemeProvider>
+		</>
 	)
 }
 
-export const Navbar = ({
-	getShorteners,
-}: {
-	getShorteners?: () => Promise<void>
-}) => {
+export const Navbar = () => {
 	const navigate = useNavigate()
 	return (
 		<div className='flex justify-center border-b border-b-border px-2'>
@@ -103,10 +97,13 @@ export const Navbar = ({
 					Shortener
 				</div>
 				<div className='flex items-center gap-2'>
-					{getShorteners && (
-						<CreateShortener getShorteners={getShorteners} />
-					)}
 					<ModeToggle />
+					<Avatar>
+						<AvatarImage src='://github.com/shadcn.png' />
+						<AvatarFallback>
+							<User />
+						</AvatarFallback>
+					</Avatar>
 				</div>
 			</div>
 		</div>
@@ -188,9 +185,11 @@ const CreateShortener = ({
 const ShortenerTable = ({
 	shorteners,
 	isLoading,
+	getShorteners,
 }: {
 	shorteners: Shortener[]
 	isLoading: boolean
+	getShorteners: () => Promise<void>
 }) => {
 	const { toast } = useToast()
 	const copyLinkToClipboard = async (code: string) => {
@@ -204,9 +203,14 @@ const ShortenerTable = ({
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle className='flex gap-2'>
-					<div>Shorteners</div>
-					{isLoading && <Loader2 className='animate-spin'></Loader2>}
+				<CardTitle className='flex items-center justify-between gap-2'>
+					<div className='flex gap-4'>
+						<div>Shorteners</div>
+						{isLoading && (
+							<Loader2 className='animate-spin'></Loader2>
+						)}
+					</div>
+					<CreateShortener getShorteners={getShorteners} />
 				</CardTitle>
 			</CardHeader>
 			<CardContent>

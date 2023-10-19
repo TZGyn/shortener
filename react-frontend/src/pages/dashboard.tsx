@@ -1,10 +1,7 @@
-import { Navbar } from '@/App'
-import { ThemeProvider } from '@/components/theme-provider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
 	Table,
 	TableBody,
-	TableCaption,
 	TableCell,
 	TableHead,
 	TableHeader,
@@ -131,10 +128,7 @@ export default function Dashboard() {
 	}
 
 	return (
-		<ThemeProvider
-			defaultTheme='dark'
-			storageKey='vite-ui-theme'>
-			<Navbar />
+		<>
 			<div className='flex justify-center px-2 pt-8'>
 				<div className='max-w-6xl flex-1 space-y-4'>
 					<div className='flex flex-wrap items-center gap-4 text-lg font-bold'>
@@ -241,7 +235,7 @@ export default function Dashboard() {
 				</div>
 			</div>
 			<Toaster />
-		</ThemeProvider>
+		</>
 	)
 }
 
