@@ -33,7 +33,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/components/ui/use-toast'
 
-import { Copy, Loader2, MoreHorizontal, Settings, User } from 'lucide-react'
+import {
+	Check,
+	Copy,
+	Loader2,
+	MoreHorizontal,
+	Settings,
+	User,
+} from 'lucide-react'
 
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -191,15 +198,8 @@ const ShortenerTable = ({
 	isLoading: boolean
 	getShorteners: () => Promise<void>
 }) => {
-	const { toast } = useToast()
-	const copyLinkToClipboard = async (code: string) => {
-		await navigator.clipboard.writeText(backend_url + '/' + code)
-		toast({
-			title: 'Link Copied',
-			description: `Copied ${backend_url + '/' + code} To Clipboard`,
-		})
-	}
 	const navigate = useNavigate()
+
 	return (
 		<Card>
 			<CardHeader>
@@ -233,15 +233,13 @@ const ShortenerTable = ({
 							shorteners.map((shortener) => (
 								<TableRow key={shortener.id}>
 									<TableCell>{shortener.link}</TableCell>
-									<TableCell
-										className='cursor-pointer select-none'
-										onClick={() =>
-											copyLinkToClipboard(shortener.code)
-										}>
-										<div className='flex justify-between gap-4 rounded bg-secondary/70 p-2'>
+									<TableCell className='flex cursor-pointer select-none gap-2'>
+										<div className='w-full rounded bg-secondary/70 p-2'>
 											{shortener.code}
-											<Copy className='h-[1.2rem] w-[1.2rem]' />
 										</div>
+										<ShortenerCopyButton
+											code={shortener.code}
+										/>
 									</TableCell>
 									<TableCell className='text-right'>
 										{shortener.visitor_count}
@@ -285,5 +283,43 @@ const ShortenerTable = ({
 				</Table>
 			</CardContent>
 		</Card>
+	)
+}
+
+const ShortenerCopyButton = ({ code }: { code: string }) => {
+	const { toast } = useToast()
+	const copyLinkToClipboard = async (code: string) => {
+		await navigator.clipboard.writeText(backend_url + '/' + code)
+		toast({
+			title: 'Link Copied',
+			description: `Copied ${backend_url + '/' + code} To Clipboard`,
+		})
+	}
+	const [isCopy, setIsCopy] = useState<boolean>(false)
+	const onClick = () => {
+		setIsCopy(true)
+		copyLinkToClipboard(code)
+		setTimeout(() => setIsCopy(false), 2000)
+	}
+	return (
+		<Button
+			type='submit'
+			size='sm'
+			onClick={onClick}>
+			<span className='sr-only'>Copy</span>
+			<div className='h-4 w-4'></div>
+			<Check
+				className={
+					'absolute h-4 w-4 transition-opacity ' +
+					(isCopy ? 'opacity-100' : 'opacity-0')
+				}
+			/>
+			<Copy
+				className={
+					'absolute h-4 w-4 transition-opacity ' +
+					(isCopy ? 'opacity-0' : 'opacity-100')
+				}
+			/>{' '}
+		</Button>
 	)
 }
