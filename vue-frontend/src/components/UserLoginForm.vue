@@ -1,21 +1,37 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { Loader2, GithubIcon } from 'lucide-vue-next'
 
 import { cn } from '@/lib/utils'
+import { customAxios } from '@/lib/fetch'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 const isLoading = ref(false)
+
+type LoginSchema = {
+	email: string
+	password: string
+}
+
+const loginData: LoginSchema = reactive({
+	email: '',
+	password: '',
+})
+
 async function onSubmit(event: Event) {
 	event.preventDefault()
 	isLoading.value = true
 
-	setTimeout(() => {
+	try {
+		const response = await customAxios.post('/login', loginData)
+	} catch (error) {
+		console.log(error)
+	} finally {
 		isLoading.value = false
-	}, 3000)
+	}
 }
 </script>
 
@@ -27,6 +43,7 @@ async function onSubmit(event: Event) {
 					<Label for="email"> Email </Label>
 					<Input
 						id="email"
+						v-model="loginData.email"
 						placeholder="name@example.com"
 						type="email"
 						auto-capitalize="none"
@@ -38,6 +55,7 @@ async function onSubmit(event: Event) {
 					<Label for="password"> Password </Label>
 					<Input
 						id="password"
+						v-model="loginData.password"
 						placeholder="••••••••"
 						type="password"
 						:disabled="isLoading" />

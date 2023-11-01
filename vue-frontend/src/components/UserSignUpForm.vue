@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Loader2, GithubIcon } from 'lucide-vue-next'
+import { reactive, ref } from 'vue'
+import { Loader2 } from 'lucide-vue-next'
 
 import { cn } from '@/lib/utils'
 
@@ -8,14 +8,35 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
+import { customAxios } from '@/lib/fetch'
+
 const isLoading = ref(false)
+
+type SignupData = {
+	username: string
+	email: string
+	password: string
+	password_confirm: string
+}
+
+const signupData: SignupData = reactive({
+	username: '',
+	email: '',
+	password: '',
+	password_confirm: '',
+})
+
 async function onSubmit(event: Event) {
 	event.preventDefault()
 	isLoading.value = true
 
-	setTimeout(() => {
+	try {
+		const response = await customAxios.post('/signup', signupData)
+	} catch (error) {
+		console.log(error)
+	} finally {
 		isLoading.value = false
-	}, 3000)
+	}
 }
 </script>
 
@@ -27,6 +48,7 @@ async function onSubmit(event: Event) {
 					<Label for="username"> Username </Label>
 					<Input
 						id="username"
+						v-model="signupData.username"
 						placeholder="example user"
 						type="text"
 						:disabled="isLoading" />
@@ -35,6 +57,7 @@ async function onSubmit(event: Event) {
 					<Label for="email"> Email </Label>
 					<Input
 						id="email"
+						v-model="signupData.email"
 						placeholder="name@example.com"
 						type="email"
 						auto-capitalize="none"
@@ -46,6 +69,16 @@ async function onSubmit(event: Event) {
 					<Label for="password"> Password </Label>
 					<Input
 						id="password"
+						v-model="signupData.password"
+						placeholder="••••••••"
+						type="password"
+						:disabled="isLoading" />
+				</div>
+				<div class="grid gap-2">
+					<Label for="password_confirm"> Password Confirm </Label>
+					<Input
+						id="password_confirm"
+						v-model="signupData.password_confirm"
 						placeholder="••••••••"
 						type="password"
 						:disabled="isLoading" />
