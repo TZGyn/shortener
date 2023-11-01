@@ -1,9 +1,10 @@
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 import { nanoid } from 'nanoid'
 import { db } from './database'
 import { createLinkSchema } from './zodSchema'
 import { cors } from '@elysiajs/cors'
 import { jsonArrayFrom } from 'kysely/helpers/postgres'
+import { login, signup } from './auth'
 
 const fallback_url = Bun.env.FALLBACK_URL ?? 'https://shortener.tzgyn.com'
 
@@ -89,42 +90,98 @@ app.get(
 )
 
 app.get('/link/:shortenerCode', async ({ params: { shortenerCode } }) => {
-	const shorteners = await db
-		.selectFrom('shortener')
-		.select((shortener) => [
-			'id',
-			'code',
-			'link',
-			'created_at',
-			jsonArrayFrom(
-				shortener
-					.selectFrom('visitor')
-					.select([
-						'visitor.created_at as visited_at',
-						'visitor.country_code',
-					])
-					.whereRef('visitor.shortener_id', '=', 'shortener.id')
-			).as('visitors'),
-		])
-		.where('code', '=', shortenerCode)
-		.execute()
+	try {
+		const shorteners = await db
+			.selectFrom('shortener')
+			.select((shortener) => [
+				'id',
+				'code',
+				'link',
+				'created_at',
+				jsonArrayFrom(
+					shortener
+						.selectFrom('visitor')
+						.select([
+							'visitor.created_at as visited_at',
+							'visitor.country_code',
+						])
+						.whereRef('visitor.shortener_id', '=', 'shortener.id')
+				).as('visitors'),
+			])
+			.where('code', '=', shortenerCode)
+			.execute()
 
-	const visitors = await db
-		.selectFrom('visitor')
-		.select(({ fn }) => [
-			'visitor.country_code',
-			'visitor.country',
-			fn.count<number>('visitor.id').as('visitor_count'),
-		])
-		.where('visitor.shortener_id', '=', shorteners[0].id)
-		.groupBy(['visitor.country_code', 'visitor.country'])
-		.execute()
+		const visitors = await db
+			.selectFrom('visitor')
+			.select(({ fn }) => [
+				'visitor.country_code',
+				'visitor.country',
+				fn.count<number>('visitor.id').as('visitor_count'),
+			])
+			.where('visitor.shortener_id', '=', shorteners[0].id)
+			.groupBy(['visitor.country_code', 'visitor.country'])
+			.execute()
 
-	return { shorteners, visitors }
+		return { shorteners, visitors }
+	} catch {
+		return { error: true }
+	}
 })
+
+app.post(
+	'/signup',
+	async ({ body, set }) => {
+		const { email, username, password, password_confirm } = body
+
+		const { error } = await signup(
+			email,
+			username,
+			password,
+			password_confirm
+		)
+
+		if (error) {
+			set.status = 400
+			return { error }
+		}
+
+		return { message: 'User Successfully Created' }
+	},
+	{
+		body: t.Object({
+			username: t.String(),
+			email: t.String(),
+			password: t.String(),
+			password_confirm: t.String(),
+		}),
+	}
+)
+
+app.post(
+	'/login',
+	async ({ body, set }) => {
+		const { email, password } = body
+		const { user, error } = await login(email, password)
+
+		if (error) {
+			set.status = 400
+			return { error }
+		} else {
+			return user
+		}
+	},
+	{
+		body: t.Object({
+			email: t.String(),
+			password: t.String(),
+		}),
+	}
+)
 
 app.listen(3000)
 
 console.log(
 	`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
 )
+
+export type App = typeof app

@@ -6,9 +6,12 @@ import {
 	Updateable,
 } from 'kysely'
 
+export type Timestamp = ColumnType<Date, Date | string, Date | string>
+
 export interface Database {
 	shortener: ShortenerTable
 	visitor: VisitorTable
+	user: UserTable
 }
 
 export interface ShortenerTable {
@@ -32,3 +35,16 @@ export interface VisitorTable {
 
 export type Visitor = Selectable<VisitorTable>
 export type NewVisitor = Insertable<VisitorTable>
+
+export interface UserTable {
+	created_at: Generated<Timestamp>
+	email: string
+	id: Generated<number>
+	password: string
+	username: string
+	uuid: string
+}
+
+export type User = Selectable<UserTable>
+export type NewUser = Insertable<UserTable>
+export type UserUpdate = Updateable<UserTable>
