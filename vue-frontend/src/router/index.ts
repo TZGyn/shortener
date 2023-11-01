@@ -9,6 +9,7 @@ const router = createRouter({
 	routes: [
 		{
 			path: '/',
+			name: 'home',
 			component: HomeView,
 		},
 		{
@@ -20,6 +21,11 @@ const router = createRouter({
 			path: '/signup',
 			name: 'signup',
 			component: SignUpPage,
+		},
+		{
+			path: '/:pathMatch(.*)*',
+			name: '404',
+			component: HomeView,
 		},
 	],
 })
