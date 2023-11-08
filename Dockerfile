@@ -14,4 +14,4 @@ RUN bun run build
 
 EXPOSE 3000
 
-ENTRYPOINT [ "bun", "./build/index.js"]
+ENTRYPOINT [ "bun", "run", "start"]
