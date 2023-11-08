@@ -1,15 +1,15 @@
-FROM docker.io/oven/bun
+FROM node:18
 
-RUN mkdir /shortener
-WORKDIR /shortener
+WORKDIR /app
 
 COPY ./package.json ./
 COPY ./bun.lockb ./
 
+RUN npm install -g bun
 RUN bun install
 
 COPY . .
-COPY ./.env.example ./.env
+# COPY ./.env.example ./.env
 
 RUN bun run build
 
