@@ -9,6 +9,7 @@ COPY ./bun.lockb ./
 RUN bun install
 
 COPY . .
+COPY ./.env.example ./.env
 
 RUN bun run build
 
