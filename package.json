@@ -6,13 +6,13 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
+    "start": "ORIGIN=https://link-shortener-svelte-production.up.railway.app bun build/index.js",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --plugin-search-dir . --check .",
     "format": "prettier --plugin-search-dir . --write ."
   },
   "devDependencies": {
-    "@sveltejs/adapter-auto": "^2.0.0",
     "@sveltejs/kit": "^1.20.4",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.24",
