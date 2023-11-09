@@ -26,8 +26,8 @@
 			</div>
 			<UserAuthForm />
 			<p class="px-8 text-center text-sm text-muted-foreground">
-				Don't Have An Account? Signup{' '}
-				<a href="/signup" class="underline underline-offset-4 hover:text-primary"> Here </a>{' '}
+				Already Have An Account? Login{' '}
+				<a href="/login" class="underline underline-offset-4 hover:text-primary"> Here </a>{' '}
 			</p>
 		</div>
 	</div>

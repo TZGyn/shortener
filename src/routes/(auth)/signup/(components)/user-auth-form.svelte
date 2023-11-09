@@ -9,7 +9,7 @@
 	export { className as class };
 
 	let isLoading = false;
-	async function onSubmit() {
+	async function onSubmit(event: SubmitEvent) {
 		isLoading = true;
 
 		setTimeout(() => {
@@ -20,8 +20,8 @@
 
 <div class={cn('grid gap-6', className)} {...$$restProps}>
 	<form on:submit|preventDefault={onSubmit}>
-		<div class="grid gap-2">
-			<div class="grid gap-4">
+		<div class="grid gap-4">
+			<div class="grid gap-1">
 				<Label for="email">Email</Label>
 				<Input
 					id="email"
@@ -37,11 +37,15 @@
 				<Label for="password">Password</Label>
 				<Input id="password" placeholder="••••••••" type="password" disabled={isLoading} />
 			</div>
-			<Button disabled={isLoading}>
+			<div class="grid gap-1">
+				<Label for="password_confirm">Password Confirm</Label>
+				<Input id="password_confirm" placeholder="••••••••" type="password" disabled={isLoading} />
+			</div>
+			<Button disabled={isLoading} type="submit" class="flex gap-2">
 				{#if isLoading}
-					<LoaderIcon />
+					<LoaderIcon class="animate-spin" />
 				{/if}
-				Sign In with Email
+				Sign Up with Email
 			</Button>
 		</div>
 	</form>
