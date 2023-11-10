@@ -1,0 +1,15 @@
+---
+# docker-compose.yml
+version: '3.9'
+services:
+  app:
+    image: oven/bun
+    container_name: linkshortener_elysia_dev
+    # override default entrypoint allows us to do `bun install` before serving
+    entrypoint: []
+    # execute bun install before we start the dev server in watch mode
+    command: /bin/sh -c 'bun install && bun run --watch src/index.ts'
+    # expose the right ports
+    ports: [3000:3000]
+    # setup a host mounted volume to sync changes to the container
+    volumes: [./:/home/bun/app]
