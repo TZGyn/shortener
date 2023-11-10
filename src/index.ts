@@ -55,7 +55,7 @@ app.listen(3000)
 
 console.log(
 	`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
-	`${Bun.env.database}`
+	`${Bun.env.PGDATABASE}`
 )
 
 export type App = typeof app
