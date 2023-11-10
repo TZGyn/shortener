@@ -1,15 +1,16 @@
-FROM docker.io/oven/bun
+FROM oven/bun
 
-RUN mkdir /shortener-backend
-WORKDIR /shortener-backend
+WORKDIR /app
 
-COPY ./package.json ./
-COPY ./bun.lockb ./
+COPY package.json .
+COPY bun.lockb .
 
-RUN bun install
+RUN bun install --production
 
-COPY . .
+COPY src src
+COPY tsconfig.json .
+
+ENV NODE_ENV production
+CMD ["bun", "src/index.ts"]
 
 EXPOSE 3000
-
-ENTRYPOINT [ "bun", "run", "./src/index.ts" ]
