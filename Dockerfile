@@ -6,11 +6,10 @@ WORKDIR /shortener-backend
 COPY ./package.json ./
 COPY ./bun.lockb ./
 
-RUN bun install --production
+RUN bun install
 
 COPY . .
 
 EXPOSE 3000
-ENV NODE_ENV production
 
 ENTRYPOINT [ "bun", "run", "./src/index.ts" ]
