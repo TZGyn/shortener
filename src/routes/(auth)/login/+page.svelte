@@ -9,25 +9,36 @@
 	<div class="absolute right-4 top-4 md:right-8 md:top-8">
 		<ThemeToggle />
 	</div>
-	<div class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
+	<div
+		class="relative hidden h-full flex-col bg-primary-foreground p-10 text-white dark:border-r lg:flex"
+	>
 		<div
-			class="absolute inset-0 bg-cover"
-			style="
-				background-image:
-					url(https://images.unsplash.com/photo-1590069261209-f8e9b8642343?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1376&q=80);"
-		/>
-		<div class="relative z-20 flex items-center text-lg font-medium">Shortener</div>
+			class="relative z-20 text-primary flex items-center text-lg font-medium"
+		>
+			Shortener
+		</div>
 	</div>
 	<div class="p-8">
-		<div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+		<div
+			class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]"
+		>
 			<div class="flex flex-col space-y-2 text-center">
-				<h1 class="text-2xl font-semibold tracking-tight">Create an account</h1>
-				<p class="text-sm text-muted-foreground">Enter your email below to create your account</p>
+				<h1 class="text-2xl font-semibold tracking-tight">
+					Login to your account
+				</h1>
+				<p class="text-sm text-muted-foreground">
+					Enter your email below to login to your account
+				</p>
 			</div>
 			<UserAuthForm />
 			<p class="px-8 text-center text-sm text-muted-foreground">
 				Don't Have An Account? Signup{' '}
-				<a href="/signup" class="underline underline-offset-4 hover:text-primary"> Here </a>{' '}
+				<a
+					href="/signup"
+					class="underline underline-offset-4 hover:text-primary"
+				>
+					Here
+				</a>{' '}
 			</p>
 		</div>
 	</div>

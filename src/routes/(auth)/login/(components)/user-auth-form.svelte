@@ -2,7 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import { LoaderIcon } from 'lucide-svelte';
+	import { Loader2, LoaderIcon } from 'lucide-svelte';
 	import { cn } from '$lib/utils';
 
 	let className: string | undefined | null = undefined;
@@ -20,8 +20,8 @@
 
 <div class={cn('grid gap-6', className)} {...$$restProps}>
 	<form on:submit|preventDefault={onSubmit}>
-		<div class="grid gap-2">
-			<div class="grid gap-4">
+		<div class="grid gap-4">
+			<div class="grid gap-1">
 				<Label for="email">Email</Label>
 				<Input
 					id="email"
@@ -35,13 +35,18 @@
 			</div>
 			<div class="grid gap-1">
 				<Label for="password">Password</Label>
-				<Input id="password" placeholder="••••••••" type="password" disabled={isLoading} />
+				<Input
+					id="password"
+					placeholder="••••••••"
+					type="password"
+					disabled={isLoading}
+				/>
 			</div>
-			<Button disabled={isLoading}>
+			<Button disabled={isLoading} type="submit" class="flex gap-2">
 				{#if isLoading}
-					<LoaderIcon />
+					<Loader2 class="animate-spin" />
 				{/if}
-				Sign In with Email
+				Sign In
 			</Button>
 		</div>
 	</form>

@@ -2,7 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import { LoaderIcon } from 'lucide-svelte';
+	import { Loader2 } from 'lucide-svelte';
 	import { cn } from '$lib/utils';
 
 	let className: string | undefined | null = undefined;
@@ -35,17 +35,27 @@
 			</div>
 			<div class="grid gap-1">
 				<Label for="password">Password</Label>
-				<Input id="password" placeholder="••••••••" type="password" disabled={isLoading} />
+				<Input
+					id="password"
+					placeholder="••••••••"
+					type="password"
+					disabled={isLoading}
+				/>
 			</div>
 			<div class="grid gap-1">
 				<Label for="password_confirm">Password Confirm</Label>
-				<Input id="password_confirm" placeholder="••••••••" type="password" disabled={isLoading} />
+				<Input
+					id="password_confirm"
+					placeholder="••••••••"
+					type="password"
+					disabled={isLoading}
+				/>
 			</div>
 			<Button disabled={isLoading} type="submit" class="flex gap-2">
 				{#if isLoading}
-					<LoaderIcon class="animate-spin" />
+					<Loader2 class="animate-spin" />
 				{/if}
-				Sign Up with Email
+				Sign Up
 			</Button>
 		</div>
 	</form>
