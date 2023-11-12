@@ -1,6 +1,9 @@
 <script lang="ts">
+	import type { PageData } from './$types';
 	import ThemeToggle from '$lib/components/theme-toggle.svelte';
 	import UserAuthForm from './(components)/user-auth-form.svelte';
+
+	export let data: PageData;
 </script>
 
 <div
@@ -30,7 +33,7 @@
 					Enter your email below to login to your account
 				</p>
 			</div>
-			<UserAuthForm />
+			<UserAuthForm form={data.form} />
 			<p class="px-8 text-center text-sm text-muted-foreground">
 				Don't Have An Account? Signup{' '}
 				<a
