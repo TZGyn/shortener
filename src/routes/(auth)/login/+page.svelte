@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import ThemeToggle from '$lib/components/theme-toggle.svelte';
-	import UserAuthForm from './(components)/user-auth-form.svelte';
+	import type { PageData } from './$types'
+	import ThemeToggle from '$lib/components/theme-toggle.svelte'
+	import UserAuthForm from './(components)/user-auth-form.svelte'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <div

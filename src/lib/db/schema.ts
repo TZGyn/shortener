@@ -5,16 +5,16 @@ import {
 	timestamp,
 	integer,
 	uuid,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/pg-core'
 
-import { relations } from 'drizzle-orm';
+import { relations } from 'drizzle-orm'
 
 export const shortener = pgTable('shortener', {
 	id: serial('id').primaryKey().notNull(),
 	link: varchar('link', { length: 255 }).notNull(),
 	code: varchar('code', { length: 255 }).notNull(),
 	createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-});
+})
 
 export const user = pgTable('user', {
 	id: serial('id').primaryKey().notNull(),
@@ -23,7 +23,7 @@ export const user = pgTable('user', {
 	username: varchar('username', { length: 255 }),
 	password: varchar('password', { length: 255 }).notNull(),
 	createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-});
+})
 
 export const visitor = pgTable('visitor', {
 	id: serial('id').primaryKey().notNull(),
@@ -31,17 +31,17 @@ export const visitor = pgTable('visitor', {
 	createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
 	countryCode: varchar('country_code', { length: 255 }).notNull(),
 	country: varchar('country', { length: 255 }).notNull(),
-});
+})
 
 export const session = pgTable('session', {
 	token: varchar('token', { length: 255 }).notNull(),
 	userId: integer('user_id').notNull(),
 	expiresAt: timestamp('expires', { mode: 'date' }).notNull(),
-});
+})
 
 export const sessionRelations = relations(session, ({ one }) => ({
 	user: one(user, {
 		fields: [session.userId],
 		references: [user.id],
 	}),
-}));
+}))
