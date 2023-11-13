@@ -1,6 +1,10 @@
 <script lang="ts">
-	import ThemeToggle from '$lib/components/theme-toggle.svelte'
+	import Sidebar from '$lib/components/sidebar.svelte'
 </script>
 
-<ThemeToggle />
-<slot />
+<div class="w-full flex h-screen">
+	<Sidebar />
+	<div class="w-full p-4">
+		<slot />
+	</div>
+</div>
