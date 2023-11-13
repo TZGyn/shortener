@@ -3,8 +3,8 @@ import {
 	serial,
 	varchar,
 	timestamp,
-	text,
 	integer,
+	uuid,
 } from 'drizzle-orm/pg-core';
 
 import { relations } from 'drizzle-orm';
@@ -18,9 +18,9 @@ export const shortener = pgTable('shortener', {
 
 export const user = pgTable('user', {
 	id: serial('id').primaryKey().notNull(),
-	uuid: text('uuid').notNull(),
+	uuid: uuid('uuid').defaultRandom(),
 	email: varchar('email', { length: 255 }).notNull().unique(),
-	username: varchar('username', { length: 255 }).notNull(),
+	username: varchar('username', { length: 255 }),
 	password: varchar('password', { length: 255 }).notNull(),
 	createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
 });

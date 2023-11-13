@@ -1,9 +1,37 @@
 {
-  "id": "1098bf22-b657-4c36-b85c-51f1a8f6e36d",
+  "id": "9d44b46b-3e93-4782-8750-dbf39513bb0c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
   "tables": {
+    "session": {
+      "name": "session",
+      "schema": "",
+      "columns": {
+        "token": {
+          "name": "token",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires": {
+          "name": "expires",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "shortener": {
       "name": "shortener",
       "schema": "",
@@ -51,9 +79,10 @@
         },
         "uuid": {
           "name": "uuid",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false,
+          "default": "gen_random_uuid()"
         },
         "email": {
           "name": "email",
@@ -65,7 +94,7 @@
           "name": "username",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "password": {
           "name": "password",
@@ -84,7 +113,15 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "user_email_unique": {
+          "name": "user_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      }
     },
     "visitor": {
       "name": "visitor",
