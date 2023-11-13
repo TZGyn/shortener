@@ -3,7 +3,7 @@ import { fail } from '@sveltejs/kit'
 import { superValidate } from 'sveltekit-superforms/server'
 import { formSchema } from './schema'
 import { db } from '$lib/db'
-import { user as userSchema } from '$lib/db/schema'
+import { session as sessionSchema, user as userSchema } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 
@@ -35,6 +35,14 @@ export const actions: Actions = {
 
 			if (user && matchPassword) {
 				const token = nanoid(32)
+
+				const expiresAt = new Date()
+				expiresAt.setTime(expiresAt.getTime() + 4 * 60 * 60 * 1000)
+
+				await db
+					.insert(sessionSchema)
+					.values({ userId: user.id, token, expiresAt })
+
 				event.cookies.set('token', token, {
 					httpOnly: true,
 					sameSite: 'strict',
