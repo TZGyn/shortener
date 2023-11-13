@@ -1,62 +1,32 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
-	import { Loader2 } from 'lucide-svelte';
-	import { cn } from '$lib/utils';
+	import * as Form from '$lib/components/ui/form';
+	import { formSchema, type FormSchema } from '../schema';
+	import type { SuperValidated } from 'sveltekit-superforms';
 
-	let className: string | undefined | null = undefined;
-	export { className as class };
-
-	let isLoading = false;
-	async function onSubmit(event: SubmitEvent) {
-		isLoading = true;
-
-		setTimeout(() => {
-			isLoading = false;
-		}, 3000);
-	}
+	export let form: SuperValidated<FormSchema>;
 </script>
 
-<div class={cn('grid gap-6', className)} {...$$restProps}>
-	<form on:submit|preventDefault={onSubmit}>
-		<div class="grid gap-4">
-			<div class="grid gap-1">
-				<Label for="email">Email</Label>
-				<Input
-					id="email"
-					placeholder="name@example.com"
-					type="email"
-					autocapitalize="none"
-					autocomplete="email"
-					autocorrect="off"
-					disabled={isLoading}
-				/>
-			</div>
-			<div class="grid gap-1">
-				<Label for="password">Password</Label>
-				<Input
-					id="password"
-					placeholder="••••••••"
-					type="password"
-					disabled={isLoading}
-				/>
-			</div>
-			<div class="grid gap-1">
-				<Label for="password_confirm">Password Confirm</Label>
-				<Input
-					id="password_confirm"
-					placeholder="••••••••"
-					type="password"
-					disabled={isLoading}
-				/>
-			</div>
-			<Button disabled={isLoading} type="submit" class="flex gap-2">
-				{#if isLoading}
-					<Loader2 class="animate-spin" />
-				{/if}
-				Sign Up
-			</Button>
-		</div>
-	</form>
-</div>
+<Form.Root method="POST" {form} schema={formSchema} let:config>
+	<Form.Field {config} name="email">
+		<Form.Item>
+			<Form.Label>Email</Form.Label>
+			<Form.Input placeholder="name@example.com" />
+			<Form.Validation />
+		</Form.Item>
+	</Form.Field>
+	<Form.Field {config} name="password">
+		<Form.Item>
+			<Form.Label>Password</Form.Label>
+			<Form.Input type="password" placeholder="••••••••" />
+			<Form.Validation />
+		</Form.Item>
+	</Form.Field>
+	<Form.Field {config} name="password_confirm">
+		<Form.Item>
+			<Form.Label>Password Confirm</Form.Label>
+			<Form.Input type="password" placeholder="••••••••" />
+			<Form.Validation />
+		</Form.Item>
+	</Form.Field>
+	<Form.Button class="w-full">Sign Up</Form.Button>
+</Form.Root>

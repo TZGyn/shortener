@@ -23,6 +23,12 @@ export const actions: Actions = {
 			});
 		}
 
+		if (form.data.password !== form.data.password_confirm) {
+			return fail(400, {
+				form,
+			});
+		}
+
 		try {
 			const users = await db
 				.select()
@@ -30,10 +36,11 @@ export const actions: Actions = {
 				.where(eq(userSchema.email, form.data.email));
 
 			const user = users[0];
-			const matchPassword =
-				user && (await Bun.password.verify(form.data.password, user.password));
 
-			if (user && matchPassword) {
+			if (user) {
+				await db
+					.insert(userSchema)
+					.values({ email: form.data.email, password: form.data.password });
 				const token = nanoid(32);
 				event.cookies.set('token', token, {
 					httpOnly: true,
