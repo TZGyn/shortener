@@ -9,9 +9,9 @@
 	import { goto } from '$app/navigation'
 </script>
 
-<div class="min-w-[350px] p-4 border-r h-full flex flex-col justify-between">
+<div class="flex h-full min-w-[350px] flex-col justify-between border-r p-4">
 	<div>
-		<div class="flex justify-between pb-16 items-center">
+		<div class="flex items-center justify-between pb-16">
 			<div class="text-xl font-bold">Shortener</div>
 			<ThemeToggle />
 		</div>
@@ -19,11 +19,11 @@
 		<div class="pb-4">Projects</div>
 		<Separator />
 	</div>
-	<div class="flex justify-between items-center">
+	<div class="flex items-center justify-between">
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>
 				<Avatar.Root>
-					<Avatar.Image src="github.com/shadcn.png" alt="@shadcn" />
+					<Avatar.Image src="" alt="@shadcn" />
 					<Avatar.Fallback><User /></Avatar.Fallback>
 				</Avatar.Root>
 			</DropdownMenu.Trigger>

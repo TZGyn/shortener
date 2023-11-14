@@ -1,5 +1,5 @@
 // drizzle.config.ts
-import type { Config } from 'drizzle-kit';
+import type { Config } from 'drizzle-kit'
 
 export default {
 	schema: './src/lib/db/schema.ts',
@@ -12,4 +12,4 @@ export default {
 		port: 5432,
 		database: 'link-shortener',
 	},
-} satisfies Config;
+} satisfies Config

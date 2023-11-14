@@ -16,7 +16,7 @@
 		class="relative hidden h-full flex-col bg-primary-foreground p-10 text-white dark:border-r lg:flex"
 	>
 		<div
-			class="relative z-20 text-primary flex items-center text-lg font-medium"
+			class="relative z-20 flex items-center text-lg font-medium text-primary"
 		>
 			Shortener
 		</div>
