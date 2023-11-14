@@ -57,6 +57,7 @@ export const actions: Actions = {
 				})
 			}
 		} catch (error) {
+			console.log(error)
 			if (error instanceof SyntaxError) {
 				return fail(400, {
 					form,
