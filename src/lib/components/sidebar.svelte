@@ -16,8 +16,14 @@
 			<ThemeToggle />
 		</div>
 
-		<div class="pb-4">Projects</div>
-		<Separator />
+		<div class="flex flex-col gap-4">
+			<Button variant="ghost" href="/links" class="justify-start text-base"
+				>Links</Button
+			>
+			<Button variant="ghost" href="/projects" class="justify-start text-base "
+				>Projects</Button
+			>
+		</div>
 	</div>
 	<div class="flex items-center justify-between">
 		<DropdownMenu.Root>
