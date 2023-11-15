@@ -2,8 +2,19 @@
 	import type { PageData } from './$types'
 	import ThemeToggle from '$lib/components/theme-toggle.svelte'
 	import UserAuthForm from './(components)/user-auth-form.svelte'
+	import { Button } from '$lib/components/ui/button'
+	import { goto } from '$app/navigation'
 
 	export let data: PageData
+
+	const guestLogin = async () => {
+		const response = await fetch('/api/login', { method: 'post' })
+
+		const data = await response.json()
+		if (data.success) {
+			goto('/')
+		}
+	}
 </script>
 
 <div
@@ -41,8 +52,9 @@
 					class="underline underline-offset-4 hover:text-primary"
 				>
 					Here
-				</a>{' '}
+				</a>
 			</p>
+			<Button variant="ghost" on:click={guestLogin}>Guest</Button>
 		</div>
 	</div>
 </div>
