@@ -12,7 +12,7 @@
 <div class="flex h-full min-w-[350px] flex-col justify-between border-r p-4">
 	<div>
 		<div class="flex items-center justify-between pb-16">
-			<div class="text-xl font-bold">Shortener</div>
+			<div class="text-xl font-bold"><a href="/">Shortener</a></div>
 			<ThemeToggle />
 		</div>
 
@@ -25,26 +25,30 @@
 			>
 		</div>
 	</div>
-	<div class="flex items-center justify-between">
-		<DropdownMenu.Root>
-			<DropdownMenu.Trigger>
-				<Avatar.Root>
-					<Avatar.Image src="" alt="@shadcn" />
-					<Avatar.Fallback><User /></Avatar.Fallback>
-				</Avatar.Root>
-			</DropdownMenu.Trigger>
-			<DropdownMenu.Content>
-				<DropdownMenu.Group>
-					<DropdownMenu.Label>My Account</DropdownMenu.Label>
-					<DropdownMenu.Separator />
-					<DropdownMenu.Item on:click={() => goto('/profile')}
-						>Profile</DropdownMenu.Item
-					>
-				</DropdownMenu.Group>
-			</DropdownMenu.Content>
-		</DropdownMenu.Root>
-		<form method="post" action="?/signout">
-			<Button variant="destructive" type="submit">Sign Out</Button>
-		</form>
+
+	<div class="flex flex-col gap-4">
+		<Separator />
+		<div class="flex items-center justify-between">
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger>
+					<Avatar.Root>
+						<Avatar.Image src="" alt="@shadcn" />
+						<Avatar.Fallback><User /></Avatar.Fallback>
+					</Avatar.Root>
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content>
+					<DropdownMenu.Group>
+						<DropdownMenu.Label>My Account</DropdownMenu.Label>
+						<DropdownMenu.Separator />
+						<DropdownMenu.Item on:click={() => goto('/profile')}
+							>Profile</DropdownMenu.Item
+						>
+					</DropdownMenu.Group>
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
+			<form method="post" action="/?/signout">
+				<Button variant="destructive" type="submit">Sign Out</Button>
+			</form>
+		</div>
 	</div>
 </div>
