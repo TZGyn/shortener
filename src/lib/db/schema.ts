@@ -14,7 +14,15 @@ export const shortener = pgTable('shortener', {
 	link: varchar('link', { length: 255 }).notNull(),
 	code: varchar('code', { length: 255 }).notNull(),
 	createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+	userId: integer('user_id').notNull(),
 })
+
+export const shortenerRelations = relations(shortener, ({ one }) => ({
+	user: one(user, {
+		fields: [shortener.userId],
+		references: [user.id],
+	}),
+}))
 
 export const user = pgTable('user', {
 	id: serial('id').primaryKey().notNull(),
