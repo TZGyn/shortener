@@ -28,10 +28,15 @@ export const authenticateUser = async (event: RequestEvent) => {
 		return null
 	}
 
-	console.log(sessionToken)
-
 	const user = await getUserFromSessionToken(sessionToken)
-	console.log(user)
 
 	return user
+}
+
+export const logoutUser = async (token: string) => {
+	const now = new Date()
+	await db
+		.update(sessionSchema)
+		.set({ expiresAt: now })
+		.where(eq(sessionSchema.token, token))
 }

@@ -1,3 +1,4 @@
+import { logoutUser } from '$lib/server/auth'
 import type { RequestHandler } from './$types'
 
 export const GET: RequestHandler = async () => {
@@ -5,6 +6,13 @@ export const GET: RequestHandler = async () => {
 }
 
 export const POST: RequestHandler = async (event) => {
-	await new Promise((r) => setTimeout(r, 5000))
-	return new Response('hello')
+	const token = event.cookies.get('token')
+	if (!token) {
+		return new Response(
+			JSON.stringify({ success: false, message: 'Invalid User' }),
+		)
+	}
+	logoutUser(token)
+	event.cookies.delete('token')
+	return new Response(JSON.stringify({ success: true }))
 }
