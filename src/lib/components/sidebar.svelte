@@ -4,9 +4,22 @@
 	import { Button } from '$lib/components/ui/button'
 	import * as Avatar from '$lib/components/ui/avatar'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+	import * as AlertDialog from '$lib/components/ui/alert-dialog'
 
-	import { User } from 'lucide-svelte'
+	import { Loader2, User } from 'lucide-svelte'
 	import { goto } from '$app/navigation'
+
+	let dialogOpen = false
+	let isLoading = false
+	const logout = async () => {
+		isLoading = true
+
+		await fetch('/api/logout', { method: 'post' })
+
+		isLoading = false
+		dialogOpen = false
+		goto('/login')
+	}
 </script>
 
 <div class="flex h-full min-w-[350px] flex-col justify-between border-r p-4">
@@ -46,9 +59,34 @@
 					</DropdownMenu.Group>
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
-			<form method="post" action="/?/signout">
-				<Button variant="destructive" type="submit">Sign Out</Button>
-			</form>
+			<div>
+				<AlertDialog.Root bind:open={dialogOpen}>
+					<AlertDialog.Trigger asChild let:builder>
+						<Button variant="destructive" builders={[builder]} type="submit"
+							>Sign Out</Button
+						>
+					</AlertDialog.Trigger>
+					<AlertDialog.Content>
+						<AlertDialog.Header>
+							<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
+							<AlertDialog.Description>
+								You are about to log out of this account.
+							</AlertDialog.Description>
+						</AlertDialog.Header>
+						<AlertDialog.Footer>
+							<AlertDialog.Cancel disabled={isLoading}
+								>Cancel</AlertDialog.Cancel
+							>
+							<Button on:click={logout} class="flex gap-2" disabled={isLoading}>
+								{#if isLoading}
+									<Loader2 class="animate-spin" />
+								{/if}
+								Log Out
+							</Button>
+						</AlertDialog.Footer>
+					</AlertDialog.Content>
+				</AlertDialog.Root>
+			</div>
 		</div>
 	</div>
 </div>
