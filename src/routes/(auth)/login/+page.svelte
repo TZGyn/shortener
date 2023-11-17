@@ -54,7 +54,7 @@
 					Here
 				</a>
 			</p>
-			<Button variant="ghost" on:click={guestLogin}>Guest</Button>
+			<Button on:click={guestLogin}>Login As Guest</Button>
 		</div>
 	</div>
 </div>
