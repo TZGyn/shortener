@@ -3,6 +3,7 @@
 	import { Separator } from '$lib/components/ui/separator'
 	import { Button, buttonVariants } from '$lib/components/ui/button'
 	import * as Dialog from '$lib/components/ui/dialog'
+	import * as Card from '$lib/components/ui/card'
 	import { Input } from '$lib/components/ui/input'
 	import { Label } from '$lib/components/ui/label'
 	import { Loader2, PlusCircle } from 'lucide-svelte'
@@ -64,9 +65,16 @@
 <Separator />
 
 {#if data.shorteners.length > 0}
-	{#each data.shorteners as shortener}
-		{JSON.stringify(shortener)}
-	{/each}
+	<div class="flex flex-col gap-4 p-4">
+		{#each data.shorteners as shortener}
+			<Card.Root>
+				<Card.Header>
+					<Card.Title>{shortener.link}</Card.Title>
+					<Card.Description>{shortener.code}</Card.Description>
+				</Card.Header>
+			</Card.Root>
+		{/each}
+	</div>
 {:else}
 	<div>No Data</div>
 {/if}
