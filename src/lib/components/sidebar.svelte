@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Separator } from '$lib/components/ui/separator'
 	import ThemeToggle from './theme-toggle.svelte'
-	import { Button, buttonVariants } from '$lib/components/ui/button'
+	import { Button } from '$lib/components/ui/button'
 	import * as Avatar from '$lib/components/ui/avatar'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import * as AlertDialog from '$lib/components/ui/alert-dialog'
@@ -22,18 +22,25 @@
 	}
 </script>
 
-<div class="flex h-full min-w-[350px] flex-col justify-between border-r p-4">
+<div
+	class="flex h-full min-w-[350px] flex-col justify-between border-r p-4">
 	<div>
 		<div class="flex items-center justify-between pb-16">
-			<div class="text-xl font-bold"><a href="/">Shortener</a></div>
+			<div class="text-xl font-bold">
+				<a href="/">Shortener</a>
+			</div>
 			<ThemeToggle />
 		</div>
 
 		<div class="flex flex-col gap-4">
-			<Button variant="ghost" href="/links" class="justify-start text-base"
-				>Links</Button>
-			<Button variant="ghost" href="/projects" class="justify-start text-base "
-				>Projects</Button>
+			<Button
+				variant="ghost"
+				href="/links"
+				class="justify-start text-base">Links</Button>
+			<Button
+				variant="ghost"
+				href="/projects"
+				class="justify-start text-base ">Projects</Button>
 		</div>
 	</div>
 
@@ -67,7 +74,8 @@
 				<AlertDialog.Root bind:open={dialogOpen}>
 					<AlertDialog.Content>
 						<AlertDialog.Header>
-							<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
+							<AlertDialog.Title
+								>Are you absolutely sure?</AlertDialog.Title>
 							<AlertDialog.Description>
 								You are about to log out of this account.
 							</AlertDialog.Description>
@@ -75,7 +83,10 @@
 						<AlertDialog.Footer>
 							<AlertDialog.Cancel disabled={isLoading}
 								>Cancel</AlertDialog.Cancel>
-							<Button on:click={logout} class="flex gap-2" disabled={isLoading}>
+							<Button
+								on:click={logout}
+								class="flex gap-2"
+								disabled={isLoading}>
 								{#if isLoading}
 									<Loader2 class="animate-spin" />
 								{/if}

@@ -9,7 +9,10 @@ export const getUserFromSessionToken = async (token: string) => {
 		.select()
 		.from(sessionSchema)
 		.where(
-			and(eq(sessionSchema.token, token), gt(sessionSchema.expiresAt, now)),
+			and(
+				eq(sessionSchema.token, token),
+				gt(sessionSchema.expiresAt, now),
+			),
 		)
 
 	const session = sessions[0]

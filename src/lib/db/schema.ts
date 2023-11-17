@@ -13,7 +13,9 @@ export const shortener = pgTable('shortener', {
 	id: serial('id').primaryKey().notNull(),
 	link: varchar('link', { length: 255 }).notNull(),
 	code: varchar('code', { length: 255 }).notNull(),
-	createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+	createdAt: timestamp('created_at', { mode: 'string' })
+		.defaultNow()
+		.notNull(),
 	userId: integer('user_id').notNull(),
 })
 
@@ -30,21 +32,29 @@ export const user = pgTable('user', {
 	email: varchar('email', { length: 255 }).notNull().unique(),
 	username: varchar('username', { length: 255 }),
 	password: varchar('password', { length: 255 }).notNull(),
-	createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+	createdAt: timestamp('created_at', { mode: 'string' })
+		.defaultNow()
+		.notNull(),
 })
 
 export const visitor = pgTable('visitor', {
 	id: serial('id').primaryKey().notNull(),
 	shortenerId: integer('shortener_id').notNull(),
-	createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-	countryCode: varchar('country_code', { length: 255 }).notNull(),
+	createdAt: timestamp('created_at', { mode: 'string' })
+		.defaultNow()
+		.notNull(),
+	countryCode: varchar('country_code', {
+		length: 255,
+	}).notNull(),
 	country: varchar('country', { length: 255 }).notNull(),
 })
 
 export const session = pgTable('session', {
 	token: varchar('token', { length: 255 }).notNull(),
 	userId: integer('user_id').notNull(),
-	expiresAt: timestamp('expires', { mode: 'date' }).notNull(),
+	expiresAt: timestamp('expires', {
+		mode: 'date',
+	}).notNull(),
 })
 
 export const sessionRelations = relations(session, ({ one }) => ({

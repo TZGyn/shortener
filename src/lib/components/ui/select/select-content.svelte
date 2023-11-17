@@ -6,7 +6,8 @@
 	type $$Props = SelectPrimitive.ContentProps
 	type $$Events = SelectPrimitive.ContentEvents
 	export let inTransition: $$Props['inTransition'] = flyAndScale
-	export let inTransitionConfig: $$Props['inTransitionConfig'] = undefined
+	export let inTransitionConfig: $$Props['inTransitionConfig'] =
+		undefined
 	export let outTransition: $$Props['outTransition'] = scale
 	export let outTransitionConfig: $$Props['outTransitionConfig'] = {
 		start: 0.95,

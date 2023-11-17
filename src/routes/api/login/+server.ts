@@ -1,5 +1,8 @@
 import type { RequestHandler } from './$types'
-import { user as userSchema, session as sessionSchema } from '$lib/db/schema'
+import {
+	user as userSchema,
+	session as sessionSchema,
+} from '$lib/db/schema'
 import { db } from '$lib/db'
 import { nanoid } from 'nanoid'
 import { eq } from 'drizzle-orm'
@@ -26,7 +29,9 @@ export const POST: RequestHandler = async (event) => {
 		const expiresAt = new Date()
 		expiresAt.setTime(expiresAt.getTime() + 4 * 60 * 60 * 1000)
 
-		await db.insert(sessionSchema).values({ userId: user.id, token, expiresAt })
+		await db
+			.insert(sessionSchema)
+			.values({ userId: user.id, token, expiresAt })
 
 		event.cookies.set('token', token, {
 			httpOnly: true,

@@ -41,9 +41,10 @@ export const actions: Actions = {
 			if (!user) {
 				// const hashedPassword = await Bun.password.hash(form.data.password)
 				const hashedPassword = await argon2.hash(form.data.password)
-				await db
-					.insert(userSchema)
-					.values({ email: form.data.email, password: hashedPassword })
+				await db.insert(userSchema).values({
+					email: form.data.email,
+					password: hashedPassword,
+				})
 				const token = nanoid(32)
 				event.cookies.set('token', token, {
 					httpOnly: true,

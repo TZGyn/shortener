@@ -8,7 +8,9 @@
 	export let data: PageData
 
 	const guestLogin = async () => {
-		const response = await fetch('/api/login', { method: 'post' })
+		const response = await fetch('/api/login', {
+			method: 'post',
+		})
 
 		const data = await response.json()
 		if (data.success) {

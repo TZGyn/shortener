@@ -9,7 +9,10 @@ export const POST: RequestHandler = async (event) => {
 	const token = event.cookies.get('token')
 	if (!token) {
 		return new Response(
-			JSON.stringify({ success: false, message: 'Invalid User' }),
+			JSON.stringify({
+				success: false,
+				message: 'Invalid User',
+			}),
 		)
 	}
 	logoutUser(token)

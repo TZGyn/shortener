@@ -3,7 +3,10 @@ import { fail } from '@sveltejs/kit'
 import { superValidate } from 'sveltekit-superforms/server'
 import { formSchema } from './schema'
 import { db } from '$lib/db'
-import { session as sessionSchema, user as userSchema } from '$lib/db/schema'
+import {
+	session as sessionSchema,
+	user as userSchema,
+} from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 import * as argon2 from 'argon2'
@@ -33,7 +36,8 @@ export const actions: Actions = {
 			const user = users[0]
 			const matchPassword =
 				// user && (await Bun.password.verify(form.data.password, user.password))
-				user && (await argon2.verify(user.password, form.data.password))
+				user &&
+				(await argon2.verify(user.password, form.data.password))
 
 			if (user && matchPassword) {
 				const token = nanoid(32)
