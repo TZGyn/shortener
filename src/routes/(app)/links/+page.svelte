@@ -4,9 +4,15 @@
 	import { Button, buttonVariants } from '$lib/components/ui/button'
 	import * as Dialog from '$lib/components/ui/dialog'
 	import * as Card from '$lib/components/ui/card'
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import { Input } from '$lib/components/ui/input'
 	import { Label } from '$lib/components/ui/label'
-	import { Link2, Loader2, PlusCircle } from 'lucide-svelte'
+	import {
+		Link2,
+		Loader2,
+		MoreVertical,
+		PlusCircle,
+	} from 'lucide-svelte'
 	import { invalidateAll } from '$app/navigation'
 
 	export let data: PageData
@@ -14,19 +20,31 @@
 	let dialogOpen = false
 	let inputLink = ''
 	let isLoading = false
+
 	const addShortener = async () => {
 		isLoading = true
 
-		await fetch('/api/shortener', {
+		const response = await fetch('/api/shortener', {
 			method: 'post',
 			body: JSON.stringify({ link: inputLink }),
 		})
 
+		const responseData = await response.json()
+
 		isLoading = false
-		await invalidateAll()
-		dialogOpen = false
+
+		if (responseData.success) {
+			await invalidateAll()
+			dialogOpen = false
+		}
 	}
-	$: console.log(inputLink)
+
+	const deleteShortener = async (code: string) => {
+		await fetch(`/api/shortener/${code}`, {
+			method: 'delete',
+		})
+		await invalidateAll()
+	}
 </script>
 
 <div class="flex justify-between p-8">
@@ -47,7 +65,10 @@
 			<div class="grid gap-4 py-4">
 				<div class="grid grid-cols-4 items-center gap-4">
 					<Label class="text-right">Link</Label>
-					<Input id="name" bind:value={inputLink} class="col-span-3" />
+					<Input
+						id="name"
+						bind:value={inputLink}
+						class="col-span-3" />
 				</div>
 			</div>
 			<Dialog.Footer>
@@ -69,7 +90,10 @@
 				<Card.Header>
 					<Card.Title class="flex items-center gap-2">
 						<a
-							href={'https://' + data.shortener_url + '/' + shortener.code}
+							href={'https://' +
+								data.shortener_url +
+								'/' +
+								shortener.code}
 							target="_blank"
 							class="hover:underline">
 							{data.shortener_url + '/' + shortener.code}
@@ -78,6 +102,26 @@
 					</Card.Title>
 					<Card.Description>{shortener.link}</Card.Description>
 				</Card.Header>
+				<Card.Content>
+					<div class="flex justify-between">
+						<div></div>
+						<DropdownMenu.Root>
+							<DropdownMenu.Trigger>
+								<MoreVertical />
+							</DropdownMenu.Trigger>
+							<DropdownMenu.Content>
+								<DropdownMenu.Group>
+									<DropdownMenu.Item>Edit</DropdownMenu.Item>
+									<DropdownMenu.Item
+										on:click={() => deleteShortener(shortener.code)}
+										class="text-destructive data-[highlighted]:bg-destructive">
+										Delete
+									</DropdownMenu.Item>
+								</DropdownMenu.Group>
+							</DropdownMenu.Content>
+						</DropdownMenu.Root>
+					</div>
+				</Card.Content>
 			</Card.Root>
 		{/each}
 	</div>
