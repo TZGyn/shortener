@@ -6,6 +6,7 @@ import { db } from '$lib/db'
 import { user as userSchema } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
+import * as argon2 from 'argon2'
 
 export const load = (async () => {
 	return {
@@ -38,7 +39,8 @@ export const actions: Actions = {
 			const user = users[0]
 
 			if (!user) {
-				const hashedPassword = await Bun.password.hash(form.data.password)
+				// const hashedPassword = await Bun.password.hash(form.data.password)
+				const hashedPassword = await argon2.hash(form.data.password)
 				await db
 					.insert(userSchema)
 					.values({ email: form.data.email, password: hashedPassword })

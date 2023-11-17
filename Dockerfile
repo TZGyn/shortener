@@ -3,16 +3,15 @@ FROM node:18
 WORKDIR /app
 
 COPY ./package.json ./
-COPY ./bun.lockb ./
+COPY ./package-lock.json ./
 
-RUN npm install -g bun
-RUN bun install
+RUN npm install
 
 COPY . .
 # COPY ./.env.example ./.env
 
-RUN bun run build
+RUN npm run build
 
 EXPOSE 3000
 
-ENTRYPOINT [ "bun", "./build/index.js"]
+ENTRYPOINT [ "node", "build"]

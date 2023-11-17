@@ -6,6 +6,7 @@ import { db } from '$lib/db'
 import { session as sessionSchema, user as userSchema } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
+import * as argon2 from 'argon2'
 
 export const load = (async () => {
 	return {
@@ -31,7 +32,8 @@ export const actions: Actions = {
 
 			const user = users[0]
 			const matchPassword =
-				user && (await Bun.password.verify(form.data.password, user.password))
+				// user && (await Bun.password.verify(form.data.password, user.password))
+				user && (await argon2.verify(user.password, form.data.password))
 
 			if (user && matchPassword) {
 				const token = nanoid(32)
