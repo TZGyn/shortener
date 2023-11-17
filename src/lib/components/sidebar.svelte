@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Separator } from '$lib/components/ui/separator'
 	import ThemeToggle from './theme-toggle.svelte'
-	import { Button } from '$lib/components/ui/button'
+	import { Button, buttonVariants } from '$lib/components/ui/button'
 	import * as Avatar from '$lib/components/ui/avatar'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import * as AlertDialog from '$lib/components/ui/alert-dialog'
@@ -51,17 +51,20 @@
 					<DropdownMenu.Group>
 						<DropdownMenu.Label>My Account</DropdownMenu.Label>
 						<DropdownMenu.Separator />
-						<DropdownMenu.Item on:click={() => goto('/profile')}
-							>Profile</DropdownMenu.Item>
+						<DropdownMenu.Item on:click={() => goto('/profile')}>
+							Profile
+						</DropdownMenu.Item>
+						<DropdownMenu.Separator />
+						<DropdownMenu.Item
+							on:click={() => (dialogOpen = true)}
+							class="text-destructive data-[highlighted]:bg-destructive">
+							Log Out
+						</DropdownMenu.Item>
 					</DropdownMenu.Group>
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
 			<div>
 				<AlertDialog.Root bind:open={dialogOpen}>
-					<AlertDialog.Trigger asChild let:builder>
-						<Button variant="destructive" builders={[builder]} type="submit"
-							>Sign Out</Button>
-					</AlertDialog.Trigger>
 					<AlertDialog.Content>
 						<AlertDialog.Header>
 							<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
