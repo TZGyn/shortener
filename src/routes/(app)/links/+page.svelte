@@ -67,8 +67,16 @@
 		{#each data.shorteners as shortener}
 			<Card.Root>
 				<Card.Header>
-					<Card.Title>{shortener.link}</Card.Title>
-					<Card.Description>{shortener.code}</Card.Description>
+					<Card.Title class="flex items-center gap-2">
+						<a
+							href={'https://' + data.shortener_url + '/' + shortener.code}
+							target="_blank"
+							class="hover:underline">
+							{data.shortener_url + '/' + shortener.code}
+						</a>
+						<Link2 />
+					</Card.Title>
+					<Card.Description>{shortener.link}</Card.Description>
 				</Card.Header>
 			</Card.Root>
 		{/each}
