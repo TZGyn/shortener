@@ -25,7 +25,6 @@
 	on:focusout
 	on:pointerdown
 	on:pointerleave
-	on:pointermove
->
+	on:pointermove>
 	<slot />
 </DropdownMenuPrimitive.Item>

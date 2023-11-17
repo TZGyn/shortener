@@ -31,11 +31,9 @@
 
 		<div class="flex flex-col gap-4">
 			<Button variant="ghost" href="/links" class="justify-start text-base"
-				>Links</Button
-			>
+				>Links</Button>
 			<Button variant="ghost" href="/projects" class="justify-start text-base "
-				>Projects</Button
-			>
+				>Projects</Button>
 		</div>
 	</div>
 
@@ -54,8 +52,7 @@
 						<DropdownMenu.Label>My Account</DropdownMenu.Label>
 						<DropdownMenu.Separator />
 						<DropdownMenu.Item on:click={() => goto('/profile')}
-							>Profile</DropdownMenu.Item
-						>
+							>Profile</DropdownMenu.Item>
 					</DropdownMenu.Group>
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
@@ -63,8 +60,7 @@
 				<AlertDialog.Root bind:open={dialogOpen}>
 					<AlertDialog.Trigger asChild let:builder>
 						<Button variant="destructive" builders={[builder]} type="submit"
-							>Sign Out</Button
-						>
+							>Sign Out</Button>
 					</AlertDialog.Trigger>
 					<AlertDialog.Content>
 						<AlertDialog.Header>
@@ -75,8 +71,7 @@
 						</AlertDialog.Header>
 						<AlertDialog.Footer>
 							<AlertDialog.Cancel disabled={isLoading}
-								>Cancel</AlertDialog.Cancel
-							>
+								>Cancel</AlertDialog.Cancel>
 							<Button on:click={logout} class="flex gap-2" disabled={isLoading}>
 								{#if isLoading}
 									<Loader2 class="animate-spin" />

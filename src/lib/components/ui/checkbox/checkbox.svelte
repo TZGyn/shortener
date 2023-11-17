@@ -18,13 +18,11 @@
 	)}
 	bind:checked
 	{...$$restProps}
-	on:click
->
+	on:click>
 	<CheckboxPrimitive.Indicator
 		class={cn('flex h-4 w-4 items-center justify-center text-current')}
 		let:isChecked
-		let:isIndeterminate
-	>
+		let:isIndeterminate>
 		{#if isChecked}
 			<Check class="h-3.5 w-3.5" />
 		{:else if isIndeterminate}

@@ -18,8 +18,7 @@
 		className,
 	)}
 	{...$$restProps}
-	on:click
->
+	on:click>
 	<div class="flex items-center justify-center">
 		<RadioGroupPrimitive.ItemIndicator>
 			<Circle class="h-2.5 w-2.5 fill-current text-current" />

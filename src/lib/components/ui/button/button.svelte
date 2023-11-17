@@ -19,7 +19,6 @@
 	type="button"
 	{...$$restProps}
 	on:click
-	on:keydown
->
+	on:keydown>
 	<slot />
 </ButtonPrimitive.Root>

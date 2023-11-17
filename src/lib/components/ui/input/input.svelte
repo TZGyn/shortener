@@ -29,5 +29,4 @@
 	on:mouseleave
 	on:paste
 	on:input
-	{...$$restProps}
-/>
+	{...$$restProps} />

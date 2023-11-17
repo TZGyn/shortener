@@ -6,7 +6,7 @@
 	import * as Card from '$lib/components/ui/card'
 	import { Input } from '$lib/components/ui/input'
 	import { Label } from '$lib/components/ui/label'
-	import { Loader2, PlusCircle } from 'lucide-svelte'
+	import { Link2, Loader2, PlusCircle } from 'lucide-svelte'
 	import { invalidateAll } from '$app/navigation'
 
 	export let data: PageData
@@ -33,8 +33,7 @@
 	<div class="text-4xl font-bold">Links</div>
 	<Dialog.Root bind:open={dialogOpen}>
 		<Dialog.Trigger
-			class={buttonVariants({ variant: 'default' }) + 'flex gap-2'}
-		>
+			class={buttonVariants({ variant: 'default' }) + 'flex gap-2'}>
 			<PlusCircle />
 			Add Shortner
 		</Dialog.Trigger>
@@ -56,8 +55,7 @@
 					{#if isLoading}
 						<Loader2 class="animate-spin" />
 					{/if}
-					Add</Button
-				>
+					Add</Button>
 			</Dialog.Footer>
 		</Dialog.Content>
 	</Dialog.Root>

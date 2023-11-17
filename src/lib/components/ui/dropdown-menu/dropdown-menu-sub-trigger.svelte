@@ -25,8 +25,7 @@
 	on:focusin
 	on:focusout
 	on:pointerleave
-	on:pointermove
->
+	on:pointermove>
 	<slot />
 	<ChevronRight class="ml-auto h-4 w-4" />
 </DropdownMenuPrimitive.SubTrigger>

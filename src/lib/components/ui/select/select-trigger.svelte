@@ -18,8 +18,7 @@
 	{...$$restProps}
 	let:builder
 	on:click
-	on:keydown
->
+	on:keydown>
 	<slot {builder} />
 	<div>
 		<ChevronDown class="h-4 w-4 opacity-50" />

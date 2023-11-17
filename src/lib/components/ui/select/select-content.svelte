@@ -28,8 +28,7 @@
 		className,
 	)}
 	{...$$restProps}
-	on:keydown
->
+	on:keydown>
 	<div class="w-full p-1">
 		<slot />
 	</div>
