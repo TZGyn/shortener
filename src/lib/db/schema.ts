@@ -19,12 +19,16 @@ export const shortener = pgTable('shortener', {
 	userId: integer('user_id').notNull(),
 })
 
-export const shortenerRelations = relations(shortener, ({ one }) => ({
-	user: one(user, {
-		fields: [shortener.userId],
-		references: [user.id],
+export const shortenerRelations = relations(
+	shortener,
+	({ one, many }) => ({
+		user: one(user, {
+			fields: [shortener.userId],
+			references: [user.id],
+		}),
+		visitor: many(visitor),
 	}),
-}))
+)
 
 export const user = pgTable('user', {
 	id: serial('id').primaryKey().notNull(),
@@ -48,6 +52,13 @@ export const visitor = pgTable('visitor', {
 	}).notNull(),
 	country: varchar('country', { length: 255 }).notNull(),
 })
+
+export const visitorRelations = relations(visitor, ({ one }) => ({
+	shortener: one(shortener, {
+		fields: [visitor.shortenerId],
+		references: [shortener.id],
+	}),
+}))
 
 export const session = pgTable('session', {
 	token: varchar('token', { length: 255 }).notNull(),

@@ -8,6 +8,7 @@
 	import { Input } from '$lib/components/ui/input'
 	import { Label } from '$lib/components/ui/label'
 	import {
+		BarChart,
 		Link2,
 		Loader2,
 		MoreVertical,
@@ -86,7 +87,7 @@
 {#if data.shorteners.length > 0}
 	<div class="flex flex-col gap-4 p-4">
 		{#each data.shorteners as shortener}
-			<Card.Root>
+			<Card.Root class="w-full max-w-[500px]">
 				<Card.Header>
 					<Card.Title class="flex items-center gap-2">
 						<a
@@ -103,8 +104,16 @@
 					<Card.Description>{shortener.link}</Card.Description>
 				</Card.Header>
 				<Card.Content>
-					<div class="flex justify-between">
-						<div></div>
+					<div class="flex items-center justify-between">
+						<div class="flex gap-2">
+							<div
+								class="flex items-center justify-center gap-1 rounded bg-secondary px-3 py-1 text-sm">
+								<BarChart size={20} />
+								<div>
+									{shortener.visitor.length} visits
+								</div>
+							</div>
+						</div>
 						<DropdownMenu.Root>
 							<DropdownMenu.Trigger>
 								<MoreVertical />
