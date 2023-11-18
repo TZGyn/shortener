@@ -9,6 +9,8 @@
 	import { Loader2, User } from 'lucide-svelte'
 	import { goto } from '$app/navigation'
 
+	export let email: string = ''
+
 	let dialogOpen = false
 	let isLoading = false
 	const logout = async () => {
@@ -56,7 +58,7 @@
 				</DropdownMenu.Trigger>
 				<DropdownMenu.Content>
 					<DropdownMenu.Group>
-						<DropdownMenu.Label>My Account</DropdownMenu.Label>
+						<DropdownMenu.Label>{email}</DropdownMenu.Label>
 						<DropdownMenu.Separator />
 						<DropdownMenu.Item on:click={() => goto('/profile')}>
 							Profile
