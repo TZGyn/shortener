@@ -20,9 +20,9 @@ export const DELETE: RequestHandler = async (event) => {
 			}),
 		)
 	}
-	const userId = await getUserFromSessionToken(token)
+	const user = await getUserFromSessionToken(token)
 
-	if (!userId) {
+	if (!user) {
 		return new Response(
 			JSON.stringify({
 				success: false,
@@ -36,7 +36,7 @@ export const DELETE: RequestHandler = async (event) => {
 		.where(
 			and(
 				eq(shortener.code, shortenerId),
-				eq(shortener.userId, userId),
+				eq(shortener.userId, user.id),
 			),
 		)
 	return new Response(

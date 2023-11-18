@@ -1,26 +1,24 @@
 import type { RequestEvent } from '@sveltejs/kit'
 import { db } from '$lib/db'
 import { session as sessionSchema } from '$lib/db/schema'
-import { and, eq, gt } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 
 export const getUserFromSessionToken = async (token: string) => {
 	const now = new Date()
-	const sessions = await db
-		.select()
-		.from(sessionSchema)
-		.where(
-			and(
-				eq(sessionSchema.token, token),
-				gt(sessionSchema.expiresAt, now),
-			),
-		)
+	const sessions = await db.query.session.findFirst({
+		with: {
+			user: true,
+		},
+		where: (session, { eq, gt, and }) =>
+			and(eq(session.token, token), gt(session.expiresAt, now)),
+	})
 
-	const session = sessions[0]
+	const session = sessions
 
 	if (!session) {
 		return null
 	}
-	return session.userId
+	return session.user
 }
 
 export const authenticateUser = async (event: RequestEvent) => {
@@ -33,7 +31,7 @@ export const authenticateUser = async (event: RequestEvent) => {
 
 	const user = await getUserFromSessionToken(sessionToken)
 
-	return user
+	return user?.id ?? null
 }
 
 export const logoutUser = async (token: string) => {
