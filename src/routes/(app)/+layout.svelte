@@ -19,7 +19,8 @@
 <div class="flex h-screen w-full">
 	<Sidebar email={data.user.email} class="hidden lg:flex" />
 	<div class="h-full max-h-screen w-full overflow-scroll">
-		<div class="block w-full border-b px-4 py-2 lg:hidden">
+		<div
+			class="sticky top-0 block w-full border-b bg-background px-4 py-2 lg:hidden">
 			<Sheet.Root bind:open={sheetOpen}>
 				<Sheet.Trigger asChild let:builder>
 					<Button builders={[builder]} variant="ghost" class="p-2">
@@ -47,7 +48,9 @@
 						<div class="flex flex-col gap-4">
 							<Separator />
 							<div class="flex items-center justify-between">
-								<UserIcon email={data.user.email} />
+								<UserIcon
+									email={data.user.email}
+									onClick={closeSheet} />
 							</div>
 						</div>
 					</div>

@@ -8,6 +8,7 @@
 	import { goto } from '$app/navigation'
 
 	export let email: string = ''
+	export let onClick: () => void = () => {}
 
 	let dialogOpen = false
 	let isLoading = false
@@ -33,7 +34,11 @@
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>{email}</DropdownMenu.Label>
 			<DropdownMenu.Separator />
-			<DropdownMenu.Item on:click={() => goto('/profile')}>
+			<DropdownMenu.Item
+				on:click={() => {
+					goto('/profile')
+					onClick()
+				}}>
 				Profile
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
