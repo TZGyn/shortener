@@ -4,15 +4,19 @@
 	import UserAuthForm from './(components)/user-auth-form.svelte'
 	import { Button } from '$lib/components/ui/button'
 	import { goto } from '$app/navigation'
+	import { Loader2 } from 'lucide-svelte'
 
 	export let data: PageData
+	let isLoading = false
 
 	const guestLogin = async () => {
+		isLoading = true
 		const response = await fetch('/api/login', {
 			method: 'post',
 		})
 
 		const data = await response.json()
+		isLoading = false
 		if (data.success) {
 			goto('/')
 		}
@@ -42,7 +46,7 @@
 					Enter your email below to login to your account
 				</p>
 			</div>
-			<UserAuthForm form={data.form} />
+			<UserAuthForm form={data.form} {isLoading} />
 			<p class="px-8 text-center text-sm text-muted-foreground">
 				Don't Have An Account? Signup{' '}
 				<a
@@ -51,7 +55,15 @@
 					Here
 				</a>
 			</p>
-			<Button on:click={guestLogin}>Login As Guest</Button>
+			<Button
+				disabled={isLoading}
+				on:click={guestLogin}
+				class="flex gap-2">
+				{#if isLoading}
+					<Loader2 class="animate-spin" />
+				{/if}
+				Login As Guest
+			</Button>
 		</div>
 	</div>
 </div>
