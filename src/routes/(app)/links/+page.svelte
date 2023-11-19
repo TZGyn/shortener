@@ -9,12 +9,12 @@
 	import { Label } from '$lib/components/ui/label'
 	import {
 		BarChart,
-		Link2,
+		ExternalLink,
 		Loader2,
 		MoreVertical,
 		PlusCircle,
 	} from 'lucide-svelte'
-	import { invalidateAll } from '$app/navigation'
+	import { goto, invalidateAll } from '$app/navigation'
 
 	export let data: PageData
 
@@ -110,7 +110,7 @@
 <Separator />
 
 {#if data.shorteners.length > 0}
-	<div class="flex flex-col gap-4 p-4">
+	<div class="flex flex-col gap-4 overflow-scroll p-4">
 		{#each data.shorteners as shortener}
 			<Card.Root class="w-full max-w-[500px]">
 				<Card.Header>
@@ -124,20 +124,21 @@
 							class="hover:underline">
 							{data.shortener_url + '/' + shortener.code}
 						</a>
-						<Link2 />
+						<ExternalLink size={16} />
 					</Card.Title>
 					<Card.Description>{shortener.link}</Card.Description>
 				</Card.Header>
 				<Card.Content>
 					<div class="flex items-center justify-between">
 						<div class="flex gap-2">
-							<div
-								class="flex items-center justify-center gap-1 rounded bg-secondary px-3 py-1 text-sm">
+							<Button
+								class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm"
+								on:click={() => goto(`/links/${shortener.code}`)}>
 								<BarChart size={20} />
 								<div>
 									{shortener.visitor.length} visits
 								</div>
-							</div>
+							</Button>
 						</div>
 						<DropdownMenu.Root>
 							<DropdownMenu.Trigger>
