@@ -53,9 +53,9 @@ export const POST: RequestHandler = async (event) => {
 
 	await db.insert(shortener).values({
 		link: shortenerInsert.data.link,
-		userId: user,
+		userId: user.id,
 		code: code,
 	})
 
-	return new Response(JSON.stringify(body))
+	return new Response(JSON.stringify({ success: true }))
 }
