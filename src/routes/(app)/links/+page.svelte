@@ -40,6 +40,30 @@
 		}
 	}
 
+	let editDialogOpen = false
+	let editShortenerCode = ''
+	let editShortenerLink = ''
+	let isEditLoading = false
+
+	const openEditDialog = (code: string, link: string) => {
+		editDialogOpen = true
+		editShortenerCode = code
+		editShortenerLink = link
+	}
+
+	const editShortener = async (code: string, link: string) => {
+		isEditLoading = true
+		await fetch(`/api/shortener/${code}`, {
+			method: 'put',
+			body: JSON.stringify({
+				link,
+			}),
+		})
+		await invalidateAll()
+		isEditLoading = false
+		editDialogOpen = false
+	}
+
 	const deleteShortener = async (code: string) => {
 		await fetch(`/api/shortener/${code}`, {
 			method: 'delete',
@@ -77,7 +101,8 @@
 					{#if isLoading}
 						<Loader2 class="animate-spin" />
 					{/if}
-					Add</Button>
+					Add
+				</Button>
 			</Dialog.Footer>
 		</Dialog.Content>
 	</Dialog.Root>
@@ -120,7 +145,11 @@
 							</DropdownMenu.Trigger>
 							<DropdownMenu.Content>
 								<DropdownMenu.Group>
-									<DropdownMenu.Item>Edit</DropdownMenu.Item>
+									<DropdownMenu.Item
+										on:click={() =>
+											openEditDialog(shortener.code, shortener.link)}>
+										Edit
+									</DropdownMenu.Item>
 									<DropdownMenu.Item
 										on:click={() => deleteShortener(shortener.code)}
 										class="text-destructive data-[highlighted]:bg-destructive">
@@ -137,3 +166,34 @@
 {:else}
 	<div>No Data</div>
 {/if}
+
+<Dialog.Root bind:open={editDialogOpen}>
+	<Dialog.Content class="sm:max-w-[425px]">
+		<Dialog.Header>
+			<Dialog.Title>Edit Shortener {editShortenerCode}</Dialog.Title>
+			<Dialog.Description>
+				Edit Shortner Here. Click Save To Update.
+			</Dialog.Description>
+		</Dialog.Header>
+		<div class="grid gap-4 py-4">
+			<div class="grid grid-cols-4 items-center gap-4">
+				<Label class="text-right">Link</Label>
+				<Input
+					id="name"
+					bind:value={editShortenerLink}
+					class="col-span-3" />
+			</div>
+		</div>
+		<Dialog.Footer>
+			<Button
+				on:click={() =>
+					editShortener(editShortenerCode, editShortenerLink)}
+				class="flex gap-2">
+				{#if isEditLoading}
+					<Loader2 class="animate-spin" />
+				{/if}
+				Save
+			</Button>
+		</Dialog.Footer>
+	</Dialog.Content>
+</Dialog.Root>

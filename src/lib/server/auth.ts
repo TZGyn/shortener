@@ -41,3 +41,31 @@ export const logoutUser = async (token: string) => {
 		.set({ expiresAt: now })
 		.where(eq(sessionSchema.token, token))
 }
+
+export const getUserFromEvent = async (event: RequestEvent) => {
+	const token = event.cookies.get('token')
+
+	if (!token) {
+		return {
+			success: false,
+			response: JSON.stringify({
+				success: false,
+				message: 'Invalid User',
+			}),
+		} as const
+	}
+
+	const user = await getUserFromSessionToken(token)
+
+	if (!user) {
+		return {
+			success: false,
+			response: JSON.stringify({
+				success: false,
+				message: 'Invalid User',
+			}),
+		} as const
+	}
+
+	return { success: true, user } as const
+}
