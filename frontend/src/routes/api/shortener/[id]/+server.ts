@@ -4,8 +4,29 @@ import { and, eq } from 'drizzle-orm'
 import type { RequestHandler } from './$types'
 import { z } from 'zod'
 
-export const GET: RequestHandler = async () => {
-	return new Response()
+export const GET: RequestHandler = async (event) => {
+	const user = event.locals.userObject
+	const shortenerId = event.params.id
+
+	const shortener = await db.query.shortener.findFirst({
+		where: (shortener, { eq, and }) =>
+			and(
+				eq(shortener.code, shortenerId),
+				eq(shortener.userId, user.id),
+			),
+	})
+
+	if (!shortener) {
+		return generateResponse({
+			success: false,
+			message: 'Invalid Shortener',
+		})
+	}
+
+	return generateResponse({
+		success: true,
+		data: shortener,
+	})
 }
 
 const updateShortenerSchema = z.object({
