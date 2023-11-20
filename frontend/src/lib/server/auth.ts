@@ -21,19 +21,6 @@ export const getUserFromSessionToken = async (token: string) => {
 	return session.user
 }
 
-export const authenticateUser = async (event: RequestEvent) => {
-	const { cookies } = event
-	const sessionToken = cookies.get('token')
-
-	if (!sessionToken) {
-		return null
-	}
-
-	const user = await getUserFromSessionToken(sessionToken)
-
-	return user?.id ?? null
-}
-
 export const logoutUser = async (token: string) => {
 	const now = new Date()
 	await db
@@ -46,26 +33,10 @@ export const getUserFromEvent = async (event: RequestEvent) => {
 	const token = event.cookies.get('token')
 
 	if (!token) {
-		return {
-			success: false,
-			response: JSON.stringify({
-				success: false,
-				message: 'Invalid User',
-			}),
-		} as const
+		return null
 	}
 
 	const user = await getUserFromSessionToken(token)
 
-	if (!user) {
-		return {
-			success: false,
-			response: JSON.stringify({
-				success: false,
-				message: 'Invalid User',
-			}),
-		} as const
-	}
-
-	return { success: true, user } as const
+	return user
 }

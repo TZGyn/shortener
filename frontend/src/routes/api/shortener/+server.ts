@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import type { RequestHandler } from './$types'
 import { db } from '$lib/db'
-import { getUserFromSessionToken } from '$lib/server/auth'
 import { shortener } from '$lib/db/schema'
 import { nanoid } from 'nanoid'
 
@@ -27,27 +26,7 @@ export const POST: RequestHandler = async (event) => {
 		)
 	}
 
-	const token = event.cookies.get('token')
-
-	if (!token) {
-		return new Response(
-			JSON.stringify({
-				success: false,
-				message: 'Invalid User',
-			}),
-		)
-	}
-
-	const user = await getUserFromSessionToken(token)
-
-	if (!user) {
-		return new Response(
-			JSON.stringify({
-				success: false,
-				message: 'Invalid User',
-			}),
-		)
-	}
+	const user = event.locals.userObject
 
 	const code = nanoid(8)
 

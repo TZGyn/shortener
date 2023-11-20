@@ -1,8 +1,8 @@
-import { authenticateUser } from '$lib/server/auth'
+import { getUserFromEvent } from '$lib/server/auth'
 import { redirect, type Handle } from '@sveltejs/kit'
 
 export const handle: Handle = async ({ event, resolve }) => {
-	event.locals.user = await authenticateUser(event)
+	const userObject = await getUserFromEvent(event)
 
 	const pathname = event.url.pathname
 
@@ -13,17 +13,20 @@ export const handle: Handle = async ({ event, resolve }) => {
 		'/api/signup',
 	]
 
-	if (pathname === '/login' || pathname === 'signup') {
-		if (event.locals.user) {
+	if (allowedPath.includes(pathname)) {
+		if (userObject) {
 			throw redirect(303, '/')
 		}
+		const response = await resolve(event)
+
+		return response
 	}
 
-	if (!allowedPath.includes(pathname)) {
-		if (!event.locals.user) {
-			throw redirect(303, '/login')
-		}
+	if (!userObject) {
+		throw redirect(303, '/login')
 	}
+
+	event.locals.userObject = userObject
 
 	const response = await resolve(event)
 

@@ -1,9 +1,5 @@
 import { db } from '$lib/db'
-import { shortener } from '$lib/db/schema'
-import {
-	getUserFromEvent,
-	getUserFromSessionToken,
-} from '$lib/server/auth'
+import { shortener as shortenerSchema } from '$lib/db/schema'
 import { and, eq } from 'drizzle-orm'
 import type { RequestHandler } from './$types'
 import { z } from 'zod'
@@ -17,13 +13,7 @@ const updateShortenerSchema = z.object({
 })
 
 export const PUT: RequestHandler = async (event) => {
-	const data = await getUserFromEvent(event)
-
-	if (!data.success) {
-		return new Response(data.response)
-	}
-
-	const user = data.user
+	const user = event.locals.userObject
 
 	const shortenerId = event.params.id
 	const body = await event.request.json()
@@ -40,12 +30,12 @@ export const PUT: RequestHandler = async (event) => {
 	}
 
 	await db
-		.update(shortener)
+		.update(shortenerSchema)
 		.set({ link: updateShortener.data.link })
 		.where(
 			and(
-				eq(shortener.code, shortenerId),
-				eq(shortener.userId, user.id),
+				eq(shortenerSchema.code, shortenerId),
+				eq(shortenerSchema.userId, user.id),
 			),
 		)
 
@@ -54,33 +44,14 @@ export const PUT: RequestHandler = async (event) => {
 
 export const DELETE: RequestHandler = async (event) => {
 	const shortenerId = event.params.id
-	const token = event.cookies.get('token')
-
-	if (!token) {
-		return new Response(
-			JSON.stringify({
-				success: false,
-				message: 'Invalid User',
-			}),
-		)
-	}
-	const user = await getUserFromSessionToken(token)
-
-	if (!user) {
-		return new Response(
-			JSON.stringify({
-				success: false,
-				message: 'Invalid User',
-			}),
-		)
-	}
+	const user = event.locals.userObject
 
 	await db
-		.delete(shortener)
+		.delete(shortenerSchema)
 		.where(
 			and(
-				eq(shortener.code, shortenerId),
-				eq(shortener.userId, user.id),
+				eq(shortenerSchema.code, shortenerId),
+				eq(shortenerSchema.userId, user.id),
 			),
 		)
 	return new Response(
