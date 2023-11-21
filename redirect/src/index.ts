@@ -1,10 +1,6 @@
-import { Elysia, t } from 'elysia'
-import { nanoid } from 'nanoid'
+import { Elysia } from 'elysia'
 import { db } from './database'
-import { createLinkSchema } from './zodSchema'
 import { cors } from '@elysiajs/cors'
-import { jsonArrayFrom } from 'kysely/helpers/postgres'
-import { login, signup } from './auth'
 
 const fallback_url = Bun.env.FALLBACK_URL ?? 'https://shortener.tzgyn.com'
 
