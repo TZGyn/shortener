@@ -14,4 +14,4 @@ RUN npm run build
 
 EXPOSE 3000
 
-ENTRYPOINT [ "node", "build"]
+ENTRYPOINT ["node", "-r", "dotenv/config" "build"]
