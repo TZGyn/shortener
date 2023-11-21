@@ -132,7 +132,7 @@
 					<div class="flex items-center justify-between">
 						<div class="flex gap-2">
 							<Button
-								class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm"
+								class="bg-secondary flex h-8 items-center justify-center gap-1 rounded text-sm"
 								on:click={() => goto(`/links/${shortener.code}`)}>
 								<BarChart size={20} />
 								<div>
