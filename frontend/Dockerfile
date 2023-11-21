@@ -10,6 +10,8 @@ RUN npm install
 COPY . .
 # COPY ./.env.example ./.env
 
+RUN npx run check
+
 RUN npm run build
 
 EXPOSE 3000
