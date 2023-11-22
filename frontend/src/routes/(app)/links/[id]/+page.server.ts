@@ -1,4 +1,5 @@
 import { db } from '$lib/db'
+import { redirect } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 
 export const load = (async (event) => {
@@ -15,6 +16,10 @@ export const load = (async (event) => {
 			visitor: true,
 		},
 	})
+
+	if (!shortener) {
+		throw redirect(303, '/')
+	}
 
 	return { shortener }
 }) satisfies PageServerLoad
