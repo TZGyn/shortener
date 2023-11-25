@@ -1,0 +1,1 @@
+ALTER TABLE "visitor" ADD COLUMN "city" varchar(255) NOT NULL;

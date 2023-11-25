@@ -1,20 +1,27 @@
 {
-	"version": "5",
-	"dialect": "pg",
-	"entries": [
-		{
-			"idx": 0,
-			"version": "5",
-			"when": 1699851315914,
-			"tag": "0000_nebulous_energizer",
-			"breakpoints": true
-		},
-		{
-			"idx": 1,
-			"version": "5",
-			"when": 1700134783172,
-			"tag": "0001_regular_microchip",
-			"breakpoints": true
-		}
-	]
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1699851315914,
+      "tag": "0000_nebulous_energizer",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1700134783172,
+      "tag": "0001_regular_microchip",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1700882455122,
+      "tag": "0002_robust_the_executioner",
+      "breakpoints": true
+    }
+  ]
 }

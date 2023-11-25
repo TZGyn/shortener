@@ -51,6 +51,7 @@ export const visitor = pgTable('visitor', {
 		length: 255,
 	}).notNull(),
 	country: varchar('country', { length: 255 }).notNull(),
+	city: varchar('city', { length: 255 }).notNull(),
 })
 
 export const visitorRelations = relations(visitor, ({ one }) => ({

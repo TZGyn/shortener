@@ -30,6 +30,7 @@ export interface VisitorTable {
 	shortener_id: number
 	country: string
 	country_code: string
+	city: string
 	created_at: ColumnType<Date, string | undefined, never>
 }
 

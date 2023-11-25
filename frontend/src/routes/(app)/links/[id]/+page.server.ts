@@ -19,6 +19,10 @@ export const load = (async (event) => {
 		},
 	})
 
+	if (!shortener) {
+		throw redirect(303, '/')
+	}
+
 	const visitor = await db
 		.select({
 			count: sql<number>`cast(count(*) as int)`,
@@ -27,9 +31,28 @@ export const load = (async (event) => {
 		.from(visitorSchema)
 		.groupBy(sql`to_char(${visitorSchema.createdAt}, 'MM')`)
 
-	if (!shortener) {
-		throw redirect(303, '/')
-	}
+	const visitorByCountry = await db
+		.select({
+			count: sql<number>`cast(count(*) as int)`,
+			country: visitorSchema.country,
+			code: visitorSchema.countryCode,
+		})
+		.from(visitorSchema)
+		.groupBy(visitorSchema.country, visitorSchema.countryCode)
 
-	return { shortener, visitor }
+	const visitorByCity = await db
+		.select({
+			count: sql<number>`cast(count(*) as int)`,
+			country: visitorSchema.country,
+			code: visitorSchema.countryCode,
+			city: visitorSchema.city,
+		})
+		.from(visitorSchema)
+		.groupBy(
+			visitorSchema.country,
+			visitorSchema.countryCode,
+			visitorSchema.city,
+		)
+
+	return { shortener, visitor, visitorByCountry, visitorByCity }
 }) satisfies PageServerLoad

@@ -2,6 +2,7 @@
 	import type { PageData } from './$types'
 	import { Separator } from '$lib/components/ui/separator'
 	import * as Card from '$lib/components/ui/card'
+	import * as Tabs from '$lib/components/ui/tabs'
 	import type { ApexOptions } from 'apexcharts'
 	import { mode } from 'mode-watcher'
 	import { onMount } from 'svelte'
@@ -84,15 +85,15 @@
 		if (container) {
 			container.innerHTML = ''
 		}
-		var chart = new apexChart(container, options)
+		var chart = new ApexChart(container, options)
 		chart.render()
 	}
 
-	$: container && apexChart && renderChart(options)
+	$: container && ApexChart && renderChart(options)
 
-	let apexChart: typeof ApexCharts
+	let ApexChart: typeof ApexCharts
 	onMount(async () => {
-		apexChart = (await import('apexcharts')).default
+		ApexChart = (await import('apexcharts')).default
 	})
 </script>
 
@@ -111,5 +112,49 @@
 		<Card.Content>
 			<div bind:this={container}></div>
 		</Card.Content>
+	</Card.Root>
+	<Card.Root class="max-w-[500px]">
+		<Tabs.Root value="country">
+			<Card.Header
+				class="flex w-full flex-row items-center justify-between space-y-0">
+				<div>
+					<Card.Title>Visitors</Card.Title>
+					<Card.Description
+						>Visitors by Country/City</Card.Description>
+				</div>
+				<Tabs.List>
+					<Tabs.Trigger value="country">Country</Tabs.Trigger>
+					<Tabs.Trigger value="city">City</Tabs.Trigger>
+				</Tabs.List>
+			</Card.Header>
+			<Card.Content>
+				<Tabs.Content value="country">
+					{#each data.visitorByCountry as visitorByCountry}
+						<div class="flex items-center justify-between">
+							<div class="flex items-center gap-4">
+								<img
+									src={`https://flagsapi.com/${visitorByCountry.code}/flat/64.png`}
+									alt="" />
+								<div>{visitorByCountry.country}</div>
+							</div>
+							<div>{visitorByCountry.count}</div>
+						</div>
+					{/each}
+				</Tabs.Content>
+				<Tabs.Content value="city">
+					{#each data.visitorByCity as visitorByCity}
+						<div class="flex items-center justify-between">
+							<div class="flex items-center gap-4">
+								<img
+									src={`https://flagsapi.com/${visitorByCity.code}/flat/64.png`}
+									alt="" />
+								<div>{visitorByCity.city}</div>
+							</div>
+							<div>{visitorByCity.count}</div>
+						</div>
+					{/each}
+				</Tabs.Content>
+			</Card.Content>
+		</Tabs.Root>
 	</Card.Root>
 </div>

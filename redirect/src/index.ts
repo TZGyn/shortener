@@ -31,6 +31,7 @@ app.get(
 				country: geolocation.data.location.country.name as string,
 				country_code: geolocation.data.location.country
 					.alpha2 as string,
+				city: geolocation.data.location.city.name as string,
 			}
 
 			await db.insertInto('visitor').values(visitor_data).execute()
