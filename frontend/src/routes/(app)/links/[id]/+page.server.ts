@@ -1,7 +1,7 @@
 import { db } from '$lib/db'
 import { redirect } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
-import { sql } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import { visitor as visitorSchema } from '$lib/db/schema'
 
 export const load = (async (event) => {
@@ -29,6 +29,7 @@ export const load = (async (event) => {
 			month: sql<number>`cast(to_char(${visitorSchema.createdAt}, 'MM') as int)`,
 		})
 		.from(visitorSchema)
+		.where(eq(visitorSchema.shortenerId, shortener.id))
 		.groupBy(sql`to_char(${visitorSchema.createdAt}, 'MM')`)
 
 	const visitorByCountry = await db
@@ -38,6 +39,7 @@ export const load = (async (event) => {
 			code: visitorSchema.countryCode,
 		})
 		.from(visitorSchema)
+		.where(eq(visitorSchema.shortenerId, shortener.id))
 		.groupBy(visitorSchema.country, visitorSchema.countryCode)
 
 	const visitorByCity = await db
@@ -48,6 +50,7 @@ export const load = (async (event) => {
 			city: visitorSchema.city,
 		})
 		.from(visitorSchema)
+		.where(eq(visitorSchema.shortenerId, shortener.id))
 		.groupBy(
 			visitorSchema.country,
 			visitorSchema.countryCode,
