@@ -37,6 +37,7 @@ export const POST: RequestHandler = async (event) => {
 			httpOnly: true,
 			sameSite: 'strict',
 			path: '/',
+			expires: expiresAt,
 		})
 		return new Response(JSON.stringify({ success: true }))
 	} else {
