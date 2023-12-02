@@ -36,10 +36,10 @@
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item
 				on:click={() => {
-					goto('/profile')
+					goto('/settings')
 					onClick()
 				}}>
-				Profile
+				Settings
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item
