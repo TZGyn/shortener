@@ -17,6 +17,7 @@ export const shortener = pgTable('shortener', {
 		.defaultNow()
 		.notNull(),
 	userId: integer('user_id').notNull(),
+	projectId: integer('project_id'),
 })
 
 export const shortenerRelations = relations(
@@ -26,7 +27,29 @@ export const shortenerRelations = relations(
 			fields: [shortener.userId],
 			references: [user.id],
 		}),
+		project: one(project, {
+			fields: [shortener.projectId],
+			references: [project.id],
+		}),
 		visitor: many(visitor),
+	}),
+)
+
+export const project = pgTable('project', {
+	id: serial('id').primaryKey().notNull(),
+	uuid: uuid('uuid').defaultRandom(),
+	name: varchar('name', { length: 255 }).notNull(),
+	userId: integer('user_id').notNull(),
+})
+
+export const projectRelations = relations(
+	project,
+	({ one, many }) => ({
+		user: one(user, {
+			fields: [project.userId],
+			references: [user.id],
+		}),
+		shortener: many(shortener),
 	}),
 )
 

@@ -8,7 +8,8 @@ export const load = (async (event) => {
 		with: {
 			visitor: true,
 		},
-		where: (shortener, { eq }) => eq(shortener.userId, user.id),
+		where: (shortener, { eq, and, isNull }) =>
+			and(eq(shortener.userId, user.id), isNull(shortener.projectId)),
 	})
 
 	return { shorteners }
