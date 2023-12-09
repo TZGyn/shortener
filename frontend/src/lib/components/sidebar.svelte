@@ -9,6 +9,12 @@
 	export let email: string = ''
 	let className: string | undefined = undefined
 	export { className as class }
+
+	const routes = [
+		{ href: '/', name: 'Home' },
+		{ href: '/links', name: 'Links' },
+		{ href: '/projects', name: 'Projects' },
+	] as const
 </script>
 
 <div
@@ -27,14 +33,12 @@
 		<Separator />
 
 		<div class="flex flex-col gap-4 p-4">
-			<Button
-				variant="ghost"
-				href="/links"
-				class="justify-start text-base">Links</Button>
-			<Button
-				variant="ghost"
-				href="/projects"
-				class="justify-start text-base ">Projects</Button>
+			{#each routes as route}
+				<Button
+					variant="ghost"
+					href={route.href}
+					class="justify-start text-base">{route.name}</Button>
+			{/each}
 		</div>
 	</div>
 </div>

@@ -36,6 +36,11 @@
 						<Button
 							on:click={closeSheet}
 							variant="ghost"
+							href="/"
+							class="justify-start text-base">Home</Button>
+						<Button
+							on:click={closeSheet}
+							variant="ghost"
 							href="/links"
 							class="justify-start text-base">Links</Button>
 						<Button
