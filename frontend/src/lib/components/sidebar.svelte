@@ -13,18 +13,20 @@
 
 <div
 	class={cn(
-		'flex h-full min-w-[350px] flex-col justify-between border-r p-4',
+		'flex h-full min-w-[350px] flex-col justify-between border-r',
 		className,
 	)}>
 	<div>
-		<div class="flex items-center justify-between pb-16">
-			<div class="text-xl font-bold">
-				<a href="/">Shortener</a>
+		<div class="flex h-20 items-center justify-between p-4">
+			<div class="flex items-center justify-start gap-4">
+				<UserIcon {email} />
+				{email}
 			</div>
 			<ThemeToggle />
 		</div>
+		<Separator />
 
-		<div class="flex flex-col gap-4">
+		<div class="flex flex-col gap-4 p-4">
 			<Button
 				variant="ghost"
 				href="/links"
@@ -33,13 +35,6 @@
 				variant="ghost"
 				href="/projects"
 				class="justify-start text-base ">Projects</Button>
-		</div>
-	</div>
-
-	<div class="flex flex-col gap-4">
-		<Separator />
-		<div class="flex items-center justify-between">
-			<UserIcon {email} />
 		</div>
 	</div>
 </div>

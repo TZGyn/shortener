@@ -21,7 +21,7 @@
 	<div
 		class="flex h-full max-h-screen w-full flex-col overflow-hidden">
 		<div
-			class="block w-full border-b bg-background px-4 py-2 lg:hidden">
+			class="bg-background block w-full border-b px-4 py-2 lg:hidden">
 			<Sheet.Root bind:open={sheetOpen}>
 				<Sheet.Trigger asChild let:builder>
 					<Button builders={[builder]} variant="ghost" class="p-2">
@@ -58,7 +58,7 @@
 				</Sheet.Content>
 			</Sheet.Root>
 		</div>
-		<div class="flex h-full w-full flex-col overflow-hidden p-4">
+		<div class="flex h-full w-full flex-col overflow-hidden">
 			<slot />
 		</div>
 	</div>

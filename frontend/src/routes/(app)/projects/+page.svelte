@@ -42,8 +42,8 @@
 	}
 </script>
 
-<div class="flex justify-between p-8">
-	<div class="text-4xl font-bold">Projects</div>
+<div class="flex h-20 items-center justify-between p-4">
+	<div class="text-3xl font-bold">Projects</div>
 	<Dialog.Root bind:open={dialogOpen}>
 		<Dialog.Trigger
 			class={buttonVariants({ variant: 'default' }) + 'flex gap-2'}>
