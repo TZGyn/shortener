@@ -27,7 +27,9 @@ export const load = (async (event) => {
 				),
 		})
 
-		return { project, shorteners }
+		const projects = await db.query.project.findMany()
+
+		return { project, shorteners, projects }
 	} catch (error) {
 		throw redirect(303, '/projects')
 	}

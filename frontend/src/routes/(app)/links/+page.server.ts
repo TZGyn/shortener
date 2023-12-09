@@ -7,10 +7,13 @@ export const load = (async (event) => {
 	const shorteners = await db.query.shortener.findMany({
 		with: {
 			visitor: true,
+			project: true,
 		},
 		where: (shortener, { eq, and, isNull }) =>
 			and(eq(shortener.userId, user.id), isNull(shortener.projectId)),
 	})
 
-	return { shorteners }
+	const projects = await db.query.project.findMany()
+
+	return { shorteners, projects }
 }) satisfies PageServerLoad

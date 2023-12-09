@@ -5,6 +5,7 @@
 	import * as Dialog from '$lib/components/ui/dialog'
 	import * as Card from '$lib/components/ui/card'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+	import * as Select from '$lib/components/ui/select'
 	import { Input } from '$lib/components/ui/input'
 	import { Label } from '$lib/components/ui/label'
 	import {
@@ -43,12 +44,14 @@
 	let editDialogOpen = false
 	let editShortenerCode = ''
 	let editShortenerLink = ''
+	let editShortenerCategory: any = undefined
 	let isEditLoading = false
 
 	const openEditDialog = (code: string, link: string) => {
 		editDialogOpen = true
 		editShortenerCode = code
 		editShortenerLink = link
+		editShortenerCategory = undefined
 	}
 
 	const editShortener = async (code: string, link: string) => {
@@ -57,6 +60,9 @@
 			method: 'put',
 			body: JSON.stringify({
 				link,
+				projectId: editShortenerCategory
+					? editShortenerCategory.value
+					: undefined,
 			}),
 		})
 		await invalidateAll()
@@ -183,6 +189,22 @@
 					id="name"
 					bind:value={editShortenerLink}
 					class="col-span-3" />
+			</div>
+			<div class="grid grid-cols-4 items-center gap-4">
+				<Label class="text-right">Category</Label>
+				<Select.Root
+					bind:selected={editShortenerCategory}
+					multiple={false}>
+					<Select.Trigger class="col-span-3">
+						<Select.Value placeholder="Select a Category" />
+					</Select.Trigger>
+					<Select.Content>
+						{#each data.projects as project}
+							<Select.Item value={project.id}
+								>{project.name}</Select.Item>
+						{/each}
+					</Select.Content>
+				</Select.Root>
 			</div>
 		</div>
 		<Dialog.Footer>

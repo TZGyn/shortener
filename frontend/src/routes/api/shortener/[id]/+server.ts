@@ -31,6 +31,7 @@ export const GET: RequestHandler = async (event) => {
 
 const updateShortenerSchema = z.object({
 	link: z.string().url(),
+	projectId: z.number().nullable(),
 })
 
 export const PUT: RequestHandler = async (event) => {
@@ -52,7 +53,10 @@ export const PUT: RequestHandler = async (event) => {
 
 	await db
 		.update(shortenerSchema)
-		.set({ link: updateShortener.data.link })
+		.set({
+			link: updateShortener.data.link,
+			projectId: updateShortener.data.projectId ?? undefined,
+		})
 		.where(
 			and(
 				eq(shortenerSchema.code, shortenerId),
