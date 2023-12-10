@@ -1,11 +1,19 @@
 import { redirect } from '@sveltejs/kit'
 import type { PageServerLoad, Actions } from './$types'
 import { db } from '$lib/db'
+import { sql } from 'drizzle-orm'
 
 export const load = (async (event) => {
 	const user = event.locals.userObject
 
 	const projects = await db.query.project.findMany({
+		with: {
+			shortener: {
+				with: {
+					visitor: true,
+				},
+			},
+		},
 		where: (project, { eq }) => eq(project.userId, user.id),
 	})
 
