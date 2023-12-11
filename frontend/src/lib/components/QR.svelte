@@ -7,7 +7,7 @@
 	export let errorCorrection = 'L'
 	export let background = '#fff'
 	export let color = '#000'
-	export let size = '300'
+	export let size = '500'
 	export let value = ''
 	export let padding = 10
 	export let className = 'qrcode'

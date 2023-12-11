@@ -244,6 +244,8 @@
 				Use this QR code to share the shortener.
 			</Dialog.Description>
 		</Dialog.Header>
-		<Qr value={data.shortener_url + '/' + qrCode} />
+		<div class="flex h-64 justify-center">
+			<Qr value={data.shortener_url + '/' + qrCode} />
+		</div>
 	</Dialog.Content>
 </Dialog.Root>
