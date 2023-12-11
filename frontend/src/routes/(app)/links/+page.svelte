@@ -14,8 +14,10 @@
 		Loader2,
 		MoreVertical,
 		PlusCircle,
+		QrCode,
 	} from 'lucide-svelte'
 	import { goto, invalidateAll } from '$app/navigation'
+	import Qr from '$lib/components/QR.svelte'
 
 	export let data: PageData
 
@@ -75,6 +77,14 @@
 			method: 'delete',
 		})
 		await invalidateAll()
+	}
+
+	let qrDialogOpen = false
+	let qrCode = ''
+
+	const openQRDialog = (code: string) => {
+		qrCode = code
+		qrDialogOpen = true
 	}
 </script>
 
@@ -144,6 +154,11 @@
 								<div>
 									{shortener.visitor.length} visits
 								</div>
+							</Button>
+							<Button
+								class="bg-secondary flex h-8 items-center justify-center gap-1 rounded text-sm"
+								on:click={() => openQRDialog(shortener.code)}>
+								<QrCode size={20} />
 							</Button>
 						</div>
 						<DropdownMenu.Root>
@@ -218,5 +233,17 @@
 				Save
 			</Button>
 		</Dialog.Footer>
+	</Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root bind:open={qrDialogOpen}>
+	<Dialog.Content class="sm:max-w-[425px]">
+		<Dialog.Header>
+			<Dialog.Title>Shortener QR</Dialog.Title>
+			<Dialog.Description>
+				Use this QR code to share the shortener.
+			</Dialog.Description>
+		</Dialog.Header>
+		<Qr value={qrCode} />
 	</Dialog.Content>
 </Dialog.Root>
