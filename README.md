@@ -1,7 +1,7 @@
 # Link Shortener
 
 Link Shortener is a site to manage your short urls while providing analytics to the url traffics.
-<a src="https://shortener.tzgyn.com">Demo Here</a>
+[Demo Here](https://shortener.tzgyn.com)
 
 ### One Click Deploy on Railway
 
