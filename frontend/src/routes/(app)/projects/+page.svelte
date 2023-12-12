@@ -82,7 +82,7 @@
 {#if data.projects.length > 0}
 	<div class="flex flex-col gap-4 overflow-scroll p-4">
 		{#each data.projects as project}
-			<a href={'/projects/' + project.uuid}>
+			<a href={'/links?project=' + project.uuid}>
 				<Card.Root
 					class="hover:bg-secondary w-full max-w-[500px] hover:cursor-pointer">
 					<Card.Header>
