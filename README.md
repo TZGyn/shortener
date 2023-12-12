@@ -5,7 +5,7 @@ Link Shortener is a site to manage your short urls while providing analytics to 
 
 ### One Click Deploy on Railway
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/VKReDm?referralCode=bSruGU)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/bWnD5H?referralCode=bSruGU)
 
 ## Development
 
