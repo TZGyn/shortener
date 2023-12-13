@@ -24,7 +24,9 @@
 			<div class="flex w-full flex-col items-stretch gap-2">
 				{#each data.projects as project}
 					<div class="flex w-full items-center justify-between gap-2">
-						<Button href={'/projects/' + project.uuid} class="w-3/4">
+						<Button
+							href={'/links?project=' + project.uuid}
+							class="w-3/4">
 							{project.name}
 						</Button>
 						<div class="flex gap-2">
