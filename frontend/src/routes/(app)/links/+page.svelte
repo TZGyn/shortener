@@ -18,8 +18,31 @@
 	} from 'lucide-svelte'
 	import { goto, invalidateAll } from '$app/navigation'
 	import Qr from '$lib/components/QR.svelte'
+	import { page } from '$app/stores'
 
 	export let data: PageData
+
+	let selectedProject: any = undefined
+
+	$: updateSelectedProject(selectedProject)
+
+	const updateSelectedProject = async (selectedProject: any) => {
+		let project_uuid = null
+
+		if (selectedProject && selectedProject.value) {
+			project_uuid = selectedProject.value
+			const url = new URLSearchParams()
+			url.set('project', `${project_uuid}`)
+			await goto(`?${url}`, { replaceState: true })
+			return
+		}
+
+		if ($page.url.searchParams.has('project')) {
+			const url = new URLSearchParams()
+			url.delete('project')
+			await goto(`?${url}`, { replaceState: true })
+		}
+	}
 
 	let dialogOpen = false
 	let inputLink = ''
@@ -124,6 +147,25 @@
 	</Dialog.Root>
 </div>
 <Separator />
+
+<div class="p-4">
+	<Select.Root portal={null} bind:selected={selectedProject}>
+		<Select.Trigger class="w-[180px]">
+			<Select.Value placeholder="Select a project" />
+		</Select.Trigger>
+		<Select.Content>
+			<Select.Group>
+				<Select.Label>Project</Select.Label>
+				<Select.Item value={null} label={'None'}>None</Select.Item>
+				{#each data.projects as project}
+					<Select.Item value={project.uuid} label={project.name}
+						>{project.name}</Select.Item>
+				{/each}
+			</Select.Group>
+		</Select.Content>
+		<Select.Input name="favoriteFruit" />
+	</Select.Root>
+</div>
 
 {#if data.shorteners.length > 0}
 	<div class="flex flex-col gap-4 overflow-scroll p-4">
