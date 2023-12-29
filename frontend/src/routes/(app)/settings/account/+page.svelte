@@ -14,6 +14,7 @@
 		email: data.user.email,
 		old_password: '',
 		new_password: '',
+		confirm_password: '',
 	}
 
 	let isLoading = false
@@ -84,6 +85,17 @@
 			id="new_password"
 			bind:value={account_data.new_password} />
 		<p class="text-muted-foreground text-sm">Change your password.</p>
+	</div>
+
+	<div class="flex w-full max-w-sm flex-col gap-2">
+		<Label for="old_password">Confirm Password</Label>
+		<Input
+			type="password"
+			id="new_password"
+			bind:value={account_data.confirm_password} />
+		<p class="text-muted-foreground text-sm">
+			Confirm your new password.
+		</p>
 	</div>
 
 	<Button disabled={isLoading} on:click={submit} class="flex gap-2">
