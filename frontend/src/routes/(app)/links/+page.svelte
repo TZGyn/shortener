@@ -18,31 +18,10 @@
 	} from 'lucide-svelte'
 	import { goto, invalidateAll } from '$app/navigation'
 	import Qr from '$lib/components/QR.svelte'
-	import { page } from '$app/stores'
 
 	export let data: PageData
 
 	let selectedProject: any = undefined
-
-	$: updateSelectedProject(selectedProject)
-
-	const updateSelectedProject = async (selectedProject: any) => {
-		let project_uuid = null
-
-		if (selectedProject && selectedProject.value) {
-			project_uuid = selectedProject.value
-			const url = new URLSearchParams()
-			url.set('project', `${project_uuid}`)
-			await goto(`?${url}`, { replaceState: true })
-			return
-		}
-
-		if ($page.url.searchParams.has('project')) {
-			const url = new URLSearchParams()
-			url.delete('project')
-			await goto(`?${url}`, { replaceState: true })
-		}
-	}
 
 	let dialogOpen = false
 	let inputLink = ''
@@ -156,10 +135,14 @@
 		<Select.Content>
 			<Select.Group>
 				<Select.Label>Project</Select.Label>
-				<Select.Item value={null} label={'None'}>None</Select.Item>
+				<a href={`/links`}>
+					<Select.Item value={null} label={'None'}>None</Select.Item>
+				</a>
 				{#each data.projects as project}
-					<Select.Item value={project.uuid} label={project.name}
-						>{project.name}</Select.Item>
+					<a href={`/links?project=${project.uuid}`}>
+						<Select.Item value={project.uuid} label={project.name}
+							>{project.name}</Select.Item>
+					</a>
 				{/each}
 			</Select.Group>
 		</Select.Content>
