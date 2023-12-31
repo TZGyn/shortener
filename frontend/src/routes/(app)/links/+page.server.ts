@@ -7,6 +7,10 @@ export const load = (async (event) => {
 	const project_uuid = event.url.searchParams.get('project')
 
 	let project_id: number | undefined
+	let selected_project: { value: null | string; label: string } = {
+		value: null,
+		label: 'None',
+	}
 
 	if (project_uuid) {
 		try {
@@ -14,6 +18,10 @@ export const load = (async (event) => {
 				where: (project, { eq }) => eq(project.uuid, project_uuid),
 			})
 			project_id = project?.id
+			if (project?.name) {
+				selected_project.label = project.name
+				selected_project.value = project.uuid
+			}
 		} catch (error) {
 			project_id = undefined
 		}
@@ -37,5 +45,5 @@ export const load = (async (event) => {
 		where: (project, { eq }) => eq(project.userId, user.id),
 	})
 
-	return { shorteners, projects }
+	return { shorteners, projects, selected_project }
 }) satisfies PageServerLoad

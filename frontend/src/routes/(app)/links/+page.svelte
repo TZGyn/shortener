@@ -21,7 +21,7 @@
 
 	export let data: PageData
 
-	let selectedProject: any = undefined
+	let selectedProject: any = data.selected_project
 
 	let dialogOpen = false
 	let inputLink = ''
