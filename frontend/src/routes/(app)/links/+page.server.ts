@@ -35,9 +35,7 @@ export const load = (async (event) => {
 		where: (shortener, { eq, and, isNull }) =>
 			and(
 				eq(shortener.userId, user.id),
-				project_id
-					? eq(shortener.projectId, project_id)
-					: isNull(shortener.projectId),
+				project_id ? eq(shortener.projectId, project_id) : undefined,
 			),
 	})
 

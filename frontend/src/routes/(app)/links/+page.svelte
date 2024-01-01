@@ -8,6 +8,7 @@
 	import * as Select from '$lib/components/ui/select'
 	import { Input } from '$lib/components/ui/input'
 	import { Label } from '$lib/components/ui/label'
+	import { Badge } from '$lib/components/ui/badge'
 	import {
 		BarChart,
 		ExternalLink,
@@ -155,17 +156,23 @@
 		{#each data.shorteners as shortener}
 			<Card.Root class="w-full max-w-[500px]">
 				<Card.Header>
-					<Card.Title class="flex items-center gap-2">
-						<a
-							href={'https://' +
-								data.shortener_url +
-								'/' +
-								shortener.code}
-							target="_blank"
-							class="hover:underline">
-							{data.shortener_url + '/' + shortener.code}
-						</a>
-						<ExternalLink size={16} />
+					<Card.Title class="flex items-center justify-between gap-2">
+						<div class="flex items-center gap-2">
+							<a
+								href={'https://' +
+									data.shortener_url +
+									'/' +
+									shortener.code}
+								target="_blank"
+								class="hover:underline">
+								{data.shortener_url + '/' + shortener.code}
+							</a>
+							<ExternalLink size={16} />
+						</div>
+						<Badge variant="default"
+							>{shortener.project
+								? shortener.project.name
+								: 'Uncategorized'}</Badge>
 					</Card.Title>
 					<Card.Description>{shortener.link}</Card.Description>
 				</Card.Header>
