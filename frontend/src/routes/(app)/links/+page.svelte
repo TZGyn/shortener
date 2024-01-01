@@ -277,6 +277,7 @@
 			</Dialog.Description>
 		</Dialog.Header>
 		<div class="flex h-full flex-col items-center gap-4">
+			{data.shortener_url + '/' + qrCode}
 			<Qr value={data.shortener_url + '/' + qrCode} />
 		</div>
 	</Dialog.Content>
