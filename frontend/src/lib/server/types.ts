@@ -6,3 +6,9 @@ export const userUpdateSchema = z.object({
 	new_password: z.string(),
 	confirm_password: z.string(),
 })
+
+export const userCreateSchema = z.object({
+	email: z.string().email(),
+	password: z.string(),
+	password_confirm: z.string(),
+})

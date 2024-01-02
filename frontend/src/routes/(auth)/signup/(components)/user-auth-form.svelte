@@ -1,32 +1,67 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form'
-	import { formSchema, type FormSchema } from '../schema'
-	import type { SuperValidated } from 'sveltekit-superforms'
+	import Button from '$lib/components/ui/button/button.svelte'
+	import Input from '$lib/components/ui/input/input.svelte'
+	import Label from '$lib/components/ui/label/label.svelte'
+	import { Loader2 } from 'lucide-svelte'
+	import { goto } from '$app/navigation'
 
-	export let form: SuperValidated<FormSchema>
+	let isLoading = false
+
+	let email = ''
+	let password = ''
+	let password_confirm = ''
+
+	const userSignUp = async () => {
+		isLoading = true
+		const response = await fetch('/api/signup', {
+			method: 'post',
+			body: JSON.stringify({
+				email,
+				password,
+				password_confirm,
+			}),
+		})
+
+		const data = await response.json()
+		isLoading = false
+		if (data.success) {
+			goto('/')
+		}
+	}
 </script>
 
-<Form.Root method="POST" {form} schema={formSchema} let:config>
-	<Form.Field {config} name="email">
-		<Form.Item>
-			<Form.Label>Email</Form.Label>
-			<Form.Input placeholder="name@example.com" />
-			<Form.Validation />
-		</Form.Item>
-	</Form.Field>
-	<Form.Field {config} name="password">
-		<Form.Item>
-			<Form.Label>Password</Form.Label>
-			<Form.Input type="password" placeholder="••••••••" />
-			<Form.Validation />
-		</Form.Item>
-	</Form.Field>
-	<Form.Field {config} name="password_confirm">
-		<Form.Item>
-			<Form.Label>Password Confirm</Form.Label>
-			<Form.Input type="password" placeholder="••••••••" />
-			<Form.Validation />
-		</Form.Item>
-	</Form.Field>
-	<Form.Button class="w-full">Sign Up</Form.Button>
-</Form.Root>
+<div class="flex flex-col gap-4">
+	<div class="flex w-full max-w-sm flex-col gap-2">
+		<Label for="email">Email</Label>
+		<Input
+			type="email"
+			id="email"
+			placeholder="name@example.com"
+			bind:value={email} />
+	</div>
+	<div class="flex w-full max-w-sm flex-col gap-2">
+		<Label for="password">Password</Label>
+		<Input
+			type="password"
+			id="password"
+			placeholder="••••••••"
+			bind:value={password} />
+	</div>
+	<div class="flex w-full max-w-sm flex-col gap-2">
+		<Label for="password_confirm">Password Confirm</Label>
+		<Input
+			type="password"
+			id="password_confirm"
+			placeholder="••••••••"
+			bind:value={password_confirm} />
+	</div>
+	<Button
+		disabled={isLoading}
+		on:click={userSignUp}
+		class="flex items-center gap-2">
+		{#if isLoading}
+			<Loader2 class="animate-spin" />
+		{/if}
+		Sign Up
+	</Button>
+</div>
