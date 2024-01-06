@@ -41,6 +41,6 @@ export const POST: RequestHandler = async (event) => {
 		})
 		return new Response(JSON.stringify({ success: true }))
 	} else {
-		return new Response(JSON.stringify({ hello: 'hello' }))
+		return new Response(JSON.stringify({ success: false }))
 	}
 }
