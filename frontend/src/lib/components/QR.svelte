@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte'
 	import { default as QrCode } from 'qrious'
 	import Button from './ui/button/button.svelte'
+	import { toast } from 'svelte-sonner'
 
 	const QRcode = new QrCode()
 
@@ -29,6 +30,7 @@
 					'image/png': imageBlob,
 				}),
 			])
+			toast.success('Copied Image To Clipboard')
 		} catch (error) {
 			console.error(error)
 		}
