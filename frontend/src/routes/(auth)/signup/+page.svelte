@@ -1,9 +1,6 @@
 <script lang="ts">
-	import type { PageData } from './$types'
 	import ThemeToggle from '$lib/components/theme-toggle.svelte'
 	import UserAuthForm from './(components)/user-auth-form.svelte'
-
-	export let data: PageData
 </script>
 
 <div
@@ -12,9 +9,9 @@
 		<ThemeToggle />
 	</div>
 	<div
-		class="relative hidden h-full flex-col bg-primary-foreground p-10 text-white dark:border-r lg:flex">
+		class="bg-primary-foreground relative hidden h-full flex-col p-10 text-white dark:border-r lg:flex">
 		<div
-			class="relative z-20 flex items-center text-lg font-medium text-primary">
+			class="text-primary relative z-20 flex items-center text-lg font-medium">
 			Shortener
 		</div>
 	</div>
@@ -25,16 +22,16 @@
 				<h1 class="text-2xl font-semibold tracking-tight">
 					Create an account
 				</h1>
-				<p class="text-sm text-muted-foreground">
+				<p class="text-muted-foreground text-sm">
 					Enter your email below to create your account
 				</p>
 			</div>
-			<UserAuthForm form={data.form} />
-			<p class="px-8 text-center text-sm text-muted-foreground">
+			<UserAuthForm />
+			<p class="text-muted-foreground px-8 text-center text-sm">
 				Already Have An Account? Login{' '}
 				<a
 					href="/login"
-					class="underline underline-offset-4 hover:text-primary">
+					class="hover:text-primary underline underline-offset-4">
 					Here
 				</a>{' '}
 			</p>
