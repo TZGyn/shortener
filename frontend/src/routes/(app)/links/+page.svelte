@@ -91,7 +91,7 @@
 	}
 </script>
 
-<div class="flex h-20 items-center justify-between p-4">
+<div class="flex min-h-[80px] items-center justify-between p-4">
 	<div class="text-3xl font-bold">Links</div>
 	<Dialog.Root bind:open={dialogOpen}>
 		<Dialog.Trigger
@@ -277,7 +277,9 @@
 			</Dialog.Description>
 		</Dialog.Header>
 		<div class="flex h-full flex-col items-center gap-4">
-			{data.shortener_url + '/' + qrCode}
+			<Badge variant="secondary">
+				{data.shortener_url + '/' + qrCode}
+			</Badge>
 			<Qr value={data.shortener_url + '/' + qrCode} />
 		</div>
 	</Dialog.Content>

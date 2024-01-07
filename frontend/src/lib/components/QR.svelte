@@ -65,4 +65,4 @@
 </script>
 
 <img src={image} alt={value} class={className} />
-<Button on:click={copyImageToClipboard}>Copy To Clipboard</Button>
+<Button on:click={copyImageToClipboard}>Copy Image</Button>
