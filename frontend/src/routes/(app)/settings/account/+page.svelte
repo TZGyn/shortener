@@ -6,6 +6,7 @@
 	import Button from '$lib/components/ui/button/button.svelte'
 	import { Loader2 } from 'lucide-svelte'
 	import { invalidateAll } from '$app/navigation'
+	import { toast } from 'svelte-sonner'
 
 	export let data: PageData
 
@@ -30,6 +31,7 @@
 		const body = await response.json()
 
 		if (body.success) {
+			toast.success('Account Details Updated')
 			await invalidateAll()
 		}
 
