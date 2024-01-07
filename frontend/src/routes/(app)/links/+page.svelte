@@ -19,6 +19,7 @@
 	} from 'lucide-svelte'
 	import { goto, invalidateAll } from '$app/navigation'
 	import Qr from '$lib/components/QR.svelte'
+	import { toast } from 'svelte-sonner'
 
 	export let data: PageData
 
@@ -41,6 +42,7 @@
 		isLoading = false
 
 		if (responseData.success) {
+			toast.success('Successfully Created Shortener')
 			await invalidateAll()
 			dialogOpen = false
 		}
