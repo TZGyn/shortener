@@ -18,7 +18,6 @@
 
 	const copyImageToClipboard = async () => {
 		if (!image) return
-		console.log(image)
 
 		const imageData = await fetch(image)
 
@@ -32,7 +31,9 @@
 			])
 			toast.success('Copied Image To Clipboard')
 		} catch (error) {
-			console.error(error)
+			toast.error(
+				'Unable to copy item to clipboard. If you are using firefox, you can change the setting dom.events.asyncclipboard.clipboarditem in about:config to true',
+			)
 		}
 	}
 
