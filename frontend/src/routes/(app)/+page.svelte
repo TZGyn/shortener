@@ -2,19 +2,18 @@
 	import type { PageData } from './$types'
 	import * as Card from '$lib/components/ui/card'
 	import { Button } from '$lib/components/ui/button'
+	import { Separator } from '$lib/components/ui/separator'
 	import { BarChart } from 'lucide-svelte'
 
 	export let data: PageData
 </script>
 
+<div class="flex min-h-[80px] items-center justify-between p-4">
+	<div class="text-3xl font-bold">Dashboard</div>
+</div>
+<Separator />
+
 <div class="flex flex-wrap gap-4 p-4">
-	<div class="w-full">
-		<h1 class="text-xl">Welcome to SvelteKit</h1>
-		<p>
-			Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read
-			the documentation
-		</p>
-	</div>
 	<Card.Root class="w-[500px]">
 		<Card.Header>
 			<Card.Title>Projects</Card.Title>

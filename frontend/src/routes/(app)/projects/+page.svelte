@@ -42,7 +42,7 @@
 	}
 </script>
 
-<div class="flex h-20 items-center justify-between p-4">
+<div class="flex min-h-[80px] items-center justify-between p-4">
 	<div class="text-3xl font-bold">Projects</div>
 	<Dialog.Root bind:open={dialogOpen}>
 		<Dialog.Trigger
