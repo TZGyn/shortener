@@ -4,12 +4,12 @@
 
 	const sidebarNavItems = [
 		{
-			title: 'Profile',
-			href: '/settings',
-		},
-		{
 			title: 'Account',
 			href: '/settings/account',
+		},
+		{
+			title: 'QR',
+			href: '/settings/qr',
 		},
 	]
 </script>

@@ -12,3 +12,8 @@ export const userCreateSchema = z.object({
 	password: z.string(),
 	password_confirm: z.string(),
 })
+
+export const qrUpdateSchema = z.object({
+	qr_background: z.string().max(7),
+	qr_foreground: z.string().max(7),
+})

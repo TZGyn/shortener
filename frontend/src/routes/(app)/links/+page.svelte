@@ -282,7 +282,10 @@
 			<Badge variant="secondary">
 				{data.shortener_url + '/' + qrCode}
 			</Badge>
-			<Qr value={data.shortener_url + '/' + qrCode} />
+			<Qr
+				value={data.shortener_url + '/' + qrCode}
+				background={data.settings?.qr_background || '#fff'}
+				color={data.settings?.qr_foreground || '#000'} />
 		</div>
 	</Dialog.Content>
 </Dialog.Root>

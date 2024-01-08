@@ -64,6 +64,8 @@ export const user = pgTable('user', {
 		.notNull(),
 })
 
+export type User = InferSelectModel<typeof user>
+
 export const visitor = pgTable('visitor', {
 	id: serial('id').primaryKey().notNull(),
 	shortenerId: integer('shortener_id').notNull(),
@@ -99,4 +101,15 @@ export const sessionRelations = relations(session, ({ one }) => ({
 	}),
 }))
 
-export type User = InferSelectModel<typeof user>
+export const setting = pgTable('setting', {
+	userId: integer('user_id').notNull(),
+	qr_background: varchar('qr_background', { length: 7 }),
+	qr_foreground: varchar('qr_foreground', { length: 7 }),
+})
+
+export const settingRelations = relations(setting, ({ one }) => ({
+	user: one(user, {
+		fields: [setting.userId],
+		references: [user.id],
+	}),
+}))

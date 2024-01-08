@@ -43,5 +43,9 @@ export const load = (async (event) => {
 		where: (project, { eq }) => eq(project.userId, user.id),
 	})
 
-	return { shorteners, projects, selected_project }
+	const settings = await db.query.setting.findFirst({
+		where: (settings, { eq }) => eq(settings.userId, user.id),
+	})
+
+	return { shorteners, projects, selected_project, settings }
 }) satisfies PageServerLoad
