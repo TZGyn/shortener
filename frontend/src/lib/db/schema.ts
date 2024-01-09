@@ -77,6 +77,9 @@ export const visitor = pgTable('visitor', {
 	}).notNull(),
 	country: varchar('country', { length: 255 }).notNull(),
 	city: varchar('city', { length: 255 }).notNull(),
+	deviceType: varchar('device_type', { length: 255 }),
+	deviceVendor: varchar('device_vendor', { length: 255 }),
+	os: varchar('os', { length: 255 }),
 })
 
 export const visitorRelations = relations(visitor, ({ one }) => ({

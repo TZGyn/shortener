@@ -31,6 +31,9 @@ export interface VisitorTable {
 	country: string
 	country_code: string
 	city: string
+	device_type: string | null
+	device_vendor: string | null
+	os: string | null
 	created_at: ColumnType<Date, string | undefined, never>
 }
 

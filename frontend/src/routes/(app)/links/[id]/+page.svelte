@@ -6,6 +6,12 @@
 	import type { ApexOptions } from 'apexcharts'
 	import { mode } from 'mode-watcher'
 	import { onMount } from 'svelte'
+	import {
+		ShieldQuestion,
+		Smartphone,
+		Tablet,
+		TabletSmartphone,
+	} from 'lucide-svelte'
 
 	export let data: PageData
 
@@ -102,8 +108,8 @@
 </div>
 <Separator />
 
-<div class="flex flex-col gap-4 overflow-y-scroll p-4">
-	<Card.Root class="max-w-[700px]">
+<div class="flex flex-wrap gap-4 overflow-y-scroll p-4">
+	<Card.Root class="w-[700px]">
 		<Card.Header>
 			<Card.Title>Clicks</Card.Title>
 			<Card.Description
@@ -113,7 +119,7 @@
 			<div bind:this={container}></div>
 		</Card.Content>
 	</Card.Root>
-	<Card.Root class="max-w-[500px]">
+	<Card.Root class="min-h-[500px] w-[500px]">
 		<Tabs.Root value="country">
 			<Card.Header
 				class="flex w-full flex-row items-center justify-between space-y-0">
@@ -153,6 +159,75 @@
 							<div>{visitorByCity.count}</div>
 						</div>
 					{/each}
+				</Tabs.Content>
+			</Card.Content>
+		</Tabs.Root>
+	</Card.Root>
+	<Card.Root class="min-h-[500px] w-[500px]">
+		<Tabs.Root value="vendor">
+			<Card.Header
+				class="flex w-full flex-row items-center justify-between space-y-0">
+				<div>
+					<Card.Title>Devices</Card.Title>
+					<Card.Description>Devices by Country/City</Card.Description>
+				</div>
+				<Tabs.List>
+					<Tabs.Trigger value="vendor">Vendor</Tabs.Trigger>
+					<Tabs.Trigger value="type">Type</Tabs.Trigger>
+					<Tabs.Trigger value="os">OS</Tabs.Trigger>
+				</Tabs.List>
+			</Card.Header>
+			<Card.Content>
+				<Tabs.Content value="vendor">
+					<div class="flex flex-col gap-6">
+						{#each data.visitorByDeviceVendor as visitorByDeviceVendor}
+							<div class="flex items-center justify-between">
+								<div class="flex items-center gap-4">
+									<TabletSmartphone />
+									<div>
+										{visitorByDeviceVendor.vendor ??
+											'Undefined Vendor'}
+									</div>
+								</div>
+								<div>{visitorByDeviceVendor.count}</div>
+							</div>
+						{/each}
+					</div>
+				</Tabs.Content>
+				<Tabs.Content value="type">
+					<div class="flex flex-col gap-6">
+						{#each data.visitorByDeviceType as visitorByDeviceType}
+							<div class="flex items-center justify-between">
+								<div class="flex items-center gap-4">
+									{#if visitorByDeviceType.type === 'mobile'}
+										<Smartphone />
+									{:else if visitorByDeviceType.type === 'tablet'}
+										<Tablet />
+									{:else}
+										<TabletSmartphone />
+									{/if}
+									<div>
+										{visitorByDeviceType.type ??
+											'Undefined Device Type'}
+									</div>
+								</div>
+								<div>{visitorByDeviceType.count}</div>
+							</div>
+						{/each}
+					</div>
+				</Tabs.Content>
+				<Tabs.Content value="os">
+					<div class="flex flex-col gap-6">
+						{#each data.visitorByOS as visitorByOS}
+							<div class="flex items-center justify-between">
+								<div class="flex items-center gap-4">
+									<TabletSmartphone />
+									<div>{visitorByOS.os ?? 'Undefined OS'}</div>
+								</div>
+								<div>{visitorByOS.count}</div>
+							</div>
+						{/each}
+					</div>
 				</Tabs.Content>
 			</Card.Content>
 		</Tabs.Root>

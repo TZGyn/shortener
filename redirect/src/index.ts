@@ -1,6 +1,7 @@
 import { Elysia } from 'elysia'
 import { db } from './database'
 import { cors } from '@elysiajs/cors'
+import { UAParser } from 'ua-parser-js'
 
 const fallback_url = Bun.env.FALLBACK_URL ?? 'https://shortener.tzgyn.com'
 
@@ -18,6 +19,10 @@ app.get(
 			await fetch(`https://api.ipbase.com/v2/info?ip=${ip}`)
 		).json()
 
+		const user_agent = request.headers.get('User-Agent')
+
+		const ua_parser = new UAParser(user_agent ?? '')
+
 		try {
 			const shortener = await db
 				.selectFrom('shortener')
@@ -32,6 +37,9 @@ app.get(
 				country_code: geolocation.data.location.country
 					.alpha2 as string,
 				city: geolocation.data.location.city.name as string,
+				device_type: ua_parser.getDevice().type,
+				device_vendor: ua_parser.getDevice().vendor,
+				os: ua_parser.getOS().name,
 			}
 
 			await db.insertInto('visitor').values(visitor_data).execute()

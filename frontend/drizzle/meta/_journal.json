@@ -36,6 +36,13 @@
       "when": 1704723435338,
       "tag": "0004_cynical_the_hand",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1704837856450,
+      "tag": "0005_striped_prism",
+      "breakpoints": true
     }
   ]
 }

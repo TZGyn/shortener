@@ -154,7 +154,7 @@
 </div>
 
 {#if data.shorteners.length > 0}
-	<div class="flex flex-col gap-4 overflow-scroll p-4">
+	<div class="flex flex-wrap gap-4 overflow-scroll p-4">
 		{#each data.shorteners as shortener}
 			<Card.Root class="w-full max-w-[500px]">
 				<Card.Header>

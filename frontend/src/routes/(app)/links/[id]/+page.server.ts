@@ -1,7 +1,7 @@
 import { db } from '$lib/db'
 import { redirect } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
-import { eq, sql } from 'drizzle-orm'
+import { and, eq, sql } from 'drizzle-orm'
 import { visitor as visitorSchema } from '$lib/db/schema'
 
 export const load = (async (event) => {
@@ -23,13 +23,22 @@ export const load = (async (event) => {
 		throw redirect(303, '/')
 	}
 
+	const now = new Date()
+
 	const visitor = await db
 		.select({
 			count: sql<number>`cast(count(*) as int)`,
 			month: sql<number>`cast(to_char(${visitorSchema.createdAt}, 'MM') as int)`,
 		})
 		.from(visitorSchema)
-		.where(eq(visitorSchema.shortenerId, shortener.id))
+		.where(
+			and(
+				eq(visitorSchema.shortenerId, shortener.id),
+				sql`to_char(${
+					visitorSchema.createdAt
+				}, 'YYYY') = ${now.getFullYear()}`,
+			),
+		)
 		.groupBy(sql`to_char(${visitorSchema.createdAt}, 'MM')`)
 
 	const visitorByCountry = await db
@@ -57,5 +66,40 @@ export const load = (async (event) => {
 			visitorSchema.city,
 		)
 
-	return { shortener, visitor, visitorByCountry, visitorByCity }
+	const visitorByOS = await db
+		.select({
+			count: sql<number>`cast(count(*) as int)`,
+			os: visitorSchema.os,
+		})
+		.from(visitorSchema)
+		.where(eq(visitorSchema.shortenerId, shortener.id))
+		.groupBy(visitorSchema.os)
+
+	const visitorByDeviceVendor = await db
+		.select({
+			count: sql<number>`cast(count(*) as int)`,
+			vendor: visitorSchema.deviceVendor,
+		})
+		.from(visitorSchema)
+		.where(eq(visitorSchema.shortenerId, shortener.id))
+		.groupBy(visitorSchema.deviceVendor)
+
+	const visitorByDeviceType = await db
+		.select({
+			count: sql<number>`cast(count(*) as int)`,
+			type: visitorSchema.deviceType,
+		})
+		.from(visitorSchema)
+		.where(eq(visitorSchema.shortenerId, shortener.id))
+		.groupBy(visitorSchema.deviceType)
+
+	return {
+		shortener,
+		visitor,
+		visitorByCountry,
+		visitorByCity,
+		visitorByOS,
+		visitorByDeviceVendor,
+		visitorByDeviceType,
+	}
 }) satisfies PageServerLoad

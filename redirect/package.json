@@ -8,11 +8,13 @@
   "dependencies": {
     "@elysiajs/cors": "^0.6.0",
     "@types/pg": "^8.10.2",
+    "@types/ua-parser-js": "^0.7.39",
     "elysia": "latest",
     "kysely": "^0.26.3",
     "magic-regexp": "^0.7.0",
     "nanoid": "^5.0.1",
     "pg": "^8.11.3",
+    "ua-parser-js": "^1.0.37",
     "zod": "^3.22.2"
   },
   "devDependencies": {
