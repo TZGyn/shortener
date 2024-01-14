@@ -82,6 +82,4 @@
 			<Loader2 class="animate-spin" />
 		{/if}
 		Save</Button>
-
-	<Button on:click={test} class="flex gap-2">Test</Button>
 </div>
