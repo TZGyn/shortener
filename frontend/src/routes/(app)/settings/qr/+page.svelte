@@ -18,8 +18,6 @@
 		foreground_color: data.settings?.qr_foreground || '#000',
 	}
 
-	console.log(qr_data)
-
 	const submit = async () => {
 		isLoading = true
 
@@ -35,7 +33,7 @@
 			const body = await response.json()
 
 			if (body.success) {
-				toast.success('Account Details Updated')
+				toast.success('QR Details Updated')
 				await invalidateAll()
 			}
 		} catch (error) {
@@ -84,4 +82,6 @@
 			<Loader2 class="animate-spin" />
 		{/if}
 		Save</Button>
+
+	<Button on:click={test} class="flex gap-2">Test</Button>
 </div>
