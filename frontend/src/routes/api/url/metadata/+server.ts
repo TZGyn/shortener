@@ -15,6 +15,7 @@ export const GET: RequestHandler = async (event) => {
 			}),
 		)
 	}
+	// taken from https://github.com/dubinc/dub/blob/main/apps/web/app/api/edge/metatags/utils.ts
 	try {
 		const response = await fetch(url, {
 			headers: {
