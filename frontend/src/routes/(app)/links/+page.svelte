@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types'
 	import { Separator } from '$lib/components/ui/separator'
-	import { Button, buttonVariants } from '$lib/components/ui/button'
+	import { Button } from '$lib/components/ui/button'
 	import * as Dialog from '$lib/components/ui/dialog'
 	import * as Card from '$lib/components/ui/card'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
@@ -14,39 +14,17 @@
 		ExternalLink,
 		Loader2,
 		MoreVertical,
-		PlusCircle,
 		QrCode,
 	} from 'lucide-svelte'
 	import { goto, invalidateAll } from '$app/navigation'
 	import Qr from '$lib/components/QR.svelte'
-	import { toast } from 'svelte-sonner'
+	import AddShortenerDialog from './(component)/AddShortenerDialog.svelte'
 
 	export let data: PageData
 
 	let selectedProject: any = data.selected_project
 
 	let dialogOpen = false
-	let inputLink = ''
-	let isLoading = false
-
-	const addShortener = async () => {
-		isLoading = true
-
-		const response = await fetch('/api/shortener', {
-			method: 'post',
-			body: JSON.stringify({ link: inputLink }),
-		})
-
-		const responseData = await response.json()
-
-		isLoading = false
-
-		if (responseData.success) {
-			toast.success('Successfully Created Shortener')
-			await invalidateAll()
-			dialogOpen = false
-		}
-	}
 
 	let editDialogOpen = false
 	let editShortenerCode = ''
@@ -95,38 +73,7 @@
 
 <div class="flex min-h-[80px] items-center justify-between p-4">
 	<div class="text-3xl font-bold">Links</div>
-	<Dialog.Root bind:open={dialogOpen}>
-		<Dialog.Trigger
-			class={buttonVariants({ variant: 'default' }) + 'flex gap-2'}>
-			<PlusCircle />
-			Add Shortner
-		</Dialog.Trigger>
-		<Dialog.Content class="sm:max-w-[425px]">
-			<Dialog.Header>
-				<Dialog.Title>Add Shortener</Dialog.Title>
-				<Dialog.Description>
-					Create A New Shortner Here. Click Add To Save.
-				</Dialog.Description>
-			</Dialog.Header>
-			<div class="grid gap-4 py-4">
-				<div class="grid grid-cols-4 items-center gap-4">
-					<Label class="text-right">Link</Label>
-					<Input
-						id="name"
-						bind:value={inputLink}
-						class="col-span-3" />
-				</div>
-			</div>
-			<Dialog.Footer>
-				<Button on:click={addShortener} class="flex gap-2">
-					{#if isLoading}
-						<Loader2 class="animate-spin" />
-					{/if}
-					Add
-				</Button>
-			</Dialog.Footer>
-		</Dialog.Content>
-	</Dialog.Root>
+	<AddShortenerDialog {dialogOpen} />
 </div>
 <Separator />
 
