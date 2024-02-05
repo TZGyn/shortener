@@ -6,7 +6,6 @@
 	import { Menu } from 'lucide-svelte'
 	import UserIcon from '$lib/components/UserIcon.svelte'
 	import { Separator } from '$lib/components/ui/separator'
-	import { Toaster } from '$lib/components/ui/sonner'
 
 	export let data: PageData
 
@@ -17,7 +16,6 @@
 	}
 </script>
 
-<Toaster />
 <div class="flex h-screen w-full">
 	<Sidebar email={data.user.email} class="hidden lg:flex" />
 	<div
