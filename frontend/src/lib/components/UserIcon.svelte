@@ -6,6 +6,7 @@
 
 	import { Loader2, User } from 'lucide-svelte'
 	import { goto } from '$app/navigation'
+	import { toast } from 'svelte-sonner'
 
 	export let email: string = ''
 	export let onClick: () => void = () => {}
@@ -19,6 +20,7 @@
 
 		isLoading = false
 		dialogOpen = false
+		toast.success('Logged Out Successfully')
 		goto('/login')
 	}
 </script>
