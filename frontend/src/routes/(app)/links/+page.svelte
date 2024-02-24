@@ -6,6 +6,8 @@
 	import * as Card from '$lib/components/ui/card'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import * as Select from '$lib/components/ui/select'
+	import * as Command from '$lib/components/ui/command'
+	import * as Popover from '$lib/components/ui/popover'
 	import { Input } from '$lib/components/ui/input'
 	import { Label } from '$lib/components/ui/label'
 	import { Badge } from '$lib/components/ui/badge'
@@ -15,14 +17,15 @@
 		Loader2,
 		MoreVertical,
 		QrCode,
+		Check,
+		ChevronsUpDown,
 	} from 'lucide-svelte'
 	import { goto, invalidateAll } from '$app/navigation'
+	import { cn } from '$lib/utils'
 	import Qr from '$lib/components/QR.svelte'
 	import AddShortenerDialog from './(component)/AddShortenerDialog.svelte'
 
 	export let data: PageData
-
-	let selectedProject: any = data.selected_project
 
 	let dialogOpen = false
 
@@ -31,6 +34,11 @@
 	let editShortenerLink = ''
 	let editShortenerCategory: any = undefined
 	let isEditLoading = false
+
+	let open: boolean = false
+	let selectedProject: any = data.selected_project.label
+
+	$: selectedProject = data.selected_project.label
 
 	const openEditDialog = (code: string, link: string) => {
 		editDialogOpen = true
@@ -82,26 +90,51 @@
 <Separator />
 
 <div class="p-4">
-	<Select.Root portal={null} bind:selected={selectedProject}>
-		<Select.Trigger class="w-[180px]">
-			<Select.Value placeholder="Select a project" />
-		</Select.Trigger>
-		<Select.Content>
-			<Select.Group>
-				<Select.Label>Project</Select.Label>
-				<a href={`/links`}>
-					<Select.Item value={null} label={'None'}>None</Select.Item>
-				</a>
-				{#each data.projects as project}
-					<a href={`/links?project=${project.uuid}`}>
-						<Select.Item value={project.uuid} label={project.name}
-							>{project.name}</Select.Item>
+	<Popover.Root bind:open>
+		<Popover.Trigger asChild let:builder>
+			<Button
+				builders={[builder]}
+				variant="outline"
+				role="combobox"
+				aria-expanded={open}
+				class="w-[200px] justify-between">
+				{selectedProject}
+				<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+			</Button>
+		</Popover.Trigger>
+		<Popover.Content class="w-[200px] p-0">
+			<Command.Root>
+				<Command.Input placeholder="Search project..." />
+				<Command.Empty>No project found.</Command.Empty>
+				<Command.Group>
+					<a href={`/links`}>
+						<Command.Item onSelect={() => (open = false)}>
+							<Check
+								class={cn(
+									'mr-2 h-4 w-4',
+									data.selected_project.value !== null &&
+										'text-transparent',
+								)} />
+							All
+						</Command.Item>
 					</a>
-				{/each}
-			</Select.Group>
-		</Select.Content>
-		<Select.Input name="favoriteFruit" />
-	</Select.Root>
+					{#each data.projects as project}
+						<a href={`/links?project=${project.uuid}`}>
+							<Command.Item onSelect={() => (open = false)}>
+								<Check
+									class={cn(
+										'mr-2 h-4 w-4',
+										data.selected_project.value !== project.uuid &&
+											'text-transparent',
+									)} />
+								{project.name}
+							</Command.Item>
+						</a>
+					{/each}
+				</Command.Group>
+			</Command.Root>
+		</Popover.Content>
+	</Popover.Root>
 </div>
 
 {#if data.shorteners.length > 0}

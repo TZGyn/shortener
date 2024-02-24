@@ -9,7 +9,7 @@ export const load = (async (event) => {
 	let project_id: number | undefined
 	let selected_project: { value: null | string; label: string } = {
 		value: null,
-		label: 'None',
+		label: 'All',
 	}
 
 	if (project_uuid) {
