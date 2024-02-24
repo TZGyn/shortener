@@ -32,14 +32,17 @@
 
 	let inputTimer: any
 	let data: any
+	let isPreviewLoading: boolean = false
 
 	const getMetadata = async () => {
+		isPreviewLoading = true
 		clearTimeout(inputTimer)
 		inputTimer = setTimeout(async () => {
 			const response = await fetch(
 				`/api/url/metadata?url=${inputLink}`,
 			)
 			data = await response.json()
+			isPreviewLoading = false
 			console.log(data)
 		}, 1000)
 	}
@@ -72,7 +75,11 @@
 				<div class="font-bold">Preview</div>
 				<div class="col-span-4 flex flex-col justify-center border">
 					<div class="relative h-64 overflow-hidden">
-						{#if data}
+						{#if isPreviewLoading}
+							<div class="flex h-full items-center justify-center">
+								<Loader2 class="animate-spin" />
+							</div>
+						{:else if data}
 							<img
 								src={data.image}
 								alt=""
