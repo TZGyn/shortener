@@ -71,6 +71,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Shorteners</title>
+</svelte:head>
+
 <div class="flex min-h-[80px] items-center justify-between p-4">
 	<div class="text-3xl font-bold">Links</div>
 	<AddShortenerDialog {dialogOpen} />

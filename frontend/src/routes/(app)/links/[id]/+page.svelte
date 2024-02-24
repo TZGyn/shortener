@@ -103,6 +103,10 @@
 	})
 </script>
 
+<svelte:head>
+	<title>Shortener {data.shortener.link}</title>
+</svelte:head>
+
 <div class="flex min-h-[80px] items-center justify-between p-4">
 	<div class="text-3xl font-bold">{data.shortener.link}</div>
 </div>
