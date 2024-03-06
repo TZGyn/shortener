@@ -30,7 +30,7 @@ export const load = (async (event) => {
 export const actions = {
 	signout: async (event) => {
 		console.log('signout')
-		event.cookies.delete('token')
-		throw redirect(303, '/login')
+		event.cookies.delete('token', { path: '/' })
+		redirect(303, '/login')
 	},
 } satisfies Actions

@@ -20,7 +20,8 @@ export const load = (async (event) => {
 	})
 
 	if (!shortener) {
-		throw redirect(303, '/')
+		redirect(303, '/')
+		return
 	}
 
 	const now = new Date()

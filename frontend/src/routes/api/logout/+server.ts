@@ -16,6 +16,6 @@ export const POST: RequestHandler = async (event) => {
 		)
 	}
 	logoutUser(token)
-	event.cookies.delete('token')
+	event.cookies.delete('token', { path: '/' })
 	return new Response(JSON.stringify({ success: true }))
 }
