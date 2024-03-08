@@ -85,7 +85,7 @@
 
 <div class="flex min-h-[80px] items-center justify-between p-4">
 	<div class="text-3xl font-bold">Links</div>
-	<AddShortenerDialog {dialogOpen} />
+	<AddShortenerDialog {dialogOpen} projects={data.projects} />
 </div>
 <Separator />
 
@@ -166,7 +166,7 @@
 					<div class="flex items-center justify-between">
 						<div class="flex gap-2">
 							<Button
-								class="bg-secondary flex h-8 items-center justify-center gap-1 rounded text-sm"
+								class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm"
 								on:click={() => goto(`/links/${shortener.code}`)}>
 								<BarChart size={20} />
 								<div>
@@ -174,7 +174,7 @@
 								</div>
 							</Button>
 							<Button
-								class="bg-secondary flex h-8 items-center justify-center gap-1 rounded text-sm"
+								class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm"
 								on:click={() => openQRDialog(shortener.code)}>
 								<QrCode size={20} />
 							</Button>

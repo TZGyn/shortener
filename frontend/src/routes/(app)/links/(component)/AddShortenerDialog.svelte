@@ -1,12 +1,16 @@
 <script lang="ts">
 	import * as Dialog from '$lib/components/ui/dialog'
+	import * as Select from '$lib/components/ui/select'
 	import { Button, buttonVariants } from '$lib/components/ui/button'
 	import { Input } from '$lib/components/ui/input'
 	import { Label } from '$lib/components/ui/label'
 	import { Loader2, PlusCircle } from 'lucide-svelte'
 	import { invalidateAll } from '$app/navigation'
 	import { toast } from 'svelte-sonner'
+	import type { PageData } from '../$types'
 
+	let data: PageData
+	export let projects: typeof data.projects
 	export let dialogOpen: boolean
 	let inputLink = ''
 	let isLoading = false
@@ -16,7 +20,12 @@
 
 		const response = await fetch('/api/shortener', {
 			method: 'post',
-			body: JSON.stringify({ link: inputLink }),
+			body: JSON.stringify({
+				link: inputLink,
+				projectId: shortenerCategory
+					? shortenerCategory.value
+					: undefined,
+			}),
 		})
 
 		const responseData = await response.json()
@@ -31,8 +40,9 @@
 	}
 
 	let inputTimer: any
-	let data: any
+	let previewData: any
 	let isPreviewLoading: boolean = false
+	let shortenerCategory: any = undefined
 
 	const getMetadata = async () => {
 		isPreviewLoading = true
@@ -41,9 +51,9 @@
 			const response = await fetch(
 				`/api/url/metadata?url=${inputLink}`,
 			)
-			data = await response.json()
+			previewData = await response.json()
 			isPreviewLoading = false
-			console.log(data)
+			console.log(previewData)
 		}, 1000)
 	}
 </script>
@@ -72,6 +82,22 @@
 					class="col-span-3" />
 			</div>
 			<div class="grid grid-cols-4 items-center gap-4">
+				<Label>Category</Label>
+				<Select.Root
+					bind:selected={shortenerCategory}
+					multiple={false}>
+					<Select.Trigger class="col-span-3">
+						<Select.Value placeholder="Select a Category" />
+					</Select.Trigger>
+					<Select.Content>
+						{#each projects as project}
+							<Select.Item value={project.id}
+								>{project.name}</Select.Item>
+						{/each}
+					</Select.Content>
+				</Select.Root>
+			</div>
+			<div class="grid grid-cols-4 items-center gap-4">
 				<div class="font-bold">Preview</div>
 				<div class="col-span-4 flex flex-col justify-center border">
 					<div class="relative h-64 overflow-hidden">
@@ -79,14 +105,14 @@
 							<div class="flex h-full items-center justify-center">
 								<Loader2 class="animate-spin" />
 							</div>
-						{:else if data}
+						{:else if previewData}
 							<img
-								src={data.image}
+								src={previewData.image}
 								alt=""
 								class="h-64 w-full object-cover" />
 							<div
-								class="bg-secondary absolute bottom-2 left-2 rounded-lg px-2">
-								{data.title}
+								class="absolute bottom-2 left-2 rounded-lg bg-secondary px-2">
+								{previewData.title}
 							</div>
 						{/if}
 					</div>

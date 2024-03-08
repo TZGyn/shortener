@@ -10,6 +10,7 @@ export const GET: RequestHandler = async () => {
 
 const shortenerInsertSchema = z.object({
 	link: z.string().url(),
+	projectId: z.number().nullable(),
 })
 
 export const POST: RequestHandler = async (event) => {
@@ -32,6 +33,7 @@ export const POST: RequestHandler = async (event) => {
 
 	await db.insert(shortener).values({
 		link: shortenerInsert.data.link,
+		projectId: shortenerInsert.data.projectId,
 		userId: user.id,
 		code: code,
 	})
