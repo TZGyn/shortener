@@ -21,7 +21,6 @@ export const load = (async (event) => {
 
 	if (!shortener) {
 		redirect(303, '/')
-		return
 	}
 
 	const now = new Date()

@@ -7,6 +7,11 @@ export const userUpdateSchema = z.object({
 	confirm_password: z.string(),
 })
 
+export const userLoginSchema = z.object({
+	email: z.string().email(),
+	password: z.string().min(8),
+})
+
 export const userCreateSchema = z.object({
 	email: z.string().email(),
 	password: z.string(),

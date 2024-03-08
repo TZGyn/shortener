@@ -3,7 +3,6 @@ import { user } from '$lib/db/schema'
 import { userUpdateSchema } from '$lib/server/types'
 import { eq } from 'drizzle-orm'
 import type { RequestHandler } from './$types'
-import * as argon2 from 'argon2'
 
 export const GET: RequestHandler = async () => {
 	return new Response()
@@ -32,12 +31,14 @@ export const PUT: RequestHandler = async (event) => {
 		})
 
 		if (!userData) {
-			return new Response(JSON.stringify({ success: false }))
+			return new Response(
+				JSON.stringify({ success: false, error: 'Cant Find User' }),
+			)
 		}
 
-		const passwordMatch = await argon2.verify(
-			userData.password,
+		const passwordMatch = await Bun.password.verify(
 			userUpdateData.data.old_password,
+			userData.password,
 		)
 
 		if (
@@ -45,10 +46,15 @@ export const PUT: RequestHandler = async (event) => {
 			userUpdateData.data.new_password !==
 				userUpdateData.data.confirm_password
 		) {
-			return new Response(JSON.stringify({ success: false }))
+			return new Response(
+				JSON.stringify({
+					success: false,
+					error: 'Password Not Match',
+				}),
+			)
 		}
 
-		const newPassword = await argon2.hash(
+		const newPassword = await Bun.password.hash(
 			userUpdateData.data.new_password,
 		)
 

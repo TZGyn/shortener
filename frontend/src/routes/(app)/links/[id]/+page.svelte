@@ -6,12 +6,7 @@
 	import type { ApexOptions } from 'apexcharts'
 	import { mode } from 'mode-watcher'
 	import { onMount } from 'svelte'
-	import {
-		ShieldQuestion,
-		Smartphone,
-		Tablet,
-		TabletSmartphone,
-	} from 'lucide-svelte'
+	import { Smartphone, Tablet, TabletSmartphone } from 'lucide-svelte'
 
 	export let data: PageData
 

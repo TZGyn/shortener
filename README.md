@@ -12,8 +12,8 @@ Link Shortener is a site to manage your short urls while providing analytics to 
 ### Frontend
 
 ```bash
-npm install # tried using bun but it has lots of issues
-npm run dev # will convert to bun once its stable with sveltekit
+bun install
+bun --bun run dev
 ```
 
 ### Redirect
@@ -28,9 +28,9 @@ bun --hot run src/index.ts
 ### Frontend
 
 ```bash
-npm install
-npm run build
-node build
+bun install
+bun run build
+bun --bun run build
 ```
 
 ### Redirect

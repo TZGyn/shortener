@@ -7,7 +7,6 @@ import { eq } from 'drizzle-orm'
 import { userCreateSchema } from '$lib/server/types'
 import { db } from '$lib/db'
 import { nanoid } from 'nanoid'
-import * as argon2 from 'argon2'
 
 export const GET: RequestHandler = async () => {
 	return new Response()
@@ -43,8 +42,9 @@ export const POST: RequestHandler = async (event) => {
 	const user = users[0]
 
 	if (!user) {
-		// const hashedPassword = await Bun.password.hash(form.data.password)
-		const hashedPassword = await argon2.hash(userCreate.data.password)
+		const hashedPassword = await Bun.password.hash(
+			userCreate.data.password,
+		)
 		const returnUsers = await db
 			.insert(userSchema)
 			.values({
@@ -66,6 +66,7 @@ export const POST: RequestHandler = async (event) => {
 			httpOnly: true,
 			sameSite: 'strict',
 			path: '/',
+			secure: process.env.APP_ENV === 'prod' ? true : false,
 		})
 		return new Response(
 			JSON.stringify({

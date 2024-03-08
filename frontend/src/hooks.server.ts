@@ -15,7 +15,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	if (allowedPath.includes(pathname)) {
 		if (userObject) {
-			redirect(303, '/');
+			redirect(303, '/')
 		}
 		const response = await resolve(event)
 
@@ -23,7 +23,10 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	if (!userObject) {
-		redirect(303, '/login');
+		return new Response(null, {
+			status: 300,
+			headers: { location: '/login' },
+		})
 	}
 
 	event.locals.userObject = userObject

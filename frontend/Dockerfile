@@ -1,17 +1,17 @@
-FROM node:18
+FROM oven/bun:latest
 
 WORKDIR /app
 
 COPY ./package.json ./
-COPY ./package-lock.json ./
+COPY ./bun.lockb ./
 
-RUN npm install
+RUN bun install
 
 COPY . .
 # COPY ./.env.example ./.env
 
-RUN npm run build
+RUN bun run build
 
 EXPOSE 3000
 
-ENTRYPOINT ["node", "build"]
+ENTRYPOINT ["bun", "--bun", "run", "build"]
