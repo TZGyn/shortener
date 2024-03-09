@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/stores'
 	import UserIcon from './UserIcon.svelte'
 
 	import { Separator } from '$lib/components/ui/separator'
@@ -14,6 +15,7 @@
 		{ href: '/', name: 'Home' },
 		{ href: '/links', name: 'Links' },
 		{ href: '/projects', name: 'Projects' },
+		{ href: '/settings/account', name: 'Settings' },
 	] as const
 </script>
 
@@ -35,7 +37,9 @@
 		<div class="flex flex-col gap-4 p-4">
 			{#each routes as route}
 				<Button
-					variant="ghost"
+					variant={$page.url.pathname == route.href
+						? 'secondary'
+						: 'ghost'}
 					href={route.href}
 					class="justify-start text-base">{route.name}</Button>
 			{/each}
