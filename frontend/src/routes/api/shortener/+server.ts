@@ -9,8 +9,8 @@ export const GET: RequestHandler = async () => {
 }
 
 const shortenerInsertSchema = z.object({
-	link: z.string().url(),
-	projectId: z.number().nullable(),
+	link: z.string().url('Link must be in url format'),
+	projectId: z.number().nullish(),
 })
 
 export const POST: RequestHandler = async (event) => {
