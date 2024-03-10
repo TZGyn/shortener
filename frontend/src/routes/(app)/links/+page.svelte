@@ -281,6 +281,7 @@
 				{data.shortener_url + '/' + qrCode}
 			</Badge>
 			<Qr
+				code={qrCode}
 				value={data.shortener_url + '/' + qrCode}
 				background={data.settings?.qr_background || '#fff'}
 				color={data.settings?.qr_foreground || '#000'} />

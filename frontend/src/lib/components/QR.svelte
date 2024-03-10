@@ -13,6 +13,7 @@
 	export let value = ''
 	export let padding = 10
 	export let className = 'qrcode'
+	export let code = ''
 
 	let image = ''
 
@@ -66,4 +67,11 @@
 </script>
 
 <img src={image} alt={value} class={className} />
-<Button on:click={copyImageToClipboard}>Copy Image</Button>
+<div class="flex w-full gap-4">
+	<Button class="w-full" on:click={copyImageToClipboard}
+		>Copy Image</Button>
+	<Button
+		class="w-full"
+		href={`/api/shortener/${code}/qr`}
+		target="_blank">QR Link</Button>
+</div>
