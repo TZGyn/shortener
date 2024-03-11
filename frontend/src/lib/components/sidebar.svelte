@@ -32,7 +32,6 @@
 			</div>
 			<ThemeToggle />
 		</div>
-		<Separator />
 
 		<div class="flex flex-col gap-4 p-4">
 			{#each routes as route}
