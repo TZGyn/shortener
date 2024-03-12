@@ -21,7 +21,7 @@
 		Check,
 		ChevronsUpDown,
 	} from 'lucide-svelte'
-	import { goto, invalidateAll } from '$app/navigation'
+	import { invalidateAll } from '$app/navigation'
 	import { cn } from '$lib/utils'
 	import Qr from '$lib/components/QR.svelte'
 	import AddShortenerDialog from './(component)/AddShortenerDialog.svelte'
@@ -180,8 +180,8 @@
 					<div class="flex items-center justify-between">
 						<div class="flex gap-2">
 							<Button
-								class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm"
-								on:click={() => goto(`/links/${shortener.code}`)}>
+								href={`/links/${shortener.code}`}
+								class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm">
 								<BarChart size={20} />
 								<div>
 									{shortener.visitor.length} visits
