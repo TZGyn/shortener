@@ -43,6 +43,13 @@
       "when": 1704837856450,
       "tag": "0005_striped_prism",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1710268627832,
+      "tag": "0006_zippy_photon",
+      "breakpoints": true
     }
   ]
 }
