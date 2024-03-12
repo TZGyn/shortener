@@ -31,13 +31,15 @@
 							{project.shortener.length}
 							Shorteners
 						</Button>
-						<div class="flex items-center gap-2">
-							<BarChart />
+						<Button
+							class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm">
+							<BarChart size={20} />
 							{project.shortener.reduce(
 								(curr, shortener) => shortener.visitor.length + curr,
 								0,
-							)} visits
-						</div>
+							)}
+							visits
+						</Button>
 					</div>
 				</Card.Content>
 			</Card.Root>
