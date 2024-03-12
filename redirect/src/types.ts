@@ -18,6 +18,7 @@ export interface ShortenerTable {
 	id: Generated<number>
 	link: string
 	code: string
+	active: boolean
 	created_at: ColumnType<Date, string | undefined, never>
 }
 

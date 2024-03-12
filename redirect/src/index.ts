@@ -31,6 +31,11 @@ app.get(
 				.orderBy('created_at', 'desc')
 				.execute()
 
+			if (!shortener.length || !shortener[0].active) {
+				set.redirect = '/invalid'
+				return
+			}
+
 			const visitor_data = {
 				shortener_id: shortener[0].id,
 				country: geolocation.data.location.country.name as string,
@@ -43,11 +48,6 @@ app.get(
 			}
 
 			await db.insertInto('visitor').values(visitor_data).execute()
-
-			if (!shortener.length) {
-				set.redirect = '/invalid'
-				return
-			}
 
 			set.redirect = shortener[0].link
 		} catch {
