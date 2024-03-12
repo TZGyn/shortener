@@ -31,7 +31,8 @@ export const GET: RequestHandler = async (event) => {
 
 const updateShortenerSchema = z.object({
 	link: z.string().url(),
-	projectId: z.number().nullable(),
+	projectId: z.number().nullish(),
+	active: z.boolean(),
 })
 
 export const PUT: RequestHandler = async (event) => {
@@ -56,6 +57,7 @@ export const PUT: RequestHandler = async (event) => {
 		.set({
 			link: updateShortener.data.link,
 			projectId: updateShortener.data.projectId ?? undefined,
+			active: updateShortener.data.active,
 		})
 		.where(
 			and(

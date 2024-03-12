@@ -12,6 +12,7 @@
 	import { Input } from '$lib/components/ui/input'
 	import { Label } from '$lib/components/ui/label'
 	import { Badge } from '$lib/components/ui/badge'
+	import { Checkbox } from '$lib/components/ui/checkbox'
 	import {
 		BarChart,
 		ExternalLink,
@@ -35,6 +36,7 @@
 	let editShortenerCode = ''
 	let editShortenerLink = ''
 	let editShortenerCategory: any = undefined
+	let editShortenerActive = false
 	let isEditLoading = false
 
 	let open: boolean = false
@@ -42,15 +44,27 @@
 
 	$: selectedProject = data.selected_project.label
 
-	const openEditDialog = (code: string, link: string) => {
+	const openEditDialog = (
+		code: string,
+		link: string,
+		projectId: number | null,
+		projectName: string | undefined,
+		active: boolean,
+	) => {
 		editDialogOpen = true
 		editShortenerCode = code
 		editShortenerLink = link
-		editShortenerCategory = undefined
+		editShortenerActive = active
+		if (projectId) {
+			editShortenerCategory = { value: projectId, label: projectName }
+		} else {
+			editShortenerCategory = undefined
+		}
 	}
 
 	const editShortener = async (code: string, link: string) => {
 		isEditLoading = true
+		console.log(editShortenerCategory)
 		await fetch(`/api/shortener/${code}`, {
 			method: 'put',
 			body: JSON.stringify({
@@ -58,6 +72,7 @@
 				projectId: editShortenerCategory
 					? editShortenerCategory.value
 					: undefined,
+				active: editShortenerActive,
 			}),
 		})
 		await invalidateAll()
@@ -169,10 +184,25 @@
 							</a>
 							<ExternalLink size={16} />
 						</div>
-						<Badge variant="default"
-							>{shortener.project
-								? shortener.project.name
-								: 'Uncategorized'}</Badge>
+						<div class="flex gap-4">
+							<Badge variant="outline" class="flex gap-2">
+								{#if shortener.active}
+									<span
+										class="relative inline-flex h-2 w-2 rounded-full bg-green-400"
+									></span>
+									Active
+								{:else}
+									<span
+										class="relative inline-flex h-2 w-2 rounded-full bg-gray-600"
+									></span>
+									Inactive
+								{/if}
+							</Badge>
+							<Badge variant="secondary"
+								>{shortener.project
+									? shortener.project.name
+									: 'Uncategorized'}</Badge>
+						</div>
 					</Card.Title>
 					<Card.Description>{shortener.link}</Card.Description>
 				</Card.Header>
@@ -201,7 +231,13 @@
 								<DropdownMenu.Group>
 									<DropdownMenu.Item
 										on:click={() =>
-											openEditDialog(shortener.code, shortener.link)}>
+											openEditDialog(
+												shortener.code,
+												shortener.link,
+												shortener.projectId,
+												shortener.project?.name,
+												shortener.active,
+											)}>
 										Edit
 									</DropdownMenu.Item>
 									<DropdownMenu.Item
@@ -252,6 +288,17 @@
 						{/each}
 					</Select.Content>
 				</Select.Root>
+			</div>
+			<div class="grid grid-cols-4 items-center gap-4">
+				<div></div>
+				<div class="flex items-center gap-4">
+					<Checkbox id="terms" bind:checked={editShortenerActive} />
+					<Label
+						for="terms"
+						class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+						Active
+					</Label>
+				</div>
 			</div>
 		</div>
 		<Dialog.Footer>

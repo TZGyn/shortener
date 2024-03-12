@@ -5,6 +5,7 @@ import {
 	timestamp,
 	integer,
 	uuid,
+	boolean,
 } from 'drizzle-orm/pg-core'
 
 import { relations, type InferSelectModel } from 'drizzle-orm'
@@ -17,6 +18,7 @@ export const shortener = pgTable('shortener', {
 		.defaultNow()
 		.notNull(),
 	userId: integer('user_id').notNull(),
+	active: boolean('active').notNull().default(true),
 	projectId: integer('project_id'),
 })
 
