@@ -91,6 +91,11 @@
 								variant="ghost"
 								href="/projects"
 								class="justify-start text-base ">Projects</Button>
+							<Button
+								on:click={closeSheet}
+								variant="ghost"
+								href="/settings"
+								class="justify-start text-base ">Settings</Button>
 						</div>
 						<div class="flex flex-col justify-between">
 							<div></div>
