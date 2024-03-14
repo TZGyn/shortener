@@ -112,13 +112,7 @@
 	<title>Shorteners</title>
 </svelte:head>
 
-<div class="flex min-h-[80px] items-center justify-between p-4">
-	<div class="text-3xl font-bold">Links</div>
-	<AddShortenerDialog {dialogOpen} projects={data.projects} />
-</div>
-<Separator />
-
-<div class="p-4">
+<div class="flex items-center justify-between p-4">
 	<Popover.Root bind:open>
 		<Popover.Trigger asChild let:builder>
 			<Button
@@ -164,6 +158,7 @@
 			</Command.Root>
 		</Popover.Content>
 	</Popover.Root>
+	<AddShortenerDialog {dialogOpen} projects={data.projects} />
 </div>
 
 {#if data.shorteners.length > 0}
