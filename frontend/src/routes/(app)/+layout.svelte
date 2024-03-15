@@ -19,7 +19,8 @@
 	}
 </script>
 
-<div class="flex h-screen w-full flex-col">
+<div
+	class="max-w-screen flex h-screen max-h-screen w-full flex-col overflow-hidden">
 	<div class="flex border-b">
 		<div
 			class="flex h-20 w-full items-center justify-between gap-6 p-4">
@@ -59,61 +60,59 @@
 		</div>
 	</div>
 
-	<div class="flex h-full">
+	<div
+		class="block w-full border-b bg-background px-4 py-2 lg:hidden">
+		<Sheet.Root bind:open={sheetOpen}>
+			<Sheet.Trigger asChild let:builder>
+				<Button builders={[builder]} variant="ghost" class="p-2">
+					<Menu />
+				</Button>
+			</Sheet.Trigger>
+			<Sheet.Content side="left" class="flex flex-col">
+				<Sheet.Header class="pb-16">
+					<Sheet.Title>Shortener</Sheet.Title>
+				</Sheet.Header>
+				<div class="flex grow flex-col gap-4">
+					<Button
+						on:click={closeSheet}
+						variant="ghost"
+						href="/"
+						class="justify-start text-base">Home</Button>
+					<Button
+						on:click={closeSheet}
+						variant="ghost"
+						href="/links"
+						class="justify-start text-base">Links</Button>
+					<Button
+						on:click={closeSheet}
+						variant="ghost"
+						href="/projects"
+						class="justify-start text-base ">Projects</Button>
+					<Button
+						on:click={closeSheet}
+						variant="ghost"
+						href="/settings"
+						class="justify-start text-base ">Settings</Button>
+				</div>
+				<div class="flex flex-col justify-between">
+					<div></div>
+					<div class="flex flex-col gap-4">
+						<Separator />
+						<div class="flex items-center justify-between">
+							<UserIcon
+								email={data.user.email}
+								onClick={closeSheet} />
+						</div>
+					</div>
+				</div>
+			</Sheet.Content>
+		</Sheet.Root>
+	</div>
+
+	<div class="flex flex-grow overflow-hidden">
 		<Sidebar class="hidden lg:flex" />
-		<div
-			class="flex h-full max-h-screen w-full flex-col overflow-hidden">
-			<div
-				class="block w-full border-b bg-background px-4 py-2 lg:hidden">
-				<Sheet.Root bind:open={sheetOpen}>
-					<Sheet.Trigger asChild let:builder>
-						<Button builders={[builder]} variant="ghost" class="p-2">
-							<Menu />
-						</Button>
-					</Sheet.Trigger>
-					<Sheet.Content side="left" class="flex flex-col">
-						<Sheet.Header class="pb-16">
-							<Sheet.Title>Shortener</Sheet.Title>
-						</Sheet.Header>
-						<div class="flex grow flex-col gap-4">
-							<Button
-								on:click={closeSheet}
-								variant="ghost"
-								href="/"
-								class="justify-start text-base">Home</Button>
-							<Button
-								on:click={closeSheet}
-								variant="ghost"
-								href="/links"
-								class="justify-start text-base">Links</Button>
-							<Button
-								on:click={closeSheet}
-								variant="ghost"
-								href="/projects"
-								class="justify-start text-base ">Projects</Button>
-							<Button
-								on:click={closeSheet}
-								variant="ghost"
-								href="/settings"
-								class="justify-start text-base ">Settings</Button>
-						</div>
-						<div class="flex flex-col justify-between">
-							<div></div>
-							<div class="flex flex-col gap-4">
-								<Separator />
-								<div class="flex items-center justify-between">
-									<UserIcon
-										email={data.user.email}
-										onClick={closeSheet} />
-								</div>
-							</div>
-						</div>
-					</Sheet.Content>
-				</Sheet.Root>
-			</div>
-			<div class="flex h-full w-full flex-col overflow-hidden">
-				<slot />
-			</div>
+		<div class="flex h-auto w-full flex-col">
+			<slot />
 		</div>
 	</div>
 </div>

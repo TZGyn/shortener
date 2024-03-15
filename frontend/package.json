@@ -36,7 +36,7 @@
   "dependencies": {
     "@types/he": "^1.2.3",
     "apexcharts": "^3.44.0",
-    "bits-ui": "^0.19.6",
+    "bits-ui": "^0.19.7",
     "clsx": "^2.0.0",
     "cmdk-sv": "^0.0.13",
     "drizzle-orm": "^0.29.0",
