@@ -27,7 +27,7 @@ export const load = (async (event) => {
 		}
 	}
 
-	const shorteners = await db.query.shortener.findMany({
+	const shorteners = db.query.shortener.findMany({
 		with: {
 			visitor: true,
 			project: true,
@@ -47,5 +47,10 @@ export const load = (async (event) => {
 		where: (settings, { eq }) => eq(settings.userId, user.id),
 	})
 
-	return { shorteners, projects, selected_project, settings }
+	return {
+		shorteners,
+		projects,
+		selected_project,
+		settings,
+	}
 }) satisfies PageServerLoad

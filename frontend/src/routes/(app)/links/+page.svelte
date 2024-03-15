@@ -161,96 +161,104 @@
 	<AddShortenerDialog {dialogOpen} projects={data.projects} />
 </div>
 
-{#if data.shorteners.length > 0}
-	<div class="flex flex-wrap gap-4 overflow-scroll p-4">
-		{#each data.shorteners as shortener}
-			<Card.Root class="w-full max-w-[500px]">
-				<Card.Header>
-					<Card.Title class="flex items-center justify-between gap-2">
-						<div class="flex items-center gap-2">
-							<a
-								href={'https://' +
-									data.shortener_url +
-									'/' +
-									shortener.code}
-								target="_blank"
-								class="hover:underline">
-								{data.shortener_url + '/' + shortener.code}
-							</a>
-							<ExternalLink size={16} />
-						</div>
-						<div class="flex gap-4">
-							<Badge variant="outline" class="flex gap-2">
-								{#if shortener.active}
-									<span
-										class="relative inline-flex h-2 w-2 rounded-full bg-green-400"
-									></span>
-									Active
-								{:else}
-									<span
-										class="relative inline-flex h-2 w-2 rounded-full bg-gray-600"
-									></span>
-									Inactive
-								{/if}
-							</Badge>
-							<Badge variant="secondary"
-								>{shortener.project
-									? shortener.project.name
-									: 'Uncategorized'}</Badge>
-						</div>
-					</Card.Title>
-					<Card.Description>{shortener.link}</Card.Description>
-				</Card.Header>
-				<Card.Content>
-					<div class="flex items-center justify-between">
-						<div class="flex gap-2">
-							<Button
-								href={`/links/${shortener.code}`}
-								class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm">
-								<BarChart size={20} />
-								<div>
-									{shortener.visitor.length} visits
-								</div>
-							</Button>
-							<Button
-								class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm"
-								on:click={() => openQRDialog(shortener.code)}>
-								<QrCode size={20} />
-							</Button>
-						</div>
-						<DropdownMenu.Root>
-							<DropdownMenu.Trigger>
-								<MoreVertical />
-							</DropdownMenu.Trigger>
-							<DropdownMenu.Content>
-								<DropdownMenu.Group>
-									<DropdownMenu.Item
-										on:click={() =>
-											openEditDialog(
-												shortener.code,
-												shortener.link,
-												shortener.projectId,
-												shortener.project?.name,
-												shortener.active,
-											)}>
-										Edit
-									</DropdownMenu.Item>
-									<DropdownMenu.Item
-										on:click={() => openDeleteDialog(shortener.code)}
-										class="text-destructive data-[highlighted]:bg-destructive">
-										Delete
-									</DropdownMenu.Item>
-								</DropdownMenu.Group>
-							</DropdownMenu.Content>
-						</DropdownMenu.Root>
-					</div>
-				</Card.Content>
-			</Card.Root>
-		{/each}
+{#await data.shorteners}
+	<div class="flex h-full w-full items-center justify-center">
+		<Loader2 class="animate-spin" />
 	</div>
-{:else}
-	<div>No Data</div>
-{/if}
+{:then shorteners}
+	{#if shorteners.length > 0}
+		<div class="flex flex-wrap gap-4 overflow-scroll p-4">
+			{#each shorteners as shortener}
+				<Card.Root class="w-full max-w-[500px]">
+					<Card.Header>
+						<Card.Title
+							class="flex items-center justify-between gap-2">
+							<div class="flex items-center gap-2">
+								<a
+									href={'https://' +
+										data.shortener_url +
+										'/' +
+										shortener.code}
+									target="_blank"
+									class="hover:underline">
+									{data.shortener_url + '/' + shortener.code}
+								</a>
+								<ExternalLink size={16} />
+							</div>
+							<div class="flex gap-4">
+								<Badge variant="outline" class="flex gap-2">
+									{#if shortener.active}
+										<span
+											class="relative inline-flex h-2 w-2 rounded-full bg-green-400"
+										></span>
+										Active
+									{:else}
+										<span
+											class="relative inline-flex h-2 w-2 rounded-full bg-gray-600"
+										></span>
+										Inactive
+									{/if}
+								</Badge>
+								<Badge variant="secondary"
+									>{shortener.project
+										? shortener.project.name
+										: 'Uncategorized'}</Badge>
+							</div>
+						</Card.Title>
+						<Card.Description>{shortener.link}</Card.Description>
+					</Card.Header>
+					<Card.Content>
+						<div class="flex items-center justify-between">
+							<div class="flex gap-2">
+								<Button
+									href={`/links/${shortener.code}`}
+									class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm">
+									<BarChart size={20} />
+									<div>
+										{shortener.visitor.length} visits
+									</div>
+								</Button>
+								<Button
+									class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm"
+									on:click={() => openQRDialog(shortener.code)}>
+									<QrCode size={20} />
+								</Button>
+							</div>
+							<DropdownMenu.Root>
+								<DropdownMenu.Trigger>
+									<MoreVertical />
+								</DropdownMenu.Trigger>
+								<DropdownMenu.Content>
+									<DropdownMenu.Group>
+										<DropdownMenu.Item
+											on:click={() =>
+												openEditDialog(
+													shortener.code,
+													shortener.link,
+													shortener.projectId,
+													shortener.project?.name,
+													shortener.active,
+												)}>
+											Edit
+										</DropdownMenu.Item>
+										<DropdownMenu.Item
+											on:click={() =>
+												openDeleteDialog(shortener.code)}
+											class="text-destructive data-[highlighted]:bg-destructive">
+											Delete
+										</DropdownMenu.Item>
+									</DropdownMenu.Group>
+								</DropdownMenu.Content>
+							</DropdownMenu.Root>
+						</div>
+					</Card.Content>
+				</Card.Root>
+			{/each}
+		</div>
+	{:else}
+		<div>No Data</div>
+	{/if}
+{/await}
 
 <Dialog.Root bind:open={editDialogOpen}>
 	<Dialog.Content class="sm:max-w-[425px]">
