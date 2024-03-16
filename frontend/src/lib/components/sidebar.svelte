@@ -27,7 +27,8 @@
 						? 'secondary'
 						: 'ghost'}
 					href={route.href}
-					class="justify-start text-base">{route.name}</Button>
+					class="justify-start text-base hover:bg-secondary/50"
+					>{route.name}</Button>
 			{/each}
 		</div>
 	</div>
