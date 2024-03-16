@@ -32,6 +32,7 @@ export const load = (async (event) => {
 			visitor: true,
 			project: true,
 		},
+		orderBy: (shortener, { desc }) => [desc(shortener.createdAt)],
 		where: (shortener, { eq, and, isNull }) =>
 			and(
 				eq(shortener.userId, user.id),
