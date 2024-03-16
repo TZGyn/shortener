@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { PageData } from './$types'
-	import { Separator } from '$lib/components/ui/separator'
 	import { Button } from '$lib/components/ui/button'
 	import * as Dialog from '$lib/components/ui/dialog'
 	import * as Card from '$lib/components/ui/card'
@@ -28,6 +27,7 @@
 	import AddShortenerDialog from './(component)/AddShortenerDialog.svelte'
 	import { toast } from 'svelte-sonner'
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
+	import { Skeleton } from '$lib/components/ui/skeleton'
 
 	export let data: PageData
 
@@ -163,8 +163,15 @@
 </div>
 
 {#await data.shorteners}
-	<div class="flex h-full w-full items-center justify-center">
-		<Loader2 class="animate-spin" />
+	<div class="flex flex-wrap gap-4 p-4">
+		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
+		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
+		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
+		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
+		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
+		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
+		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
+		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
 	</div>
 {:then shorteners}
 	{#if shorteners.length > 0}
@@ -259,7 +266,18 @@
 			</div>
 		</ScrollArea>
 	{:else}
-		<div>No Data</div>
+		<div class="flex h-full w-full items-center justify-center">
+			<div class="flex flex-col items-center gap-12">
+				<div class="flex flex-col items-center gap-4">
+					<div class="text-4xl font-bold">No Shortener Found</div>
+				</div>
+				<Button
+					on:click={() => {
+						dialogOpen = true
+					}}
+					class="w-fit">Add Shortener</Button>
+			</div>
+		</div>
 	{/if}
 {/await}
 
