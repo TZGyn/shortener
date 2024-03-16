@@ -195,6 +195,10 @@
 									<ExternalLink size={16} />
 								</div>
 								<div class="flex gap-4">
+									{#if shortener.project}
+										<Badge variant="secondary"
+											>{shortener.project.name}</Badge>
+									{/if}
 									<Badge variant="outline" class="flex gap-2">
 										{#if shortener.active}
 											<span
@@ -208,10 +212,6 @@
 											Inactive
 										{/if}
 									</Badge>
-									<Badge variant="secondary"
-										>{shortener.project
-											? shortener.project.name
-											: 'Uncategorized'}</Badge>
 								</div>
 							</Card.Title>
 							<Card.Description>{shortener.link}</Card.Description>
