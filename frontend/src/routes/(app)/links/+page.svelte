@@ -113,7 +113,7 @@
 	<title>Shorteners</title>
 </svelte:head>
 
-<div class="flex items-center justify-between p-4">
+<div class="flex items-center justify-start gap-4 p-4">
 	<Popover.Root bind:open>
 		<Popover.Trigger asChild let:builder>
 			<Button

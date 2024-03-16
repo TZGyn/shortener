@@ -13,11 +13,11 @@
 	<Separator class="" />
 </div>
 
-<div class="flex w-full flex-col items-stretch gap-2 px-6">
+<div class="flex w-full flex-wrap items-stretch gap-2 px-6">
 	{#each data.projects as project}
 		<a href={'/links?project=' + project.uuid}>
 			<Card.Root
-				class="w-full max-w-[500px] hover:cursor-pointer hover:bg-secondary">
+				class="w-[500px] hover:cursor-pointer hover:bg-secondary">
 				<Card.Header>
 					<Card.Title class="flex items-center gap-2">
 						{project.name}
