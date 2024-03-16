@@ -39,10 +39,10 @@
 	}
 </script>
 
-<div class="space-y-6">
+<div class="flex h-auto flex-col gap-6">
 	<div>
 		<h3 class="text-lg font-medium">Account</h3>
-		<p class="text-muted-foreground text-sm">
+		<p class="text-sm text-muted-foreground">
 			Update your account settings.
 		</p>
 	</div>
@@ -54,7 +54,7 @@
 			type="text"
 			id="username"
 			bind:value={account_data.username} />
-		<p class="text-muted-foreground text-sm">Change your username.</p>
+		<p class="text-sm text-muted-foreground">Change your username.</p>
 	</div>
 
 	<div class="flex w-full max-w-sm flex-col gap-2">
@@ -64,7 +64,7 @@
 			type="email"
 			id="email"
 			bind:value={account_data.email} />
-		<p class="text-muted-foreground text-sm">Change your email.</p>
+		<p class="text-sm text-muted-foreground">Change your email.</p>
 	</div>
 
 	<Separator />
@@ -75,7 +75,7 @@
 			type="password"
 			id="old_password"
 			bind:value={account_data.old_password} />
-		<p class="text-muted-foreground text-sm">
+		<p class="text-sm text-muted-foreground">
 			Enter your old password in order to change it.
 		</p>
 	</div>
@@ -86,7 +86,7 @@
 			type="password"
 			id="new_password"
 			bind:value={account_data.new_password} />
-		<p class="text-muted-foreground text-sm">Change your password.</p>
+		<p class="text-sm text-muted-foreground">Change your password.</p>
 	</div>
 
 	<div class="flex w-full max-w-sm flex-col gap-2">
@@ -95,12 +95,15 @@
 			type="password"
 			id="new_password"
 			bind:value={account_data.confirm_password} />
-		<p class="text-muted-foreground text-sm">
+		<p class="text-sm text-muted-foreground">
 			Confirm your new password.
 		</p>
 	</div>
 
-	<Button disabled={isLoading} on:click={submit} class="flex gap-2">
+	<Button
+		disabled={isLoading}
+		on:click={submit}
+		class="flex w-fit gap-2">
 		{#if isLoading}
 			<Loader2 class="animate-spin" />
 		{/if}

@@ -15,13 +15,10 @@
 	{#each items as item}
 		<Button
 			href={item.href}
-			variant="ghost"
-			class={cn(
-				$page.url.pathname === item.href
-					? 'bg-muted hover:bg-muted'
-					: 'hover:bg-transparent hover:underline',
-				'justify-start',
-			)}>
+			variant={$page.url.pathname == item.href
+				? 'secondary'
+				: 'ghost'}
+			class="justify-start hover:bg-secondary/50">
 			{item.title}
 		</Button>
 	{/each}
