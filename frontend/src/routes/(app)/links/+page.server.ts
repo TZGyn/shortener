@@ -17,7 +17,7 @@ export const load = (async (event) => {
 	}
 
 	if (isNaN(perPage)) {
-		perPage = 20
+		perPage = 10
 	}
 
 	let project_id: number | undefined
