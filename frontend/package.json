@@ -39,7 +39,7 @@
     "bits-ui": "^0.19.7",
     "clsx": "^2.0.0",
     "cmdk-sv": "^0.0.13",
-    "drizzle-orm": "^0.29.0",
+    "drizzle-orm": "latest",
     "he": "^1.2.0",
     "lucide-svelte": "^0.356.0",
     "mode-watcher": "^0.1.2",

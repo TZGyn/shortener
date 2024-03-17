@@ -1,10 +1,24 @@
 import { db } from '$lib/db'
+import { and, count, eq } from 'drizzle-orm'
+import { shortener } from '$lib/db/schema'
 import type { PageServerLoad } from './$types'
 
 export const load = (async (event) => {
 	const user = event.locals.userObject
 
 	const project_uuid = event.url.searchParams.get('project')
+	let page = parseInt(event.url.searchParams.get('page') ?? '1')
+	let perPage = parseInt(
+		event.url.searchParams.get('perPage') ?? '10',
+	)
+
+	if (isNaN(page)) {
+		page = 1
+	}
+
+	if (isNaN(perPage)) {
+		perPage = 20
+	}
 
 	let project_id: number | undefined
 	let selected_project: { value: null | string; label: string } = {
@@ -38,7 +52,19 @@ export const load = (async (event) => {
 				eq(shortener.userId, user.id),
 				project_id ? eq(shortener.projectId, project_id) : undefined,
 			),
+		offset: perPage * (page - 1),
+		limit: perPage,
 	})
+
+	const pagination = await db
+		.select({ count: count() })
+		.from(shortener)
+		.where(
+			and(
+				eq(shortener.userId, user.id),
+				project_id ? eq(shortener.projectId, project_id) : undefined,
+			),
+		)
 
 	const projects = await db.query.project.findMany({
 		where: (project, { eq }) => eq(project.userId, user.id),
@@ -53,5 +79,8 @@ export const load = (async (event) => {
 		projects,
 		selected_project,
 		settings,
+		page,
+		perPage,
+		pagination: pagination[0],
 	}
 }) satisfies PageServerLoad
