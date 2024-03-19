@@ -282,6 +282,55 @@
 				{/each}
 			</div>
 		</ScrollArea>
+		<div class="flex items-center justify-between border-t p-4">
+			<Select.Root bind:selected={perPage}>
+				<Select.Trigger class="w-[180px]">
+					<Select.Value placeholder="Page Size" />
+				</Select.Trigger>
+				<Select.Content>
+					<Select.Group>
+						<Select.Label>Page Size</Select.Label>
+						{#each [10, 20, 50, 100] as pageSize}
+							<Select.Item
+								value={pageSize}
+								label={pageSize.toString()}>{pageSize}</Select.Item>
+						{/each}
+					</Select.Group>
+				</Select.Content>
+				<Select.Input name="favoriteFruit" />
+			</Select.Root>
+			<Pagination.Root
+				class="items-end "
+				count={shorteners[0].fullcount}
+				bind:page
+				perPage={perPage.value}
+				let:pages
+				let:currentPage>
+				<Pagination.Content>
+					<Pagination.Item>
+						<Pagination.PrevButton />
+					</Pagination.Item>
+					{#each pages as page (page.key)}
+						{#if page.type === 'ellipsis'}
+							<Pagination.Item>
+								<Pagination.Ellipsis />
+							</Pagination.Item>
+						{:else}
+							<Pagination.Item isVisible={currentPage == page.value}>
+								<Pagination.Link
+									{page}
+									isActive={currentPage == page.value}>
+									{page.value}
+								</Pagination.Link>
+							</Pagination.Item>
+						{/if}
+					{/each}
+					<Pagination.Item>
+						<Pagination.NextButton />
+					</Pagination.Item>
+				</Pagination.Content>
+			</Pagination.Root>
+		</div>
 	{:else}
 		<div class="flex h-full w-full items-center justify-center">
 			<div class="flex flex-col items-center gap-12">
@@ -296,59 +345,6 @@
 			</div>
 		</div>
 	{/if}
-{/await}
-
-{#await data.pagination}
-	<!-- promise is pending -->
-{:then pagination}
-	<div class="flex items-center justify-between border-t p-4">
-		<Select.Root bind:selected={perPage}>
-			<Select.Trigger class="w-[180px]">
-				<Select.Value placeholder="Page Size" />
-			</Select.Trigger>
-			<Select.Content>
-				<Select.Group>
-					<Select.Label>Page Size</Select.Label>
-					{#each [10, 20, 50, 100] as pageSize}
-						<Select.Item value={pageSize} label={pageSize.toString()}
-							>{pageSize}</Select.Item>
-					{/each}
-				</Select.Group>
-			</Select.Content>
-			<Select.Input name="favoriteFruit" />
-		</Select.Root>
-		<Pagination.Root
-			class="items-end "
-			count={pagination[0].count}
-			bind:page
-			perPage={perPage.value}
-			let:pages
-			let:currentPage>
-			<Pagination.Content>
-				<Pagination.Item>
-					<Pagination.PrevButton />
-				</Pagination.Item>
-				{#each pages as page (page.key)}
-					{#if page.type === 'ellipsis'}
-						<Pagination.Item>
-							<Pagination.Ellipsis />
-						</Pagination.Item>
-					{:else}
-						<Pagination.Item isVisible={currentPage == page.value}>
-							<Pagination.Link
-								{page}
-								isActive={currentPage == page.value}>
-								{page.value}
-							</Pagination.Link>
-						</Pagination.Item>
-					{/if}
-				{/each}
-				<Pagination.Item>
-					<Pagination.NextButton />
-				</Pagination.Item>
-			</Pagination.Content>
-		</Pagination.Root>
-	</div>
 {/await}
 
 <EditShortenerDialog

@@ -1,6 +1,5 @@
 import { db } from '$lib/db'
-import { and, count, eq, ilike } from 'drizzle-orm'
-import { shortener } from '$lib/db/schema'
+import { sql } from 'drizzle-orm'
 import type { PageServerLoad } from './$types'
 
 export const load = (async (event) => {
@@ -43,6 +42,9 @@ export const load = (async (event) => {
 	}
 
 	const shorteners = db.query.shortener.findMany({
+		extras: {
+			fullcount: sql<number>`count(*) over()`.as('fullcount'),
+		},
 		with: {
 			visitor: true,
 			project: true,
@@ -60,35 +62,21 @@ export const load = (async (event) => {
 		limit: perPage,
 	})
 
-	const pagination = db
-		.select({ count: count() })
-		.from(shortener)
-		.where(
-			and(
-				eq(shortener.userId, user.id),
-				project_id ? eq(shortener.projectId, project_id) : undefined,
-				search
-					? ilike(shortener.link, `%${decodeURI(search)}%`)
-					: undefined,
-			),
-		)
-
-	const projects = await db.query.project.findMany({
+	const projects = db.query.project.findMany({
 		where: (project, { eq }) => eq(project.userId, user.id),
 	})
 
-	const settings = await db.query.setting.findFirst({
+	const settings = db.query.setting.findFirst({
 		where: (settings, { eq }) => eq(settings.userId, user.id),
 	})
 
 	return {
 		shorteners,
-		projects,
+		projects: await projects,
 		selected_project,
-		settings,
+		settings: await settings,
 		page,
 		perPage,
 		search,
-		pagination,
 	}
 }) satisfies PageServerLoad
