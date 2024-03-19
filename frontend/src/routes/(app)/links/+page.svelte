@@ -1,5 +1,9 @@
 <script lang="ts">
 	import type { PageData } from './$types'
+	import { cn } from '$lib/utils'
+	import { goto } from '$app/navigation'
+	import { browser } from '$app/environment'
+
 	import { Button } from '$lib/components/ui/button'
 	import * as Dialog from '$lib/components/ui/dialog'
 	import * as Card from '$lib/components/ui/card'
@@ -9,6 +13,10 @@
 	import * as Popover from '$lib/components/ui/popover'
 	import { Badge } from '$lib/components/ui/badge'
 	import * as Pagination from '$lib/components/ui/pagination'
+	import { Input } from '$lib/components/ui/input'
+	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
+	import { Skeleton } from '$lib/components/ui/skeleton'
+
 	import {
 		BarChart,
 		ExternalLink,
@@ -17,15 +25,12 @@
 		Check,
 		ChevronsUpDown,
 	} from 'lucide-svelte'
-	import { cn } from '$lib/utils'
+
 	import Qr from '$lib/components/QR.svelte'
 	import AddShortenerDialog from './(component)/AddShortenerDialog.svelte'
-	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
-	import { Skeleton } from '$lib/components/ui/skeleton'
 	import EditShortenerDialog from './(component)/EditShortenerDialog.svelte'
 	import DeleteShortenerDialog from './(component)/DeleteShortenerDialog.svelte'
-	import { goto } from '$app/navigation'
-	import { browser } from '$app/environment'
+	import { onMount } from 'svelte'
 
 	export let data: PageData
 
@@ -78,21 +83,26 @@
 	let page: number = data.page
 	let perPage: any = { label: data.perPage, value: data.perPage }
 	let selectedProjectUUID: string | null
+	let search: string | null = data.search
+	let searchUpdateTimeout: any
 
-	$: browser && updateUrl(selectedProjectUUID, page, perPage)
+	$: browser && updateUrl(selectedProjectUUID, page, perPage, search)
 
 	const updateUrl = (
 		selectedProjectUUID: string | null,
 		page: number,
 		perPage: any,
+		search: string | null,
 	) => {
+		let query = [`page=${page}`, `perPage=${perPage.value}`]
 		if (selectedProjectUUID) {
-			goto(
-				`/links?project=${selectedProjectUUID}&page=${page}&perPage=${perPage.value}`,
-			)
-		} else {
-			goto(`/links?page=${page}&perPage=${perPage.value}`)
+			query.push(`project=${selectedProjectUUID}`)
 		}
+		if (search) {
+			query.push(`search=${encodeURI(search)}`)
+		}
+
+		goto(`/links?${query.join('&')}`)
 	}
 </script>
 
@@ -152,6 +162,20 @@
 			</Command.Root>
 		</Popover.Content>
 	</Popover.Root>
+	<Input
+		type="text"
+		placeholder="search"
+		class="max-w-[250px]"
+		value={search}
+		on:keyup={({ target, key }) => {
+			if (key !== 'Enter') return
+			clearTimeout(searchUpdateTimeout)
+			searchUpdateTimeout = setTimeout(() => {
+				search = target.value
+			}, 500)
+		}} />
+	<Button disabled={!search} on:click={() => (search = '')}
+		>Clear</Button>
 	<AddShortenerDialog bind:dialogOpen projects={data.projects} />
 </div>
 
@@ -258,55 +282,6 @@
 				{/each}
 			</div>
 		</ScrollArea>
-		<div class="flex items-center justify-between border-t p-4">
-			<Select.Root bind:selected={perPage}>
-				<Select.Trigger class="w-[180px]">
-					<Select.Value placeholder="Page Size" />
-				</Select.Trigger>
-				<Select.Content>
-					<Select.Group>
-						<Select.Label>Page Size</Select.Label>
-						{#each [10, 20, 50, 100] as pageSize}
-							<Select.Item
-								value={pageSize}
-								label={pageSize.toString()}>{pageSize}</Select.Item>
-						{/each}
-					</Select.Group>
-				</Select.Content>
-				<Select.Input name="favoriteFruit" />
-			</Select.Root>
-			<Pagination.Root
-				class="items-end "
-				count={data.pagination.count}
-				bind:page
-				perPage={perPage.value}
-				let:pages
-				let:currentPage>
-				<Pagination.Content>
-					<Pagination.Item>
-						<Pagination.PrevButton />
-					</Pagination.Item>
-					{#each pages as page (page.key)}
-						{#if page.type === 'ellipsis'}
-							<Pagination.Item>
-								<Pagination.Ellipsis />
-							</Pagination.Item>
-						{:else}
-							<Pagination.Item isVisible={currentPage == page.value}>
-								<Pagination.Link
-									{page}
-									isActive={currentPage == page.value}>
-									{page.value}
-								</Pagination.Link>
-							</Pagination.Item>
-						{/if}
-					{/each}
-					<Pagination.Item>
-						<Pagination.NextButton />
-					</Pagination.Item>
-				</Pagination.Content>
-			</Pagination.Root>
-		</div>
 	{:else}
 		<div class="flex h-full w-full items-center justify-center">
 			<div class="flex flex-col items-center gap-12">
@@ -321,6 +296,59 @@
 			</div>
 		</div>
 	{/if}
+{/await}
+
+{#await data.pagination}
+	<!-- promise is pending -->
+{:then pagination}
+	<div class="flex items-center justify-between border-t p-4">
+		<Select.Root bind:selected={perPage}>
+			<Select.Trigger class="w-[180px]">
+				<Select.Value placeholder="Page Size" />
+			</Select.Trigger>
+			<Select.Content>
+				<Select.Group>
+					<Select.Label>Page Size</Select.Label>
+					{#each [10, 20, 50, 100] as pageSize}
+						<Select.Item value={pageSize} label={pageSize.toString()}
+							>{pageSize}</Select.Item>
+					{/each}
+				</Select.Group>
+			</Select.Content>
+			<Select.Input name="favoriteFruit" />
+		</Select.Root>
+		<Pagination.Root
+			class="items-end "
+			count={pagination[0].count}
+			bind:page
+			perPage={perPage.value}
+			let:pages
+			let:currentPage>
+			<Pagination.Content>
+				<Pagination.Item>
+					<Pagination.PrevButton />
+				</Pagination.Item>
+				{#each pages as page (page.key)}
+					{#if page.type === 'ellipsis'}
+						<Pagination.Item>
+							<Pagination.Ellipsis />
+						</Pagination.Item>
+					{:else}
+						<Pagination.Item isVisible={currentPage == page.value}>
+							<Pagination.Link
+								{page}
+								isActive={currentPage == page.value}>
+								{page.value}
+							</Pagination.Link>
+						</Pagination.Item>
+					{/if}
+				{/each}
+				<Pagination.Item>
+					<Pagination.NextButton />
+				</Pagination.Item>
+			</Pagination.Content>
+		</Pagination.Root>
+	</div>
 {/await}
 
 <EditShortenerDialog

@@ -1,5 +1,5 @@
 import { db } from '$lib/db'
-import { and, count, eq } from 'drizzle-orm'
+import { and, count, eq, ilike } from 'drizzle-orm'
 import { shortener } from '$lib/db/schema'
 import type { PageServerLoad } from './$types'
 
@@ -7,6 +7,7 @@ export const load = (async (event) => {
 	const user = event.locals.userObject
 
 	const project_uuid = event.url.searchParams.get('project')
+	const search = event.url.searchParams.get('search')
 	let page = parseInt(event.url.searchParams.get('page') ?? '1')
 	let perPage = parseInt(
 		event.url.searchParams.get('perPage') ?? '10',
@@ -47,22 +48,28 @@ export const load = (async (event) => {
 			project: true,
 		},
 		orderBy: (shortener, { desc }) => [desc(shortener.createdAt)],
-		where: (shortener, { eq, and, isNull }) =>
+		where: (shortener, { eq, and, ilike }) =>
 			and(
 				eq(shortener.userId, user.id),
 				project_id ? eq(shortener.projectId, project_id) : undefined,
+				search
+					? ilike(shortener.link, `%${decodeURI(search)}%`)
+					: undefined,
 			),
 		offset: perPage * (page - 1),
 		limit: perPage,
 	})
 
-	const pagination = await db
+	const pagination = db
 		.select({ count: count() })
 		.from(shortener)
 		.where(
 			and(
 				eq(shortener.userId, user.id),
 				project_id ? eq(shortener.projectId, project_id) : undefined,
+				search
+					? ilike(shortener.link, `%${decodeURI(search)}%`)
+					: undefined,
 			),
 		)
 
@@ -81,6 +88,7 @@ export const load = (async (event) => {
 		settings,
 		page,
 		perPage,
-		pagination: pagination[0],
+		search,
+		pagination,
 	}
 }) satisfies PageServerLoad
