@@ -8,6 +8,10 @@
 	export let data: PageData
 </script>
 
+<svelte:head>
+	<title>Home</title>
+</svelte:head>
+
 <div class="flex flex-col gap-4 px-10 py-8">
 	<h2 class="text-2xl font-bold tracking-tight">Projects</h2>
 	<Separator class="" />
