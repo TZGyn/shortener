@@ -1,12 +1,22 @@
 import { db } from '$lib/db'
-import { sql } from 'drizzle-orm'
+import {
+	and,
+	asc,
+	desc,
+	eq,
+	getTableColumns,
+	ilike,
+	sql,
+} from 'drizzle-orm'
 import type { PageServerLoad } from './$types'
+import { project, shortener, visitor } from '$lib/db/schema'
 
 export const load = (async (event) => {
 	const user = event.locals.userObject
 
 	const project_uuid = event.url.searchParams.get('project')
 	const search = event.url.searchParams.get('search')
+	let sortBy = event.url.searchParams.get('sortBy')
 	let page = parseInt(event.url.searchParams.get('page') ?? '1')
 	let perPage = parseInt(
 		event.url.searchParams.get('perPage') ?? '10',
@@ -18,6 +28,14 @@ export const load = (async (event) => {
 
 	if (isNaN(perPage)) {
 		perPage = 10
+	}
+
+	if (
+		sortBy !== 'latest' &&
+		sortBy !== 'oldest' &&
+		sortBy !== 'most_visited'
+	) {
+		sortBy = 'latest'
 	}
 
 	let project_id: number | undefined
@@ -41,16 +59,16 @@ export const load = (async (event) => {
 		}
 	}
 
-	const shorteners = db.query.shortener.findMany({
-		extras: {
+	const shortenerColumns = getTableColumns(shortener)
+	const shorteners = db
+		.select({
+			...shortenerColumns,
+			projectName: project.name,
 			fullcount: sql<number>`count(*) over()`.as('fullcount'),
-		},
-		with: {
-			visitor: true,
-			project: true,
-		},
-		orderBy: (shortener, { desc }) => [desc(shortener.createdAt)],
-		where: (shortener, { eq, and, ilike }) =>
+			visitorCount: sql<number>`count(${visitor.id})`,
+		})
+		.from(shortener)
+		.where(
 			and(
 				eq(shortener.userId, user.id),
 				project_id ? eq(shortener.projectId, project_id) : undefined,
@@ -58,9 +76,20 @@ export const load = (async (event) => {
 					? ilike(shortener.link, `%${decodeURI(search)}%`)
 					: undefined,
 			),
-		offset: perPage * (page - 1),
-		limit: perPage,
-	})
+		)
+		.leftJoin(visitor, eq(shortener.id, visitor.shortenerId))
+		.leftJoin(project, eq(shortener.projectId, project.id))
+		.groupBy(shortener.id, project.id)
+		.offset(perPage * (page - 1))
+		.limit(perPage)
+
+	if (sortBy === 'latest') {
+		shorteners.orderBy(desc(shortener.createdAt))
+	} else if (sortBy === 'oldest') {
+		shorteners.orderBy(asc(shortener.createdAt))
+	} else if (sortBy === 'most_visited') {
+		shorteners.orderBy(sql`count(${visitor.id}) desc`)
+	}
 
 	const projects = db.query.project.findMany({
 		where: (project, { eq }) => eq(project.userId, user.id),
@@ -78,5 +107,6 @@ export const load = (async (event) => {
 		page,
 		perPage,
 		search,
+		sortBy,
 	}
 }) satisfies PageServerLoad

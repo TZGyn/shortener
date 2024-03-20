@@ -7,6 +7,7 @@
 	type $$Events = SelectPrimitive.TriggerEvents
 
 	let className: $$Props['class'] = undefined
+	export let customIcon: any
 	export { className as class }
 </script>
 
@@ -21,6 +22,12 @@
 	on:keydown>
 	<slot {builder} />
 	<div>
-		<ChevronDown class="h-4 w-4 opacity-50" />
+		{#if customIcon}
+			<svelte:component
+				this={customIcon}
+				class="h-4 w-4 opacity-50" />
+		{:else}
+			<ChevronDown class="h-4 w-4 opacity-50" />
+		{/if}
 	</div>
 </SelectPrimitive.Trigger>

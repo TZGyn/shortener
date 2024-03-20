@@ -24,6 +24,7 @@
 		QrCode,
 		Check,
 		ChevronsUpDown,
+		SortDescIcon,
 	} from 'lucide-svelte'
 
 	import Qr from '$lib/components/QR.svelte'
@@ -85,14 +86,17 @@
 	$: selectedProjectUUID = data.selected_project.value
 	let search: string | null = data.search
 	let searchUpdateTimeout: any
+	let sortBy: any = { label: data.sortBy, value: data.sortBy }
 
-	$: browser && updateUrl(selectedProjectUUID, page, perPage, search)
+	$: browser &&
+		updateUrl(selectedProjectUUID, page, perPage, search, sortBy)
 
 	const updateUrl = (
 		selectedProjectUUID: string | null,
 		page: number,
 		perPage: any,
 		search: string | null,
+		sortBy: any,
 	) => {
 		let query = [`page=${page}`, `perPage=${perPage.value}`]
 		if (selectedProjectUUID) {
@@ -100,6 +104,9 @@
 		}
 		if (search) {
 			query.push(`search=${encodeURI(search)}`)
+		}
+		if (sortBy) {
+			query.push(`sortBy=${sortBy.value}`)
 		}
 
 		goto(`/links?${query.join('&')}`)
@@ -162,6 +169,21 @@
 			</Command.Root>
 		</Popover.Content>
 	</Popover.Root>
+	<Select.Root bind:selected={sortBy}>
+		<Select.Trigger class="w-[180px]" customIcon={SortDescIcon}>
+			<Select.Value placeholder="Sort By" />
+		</Select.Trigger>
+		<Select.Content>
+			<Select.Group>
+				<Select.Label>Sort By</Select.Label>
+				{#each ['latest', 'oldest', 'most_visited'] as sortBy}
+					<Select.Item value={sortBy} label={sortBy}
+						>{sortBy}</Select.Item>
+				{/each}
+			</Select.Group>
+		</Select.Content>
+		<Select.Input name="favoriteFruit" />
+	</Select.Root>
 	<Input
 		type="text"
 		placeholder="search"
@@ -212,9 +234,9 @@
 									<ExternalLink size={16} />
 								</div>
 								<div class="flex gap-4">
-									{#if shortener.project}
+									{#if shortener.projectName}
 										<Badge variant="secondary"
-											>{shortener.project.name}</Badge>
+											>{shortener.projectName}</Badge>
 									{/if}
 									<Badge variant="outline" class="flex gap-2">
 										{#if shortener.active}
@@ -241,7 +263,7 @@
 										class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm">
 										<BarChart size={20} />
 										<div>
-											{shortener.visitor.length} visits
+											{shortener.visitorCount} visits
 										</div>
 									</Button>
 									<Button
