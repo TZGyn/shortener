@@ -166,9 +166,9 @@
 		type="text"
 		placeholder="search"
 		class="max-w-[250px]"
+		autofocus
 		value={search}
-		on:keyup={({ target, key }) => {
-			if (key !== 'Enter') return
+		on:input={({ target }) => {
 			clearTimeout(searchUpdateTimeout)
 			searchUpdateTimeout = setTimeout(() => {
 				search = target.value
