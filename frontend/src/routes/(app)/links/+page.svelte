@@ -30,7 +30,6 @@
 	import AddShortenerDialog from './(component)/AddShortenerDialog.svelte'
 	import EditShortenerDialog from './(component)/EditShortenerDialog.svelte'
 	import DeleteShortenerDialog from './(component)/DeleteShortenerDialog.svelte'
-	import { onMount } from 'svelte'
 
 	export let data: PageData
 
@@ -83,6 +82,7 @@
 	let page: number = data.page
 	let perPage: any = { label: data.perPage, value: data.perPage }
 	let selectedProjectUUID: string | null
+	$: selectedProjectUUID = data.selected_project.value
 	let search: string | null = data.search
 	let searchUpdateTimeout: any
 
