@@ -42,7 +42,7 @@ export const POST: RequestHandler = async (event) => {
 		const token = nanoid(32)
 
 		const expiresAt = new Date()
-		expiresAt.setTime(expiresAt.getTime() + 4 * 60 * 60 * 1000)
+		expiresAt.setTime(expiresAt.getTime() + 30 * 24 * 60 * 60 * 1000)
 
 		await db
 			.insert(sessionSchema)
