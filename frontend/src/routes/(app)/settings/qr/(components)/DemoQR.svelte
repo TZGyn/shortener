@@ -1,32 +1,31 @@
 <script>
 	import { onMount } from 'svelte'
-	import { default as QrCode } from 'qrious'
+	import QRCode from 'qrcode'
 
-	export let errorCorrection = 'L'
 	export let background = '#fff'
 	export let color = '#000'
-	export let size = '300'
 	export let value = 'example.com/abcdefgh'
-	export let padding = 10
-	export let className = 'qrcode'
 
 	let image = ''
 
-	function generateQrCode() {
+	async function generateQrCode() {
 		if (!document || !window) {
 			return
 		}
-		const QRcode = new QrCode()
-		QRcode.set({
-			background,
-			foreground: color,
-			level: errorCorrection,
-			padding,
-			size,
-			value,
-		})
 
-		image = QRcode.toDataURL()
+		try {
+			image = await QRCode.toDataURL(value, {
+				errorCorrectionLevel: 'L',
+				margin: 1,
+				scale: 20,
+				color: {
+					light: background,
+					dark: color,
+				},
+			})
+		} catch (e) {
+			image = ''
+		}
 	}
 
 	onMount(() => {
@@ -34,4 +33,4 @@
 	})
 </script>
 
-<img src={image} alt={value} class={className} />
+<img src={image} alt={value} width={300} height={300} />

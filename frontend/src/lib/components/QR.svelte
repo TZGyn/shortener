@@ -1,18 +1,11 @@
 <script>
-	import { onMount } from 'svelte'
-	import { default as QrCode } from 'qrious'
+	import QRCode from 'qrcode'
 	import Button from './ui/button/button.svelte'
 	import { toast } from 'svelte-sonner'
 
-	const QRcode = new QrCode()
-
-	export let errorCorrection = 'L'
 	export let background = '#fff'
 	export let color = '#000'
-	export let size = '300'
 	export let value = ''
-	export let padding = 10
-	export let className = 'qrcode'
 	export let code = ''
 
 	let image = ''
@@ -38,21 +31,24 @@
 		}
 	}
 
-	function generateQrCode() {
-		QRcode.set({
-			background,
-			foreground: color,
-			level: errorCorrection,
-			padding,
-			size,
-			value,
-		})
-
-		image = QRcode.toDataURL()
-	}
-
-	export function getImage() {
-		return image
+	async function generateQrCode() {
+		try {
+			image = await QRCode.toDataURL(value, {
+				errorCorrectionLevel: 'L',
+				margin: 1,
+				scale: 20,
+				color: {
+					light: background,
+					dark: color,
+				},
+			})
+		} catch (e) {
+			image = await QRCode.toDataURL(value, {
+				errorCorrectionLevel: 'L',
+				margin: 1,
+				scale: 20,
+			})
+		}
 	}
 
 	$: {
@@ -60,13 +56,9 @@
 			generateQrCode()
 		}
 	}
-
-	onMount(() => {
-		generateQrCode()
-	})
 </script>
 
-<img src={image} alt={value} class={className} />
+<img src={image} alt={value} width={300} height={300} />
 <div class="flex w-full gap-4">
 	<Button class="w-full" on:click={copyImageToClipboard}
 		>Copy Image</Button>
