@@ -80,36 +80,25 @@
 		qrDialogOpen = true
 	}
 
-	let page: number = data.page
-	let perPage: any = { label: data.perPage, value: data.perPage }
-	let selectedProjectUUID: string | null
-	$: selectedProjectUUID = data.selected_project.value
 	let search: string | null = data.search
 	let searchUpdateTimeout: any
-	let sortBy: any = { label: data.sortBy, value: data.sortBy }
 
 	$: browser &&
-		updateUrl(selectedProjectUUID, page, perPage, search, sortBy)
+		goto(updateSearchParam([{ name: 'search', value: search }]))
 
-	const updateUrl = (
-		selectedProjectUUID: string | null,
-		page: number,
-		perPage: any,
-		search: string | null,
-		sortBy: any,
+	const updateSearchParam = (
+		params: { name: string; value: any }[],
 	) => {
-		let query = [`page=${page}`, `perPage=${perPage.value}`]
-		if (selectedProjectUUID) {
-			query.push(`project=${selectedProjectUUID}`)
-		}
-		if (search) {
-			query.push(`search=${encodeURI(search)}`)
-		}
-		if (sortBy) {
-			query.push(`sortBy=${sortBy.value}`)
-		}
-
-		goto(`/links?${query.join('&')}`)
+		const urlParams = new URLSearchParams(window.location.search)
+		params.map(({ name, value }) => {
+			if (value) {
+				urlParams.set(name, value)
+			} else {
+				urlParams.delete(name)
+			}
+		})
+		const searchParams = urlParams.toString()
+		return '/links?' + searchParams
 	}
 </script>
 
@@ -135,41 +124,61 @@
 				<Command.Input placeholder="Search project..." />
 				<Command.Empty>No project found.</Command.Empty>
 				<Command.Group>
-					<Command.Item
-						onSelect={() => {
-							selectedProjectUUID = null
-							page = 1
-							open = false
-						}}>
-						<Check
-							class={cn(
-								'mr-2 h-4 w-4',
-								data.selected_project.value !== null &&
-									'text-transparent',
-							)} />
-						All
-					</Command.Item>
-					{#each data.projects as project}
+					<a
+						href={updateSearchParam([
+							{
+								name: 'project',
+								value: undefined,
+							},
+							{
+								name: 'page',
+								value: 1,
+							},
+						])}>
 						<Command.Item
 							onSelect={() => {
-								selectedProjectUUID = project.uuid
-								page = 1
 								open = false
 							}}>
 							<Check
 								class={cn(
 									'mr-2 h-4 w-4',
-									data.selected_project.value !== project.uuid &&
+									data.selected_project.value !== null &&
 										'text-transparent',
 								)} />
-							{project.name}
+							All
 						</Command.Item>
+					</a>
+					{#each data.projects as project}
+						<a
+							href={updateSearchParam([
+								{
+									name: 'project',
+									value: project.uuid,
+								},
+								{
+									name: 'page',
+									value: 1,
+								},
+							])}>
+							<Command.Item
+								onSelect={() => {
+									open = false
+								}}>
+								<Check
+									class={cn(
+										'mr-2 h-4 w-4',
+										data.selected_project.value !== project.uuid &&
+											'text-transparent',
+									)} />
+								{project.name}
+							</Command.Item>
+						</a>
 					{/each}
 				</Command.Group>
 			</Command.Root>
 		</Popover.Content>
 	</Popover.Root>
-	<Select.Root bind:selected={sortBy}>
+	<Select.Root selected={{ label: data.sortBy, value: data.sortBy }}>
 		<Select.Trigger class="w-[180px]" customIcon={SortDescIcon}>
 			<Select.Value placeholder="Sort By" />
 		</Select.Trigger>
@@ -177,8 +186,15 @@
 			<Select.Group>
 				<Select.Label>Sort By</Select.Label>
 				{#each ['latest', 'oldest', 'most_visited'] as sortBy}
-					<Select.Item value={sortBy} label={sortBy}
-						>{sortBy}</Select.Item>
+					<a
+						href={updateSearchParam([
+							{ name: 'sortBy', value: sortBy },
+							{ name: 'page', value: 1 },
+						])}>
+						<Select.Item value={sortBy} label={sortBy}>
+							{sortBy}
+						</Select.Item>
+					</a>
 				{/each}
 			</Select.Group>
 		</Select.Content>
@@ -304,57 +320,8 @@
 				{/each}
 			</div>
 		</ScrollArea>
-		<div class="flex items-center justify-between border-t p-4">
-			<Select.Root bind:selected={perPage}>
-				<Select.Trigger class="w-[180px]">
-					<Select.Value placeholder="Page Size" />
-				</Select.Trigger>
-				<Select.Content>
-					<Select.Group>
-						<Select.Label>Page Size</Select.Label>
-						{#each [10, 20, 50, 100] as pageSize}
-							<Select.Item
-								value={pageSize}
-								label={pageSize.toString()}>{pageSize}</Select.Item>
-						{/each}
-					</Select.Group>
-				</Select.Content>
-				<Select.Input name="favoriteFruit" />
-			</Select.Root>
-			<Pagination.Root
-				class="items-end "
-				count={shorteners[0].fullcount}
-				bind:page
-				perPage={perPage.value}
-				let:pages
-				let:currentPage>
-				<Pagination.Content>
-					<Pagination.Item>
-						<Pagination.PrevButton />
-					</Pagination.Item>
-					{#each pages as page (page.key)}
-						{#if page.type === 'ellipsis'}
-							<Pagination.Item>
-								<Pagination.Ellipsis />
-							</Pagination.Item>
-						{:else}
-							<Pagination.Item isVisible={currentPage == page.value}>
-								<Pagination.Link
-									{page}
-									isActive={currentPage == page.value}>
-									{page.value}
-								</Pagination.Link>
-							</Pagination.Item>
-						{/if}
-					{/each}
-					<Pagination.Item>
-						<Pagination.NextButton />
-					</Pagination.Item>
-				</Pagination.Content>
-			</Pagination.Root>
-		</div>
 	{:else}
-		<div class="flex h-full w-full items-center justify-center">
+		<div class="flex w-full flex-grow items-center justify-center">
 			<div class="flex flex-col items-center gap-12">
 				<div class="flex flex-col items-center gap-4">
 					<div class="text-4xl font-bold">No Shortener Found</div>
@@ -367,6 +334,107 @@
 			</div>
 		</div>
 	{/if}
+{/await}
+
+{#await data.pagination then pagination}
+	<div class="flex items-center justify-between border-t p-4">
+		<Select.Root
+			selected={{ label: data.perPage, value: data.perPage }}>
+			<Select.Trigger class="w-[180px]">
+				<Select.Value placeholder="Page Size" />
+			</Select.Trigger>
+			<Select.Content>
+				<Select.Group>
+					<Select.Label>Page Size</Select.Label>
+					{#each [12, 24, 48, 96] as pageSize}
+						<a
+							href={updateSearchParam([
+								{
+									name: 'perPage',
+									value: pageSize,
+								},
+								{
+									name: 'page',
+									value: 1,
+								},
+							])}>
+							<Select.Item
+								value={pageSize}
+								label={pageSize.toString()}>{pageSize}</Select.Item>
+						</a>
+					{/each}
+				</Select.Group>
+			</Select.Content>
+			<Select.Input name="favoriteFruit" />
+		</Select.Root>
+		<Pagination.Root
+			class="items-end "
+			count={pagination[0].total}
+			page={data.page}
+			perPage={data.perPage}
+			let:pages
+			let:currentPage>
+			<Pagination.Content>
+				{#if data.page <= 1}
+					<Pagination.Item>
+						<Pagination.PrevButton />
+					</Pagination.Item>
+				{:else}
+					<a
+						href={updateSearchParam([
+							{
+								name: 'page',
+								value: data.page - 1,
+							},
+						])}>
+						<Pagination.Item>
+							<Pagination.PrevButton />
+						</Pagination.Item>
+					</a>
+				{/if}
+				{#each pages as page (page.key)}
+					{#if page.type === 'ellipsis'}
+						<Pagination.Item>
+							<Pagination.Ellipsis />
+						</Pagination.Item>
+					{:else}
+						<a
+							href={updateSearchParam([
+								{
+									name: 'page',
+									value: page.value,
+								},
+							])}>
+							<Pagination.Item isVisible={currentPage == page.value}>
+								<Pagination.Link
+									{page}
+									isActive={currentPage == page.value}>
+									{page.value}
+								</Pagination.Link>
+							</Pagination.Item>
+						</a>
+					{/if}
+				{/each}
+				{#if data.page >= pagination[0].total / data.perPage}
+					<Pagination.Item>
+						<Pagination.NextButton />
+					</Pagination.Item>
+				{:else}
+					<a
+						href={updateSearchParam([
+							{
+								name: 'page',
+								value: data.page + 1,
+							},
+						])}>
+						<Pagination.Item>
+							<Pagination.NextButton />
+						</Pagination.Item>
+					</a>
+				{/if}
+			</Pagination.Content>
+		</Pagination.Root>
+	</div>
 {/await}
 
 <EditShortenerDialog

@@ -19,7 +19,7 @@ export const load = (async (event) => {
 	let sortBy = event.url.searchParams.get('sortBy')
 	let page = parseInt(event.url.searchParams.get('page') ?? '1')
 	let perPage = parseInt(
-		event.url.searchParams.get('perPage') ?? '10',
+		event.url.searchParams.get('perPage') ?? '12',
 	)
 
 	if (isNaN(page)) {
@@ -83,6 +83,21 @@ export const load = (async (event) => {
 		.offset(perPage * (page - 1))
 		.limit(perPage)
 
+	const pagination = db
+		.select({
+			total: sql<number>`count(*)`.as('total'),
+		})
+		.from(shortener)
+		.where(
+			and(
+				eq(shortener.userId, user.id),
+				project_id ? eq(shortener.projectId, project_id) : undefined,
+				search
+					? ilike(shortener.link, `%${decodeURI(search)}%`)
+					: undefined,
+			),
+		)
+
 	if (sortBy === 'latest') {
 		shorteners.orderBy(desc(shortener.createdAt))
 	} else if (sortBy === 'oldest') {
@@ -108,5 +123,6 @@ export const load = (async (event) => {
 		perPage,
 		search,
 		sortBy,
+		pagination,
 	}
 }) satisfies PageServerLoad
