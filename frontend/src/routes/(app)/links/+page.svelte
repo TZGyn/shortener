@@ -98,15 +98,15 @@
 			}
 		})
 		const searchParams = urlParams.toString()
-		return '/links?' + searchParams
+		if (searchParams) {
+			return '/links?' + searchParams
+		} else {
+			return '/links'
+		}
 	}
 </script>
 
-<svelte:head>
-	<title>Shorteners</title>
-</svelte:head>
-
-<div class="flex items-center justify-start gap-4 p-4">
+<div class="flex gap-4 justify-start items-center p-4">
 	<Popover.Root bind:open>
 		<Popover.Trigger asChild let:builder>
 			<Button
@@ -114,12 +114,12 @@
 				variant="outline"
 				role="combobox"
 				aria-expanded={open}
-				class="w-[200px] justify-between">
+				class="justify-between w-[200px]">
 				{selectedProject}
-				<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+				<ChevronsUpDown class="ml-2 w-4 h-4 opacity-50 shrink-0" />
 			</Button>
 		</Popover.Trigger>
-		<Popover.Content class="w-[200px] p-0">
+		<Popover.Content class="p-0 w-[200px]">
 			<Command.Root>
 				<Command.Input placeholder="Search project..." />
 				<Command.Empty>No project found.</Command.Empty>
@@ -219,14 +219,14 @@
 
 {#await data.shorteners}
 	<div class="flex flex-wrap gap-4 p-4">
-		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
-		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
-		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
-		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
-		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
-		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
-		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
-		<Skeleton class="h-[150px] w-[500px] rounded-lg" />
+		<Skeleton class="rounded-lg h-[150px] w-[500px]" />
+		<Skeleton class="rounded-lg h-[150px] w-[500px]" />
+		<Skeleton class="rounded-lg h-[150px] w-[500px]" />
+		<Skeleton class="rounded-lg h-[150px] w-[500px]" />
+		<Skeleton class="rounded-lg h-[150px] w-[500px]" />
+		<Skeleton class="rounded-lg h-[150px] w-[500px]" />
+		<Skeleton class="rounded-lg h-[150px] w-[500px]" />
+		<Skeleton class="rounded-lg h-[150px] w-[500px]" />
 	</div>
 {:then shorteners}
 	{#if shorteners.length > 0}
@@ -236,8 +236,8 @@
 					<Card.Root class="w-full max-w-[500px]">
 						<Card.Header>
 							<Card.Title
-								class="flex items-center justify-between gap-2">
-								<div class="flex items-center gap-2">
+								class="flex gap-2 justify-between items-center">
+								<div class="flex gap-2 items-center">
 									<a
 										href={'https://' +
 											data.shortener_url +
@@ -257,12 +257,12 @@
 									<Badge variant="outline" class="flex gap-2">
 										{#if shortener.active}
 											<span
-												class="relative inline-flex h-2 w-2 rounded-full bg-green-400"
+												class="inline-flex relative w-2 h-2 bg-green-400 rounded-full"
 											></span>
 											Active
 										{:else}
 											<span
-												class="relative inline-flex h-2 w-2 rounded-full bg-gray-600"
+												class="inline-flex relative w-2 h-2 bg-gray-600 rounded-full"
 											></span>
 											Inactive
 										{/if}
@@ -272,18 +272,18 @@
 							<Card.Description>{shortener.link}</Card.Description>
 						</Card.Header>
 						<Card.Content>
-							<div class="flex items-center justify-between">
+							<div class="flex justify-between items-center">
 								<div class="flex gap-2">
 									<Button
 										href={`/links/${shortener.code}`}
-										class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm">
+										class="flex gap-1 justify-center items-center h-8 text-sm rounded bg-secondary">
 										<BarChart size={20} />
 										<div>
 											{shortener.visitorCount} visits
 										</div>
 									</Button>
 									<Button
-										class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm"
+										class="flex gap-1 justify-center items-center h-8 text-sm rounded bg-secondary"
 										on:click={() => openQRDialog(shortener.code)}>
 										<QrCode size={20} />
 									</Button>
@@ -321,9 +321,9 @@
 			</div>
 		</ScrollArea>
 	{:else}
-		<div class="flex w-full flex-grow items-center justify-center">
-			<div class="flex flex-col items-center gap-12">
-				<div class="flex flex-col items-center gap-4">
+		<div class="flex flex-grow justify-center items-center w-full">
+			<div class="flex flex-col gap-12 items-center">
+				<div class="flex flex-col gap-4 items-center">
 					<div class="text-4xl font-bold">No Shortener Found</div>
 				</div>
 				<Button
@@ -337,7 +337,7 @@
 {/await}
 
 {#await data.pagination then pagination}
-	<div class="flex items-center justify-between border-t p-4">
+	<div class="flex justify-between items-center p-4 border-t">
 		<Select.Root
 			selected={{ label: data.perPage, value: data.perPage }}>
 			<Select.Trigger class="w-[180px]">
@@ -368,7 +368,7 @@
 			<Select.Input name="favoriteFruit" />
 		</Select.Root>
 		<Pagination.Root
-			class="items-end "
+			class="items-end"
 			count={pagination[0].total}
 			page={data.page}
 			perPage={data.perPage}
@@ -455,7 +455,7 @@
 				Use this QR code to share the shortener.
 			</Dialog.Description>
 		</Dialog.Header>
-		<div class="flex h-full flex-col items-center gap-4">
+		<div class="flex flex-col gap-4 items-center h-full">
 			<Badge variant="secondary">
 				{data.shortener_url + '/' + qrCode}
 			</Badge>
