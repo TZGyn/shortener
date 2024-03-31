@@ -34,6 +34,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@prgm/sveltekit-progress-bar": "^2.0.0",
     "@types/he": "^1.2.3",
     "apexcharts": "^3.44.0",
     "bits-ui": "^0.19.7",
