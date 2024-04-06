@@ -9,7 +9,8 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --plugin-search-dir . --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "migrate": "bun ./src/lib/db/migrate.ts"
   },
   "devDependencies": {
     "@sveltejs/adapter-node": "^2.0.0",
