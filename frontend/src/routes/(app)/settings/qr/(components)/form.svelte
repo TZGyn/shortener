@@ -8,7 +8,6 @@
 		superForm,
 	} from 'sveltekit-superforms'
 	import { zodClient } from 'sveltekit-superforms/adapters'
-	import SuperDebug from 'sveltekit-superforms'
 	import { toast } from 'svelte-sonner'
 	import DemoQr from './DemoQR.svelte'
 
@@ -53,4 +52,3 @@
 	</Form.Field>
 	<Form.Button class="w-fit">Save</Form.Button>
 </form>
-<SuperDebug data={formData} />
