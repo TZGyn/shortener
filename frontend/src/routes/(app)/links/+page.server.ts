@@ -12,7 +12,7 @@ import type { PageServerLoad } from './$types'
 import { project, shortener, visitor } from '$lib/db/schema'
 
 export const load = (async (event) => {
-	const user = event.locals.userObject
+	const user = event.locals.user
 
 	const project_uuid = event.url.searchParams.get('project')
 	const search = event.url.searchParams.get('search')

@@ -92,9 +92,10 @@ export const visitorRelations = relations(visitor, ({ one }) => ({
 }))
 
 export const session = pgTable('session', {
-	token: varchar('token', { length: 255 }).notNull(),
+	id: varchar('id', { length: 255 }).primaryKey(),
 	userId: integer('user_id').notNull(),
-	expiresAt: timestamp('expires', {
+	expiresAt: timestamp('expires_at', {
+		withTimezone: true,
 		mode: 'date',
 	}).notNull(),
 })

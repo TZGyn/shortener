@@ -5,7 +5,7 @@ import { and, eq, sql } from 'drizzle-orm'
 import { visitor as visitorSchema } from '$lib/db/schema'
 
 export const load = (async (event) => {
-	const user = event.locals.userObject
+	const user = event.locals.user
 	const shortenerId = event.params.id
 
 	const shortener = await db.query.shortener.findFirst({

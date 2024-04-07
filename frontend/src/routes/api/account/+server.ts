@@ -10,7 +10,7 @@ export const GET: RequestHandler = async () => {
 
 export const PUT: RequestHandler = async (event) => {
 	const body = await event.request.json()
-	const userId = event.locals.userObject.id
+	const userId = event.locals.user.id
 
 	const userUpdateData = userUpdateSchema.safeParse(body)
 

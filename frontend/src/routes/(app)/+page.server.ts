@@ -4,7 +4,7 @@ import { db } from '$lib/db'
 import { sql } from 'drizzle-orm'
 
 export const load = (async (event) => {
-	const user = event.locals.userObject
+	const user = event.locals.user
 
 	const projects = await db.query.project.findMany({
 		with: {

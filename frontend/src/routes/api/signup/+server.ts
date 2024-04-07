@@ -1,12 +1,9 @@
 import type { RequestHandler } from './$types'
-import {
-	session as sessionSchema,
-	user as userSchema,
-} from '$lib/db/schema'
+import { user as userSchema } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { userCreateSchema } from '$lib/server/types'
 import { db } from '$lib/db'
-import { nanoid } from 'nanoid'
+import { lucia } from '$lib/server/auth'
 
 export const GET: RequestHandler = async () => {
 	return new Response()
@@ -54,20 +51,16 @@ export const POST: RequestHandler = async (event) => {
 			.returning()
 
 		const user = returnUsers[0]
-		const token = nanoid(32)
 
-		const expiresAt = new Date()
-		expiresAt.setTime(expiresAt.getTime() + 4 * 60 * 60 * 1000)
+		const session = await lucia.createSession(user.id, {})
+		const sessionCookie = lucia.createSessionCookie(session.id)
 
-		await db
-			.insert(sessionSchema)
-			.values({ userId: user.id, token, expiresAt })
-		event.cookies.set('token', token, {
-			httpOnly: true,
-			sameSite: 'strict',
+		event.cookies.set(sessionCookie.name, sessionCookie.value, {
+			...sessionCookie.attributes,
 			path: '/',
-			secure: process.env.APP_ENV === 'prod' ? true : false,
+			secure: Bun.env.APP_ENV === 'prod',
 		})
+
 		return new Response(
 			JSON.stringify({
 				success: true,

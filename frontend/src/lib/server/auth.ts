@@ -1,42 +1,24 @@
-import type { RequestEvent } from '@sveltejs/kit'
+import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle'
 import { db } from '$lib/db'
-import { session as sessionSchema } from '$lib/db/schema'
-import { eq } from 'drizzle-orm'
+import { session, user, type User } from '$lib/db/schema'
+import { Lucia } from 'lucia'
 
-export const getUserFromSessionToken = async (token: string) => {
-	const now = new Date()
-	const sessions = await db.query.session.findFirst({
-		with: {
-			user: true,
-		},
-		where: (session, { eq, gt, and }) =>
-			and(eq(session.token, token), gt(session.expiresAt, now)),
-	})
-
-	const session = sessions
-
-	if (!session) {
-		return null
+declare module 'lucia' {
+	interface Register {
+		Lucia: typeof lucia
+		UserId: number
+		DatabaseUserAttributes: DatabaseUserAttributes
 	}
-	return session.user
 }
 
-export const logoutUser = async (token: string) => {
-	const now = new Date()
-	await db
-		.update(sessionSchema)
-		.set({ expiresAt: now })
-		.where(eq(sessionSchema.token, token))
-}
+interface DatabaseUserAttributes extends Omit<User, 'password'> {}
 
-export const getUserFromEvent = async (event: RequestEvent) => {
-	const token = event.cookies.get('token')
+const adapter = new DrizzlePostgreSQLAdapter(db, session, user)
 
-	if (!token) {
-		return null
-	}
-
-	const user = await getUserFromSessionToken(token)
-
-	return user
-}
+export const lucia = new Lucia(adapter, {
+	getUserAttributes: (attributes) => {
+		return {
+			...attributes,
+		}
+	},
+})

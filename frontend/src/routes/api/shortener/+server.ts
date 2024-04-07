@@ -27,7 +27,7 @@ export const POST: RequestHandler = async (event) => {
 		)
 	}
 
-	const user = event.locals.userObject
+	const user = event.locals.user
 
 	const code = nanoid(8)
 

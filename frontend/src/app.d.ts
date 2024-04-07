@@ -7,7 +7,8 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			userObject: User
+			user: import('lucia').User
+			session: import('lucia').Session | null
 		}
 		// interface PageData {}
 		// interface Platform {}

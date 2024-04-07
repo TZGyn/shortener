@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types'
 import { z } from 'zod'
 
 export const GET: RequestHandler = async (event) => {
-	const user = event.locals.userObject
+	const user = event.locals.user
 	const shortenerId = event.params.id
 
 	const shortener = await db.query.shortener.findFirst({
@@ -36,7 +36,7 @@ const updateShortenerSchema = z.object({
 })
 
 export const PUT: RequestHandler = async (event) => {
-	const user = event.locals.userObject
+	const user = event.locals.user
 
 	const shortenerId = event.params.id
 	const body = await event.request.json()
@@ -71,7 +71,7 @@ export const PUT: RequestHandler = async (event) => {
 
 export const DELETE: RequestHandler = async (event) => {
 	const shortenerId = event.params.id
-	const user = event.locals.userObject
+	const user = event.locals.user
 
 	await db
 		.delete(shortenerSchema)

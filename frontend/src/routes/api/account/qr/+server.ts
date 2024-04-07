@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types'
 export const PUT: RequestHandler = async (event) => {
 	const body = await event.request.json()
 	const qrUpdate = qrUpdateSchema.safeParse(body)
-	const userId = event.locals.userObject.id
+	const userId = event.locals.user.id
 
 	if (!qrUpdate.success) {
 		return new Response(JSON.stringify({ success: false }))

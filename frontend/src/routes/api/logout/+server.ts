@@ -1,4 +1,4 @@
-import { logoutUser } from '$lib/server/auth'
+import { lucia } from '$lib/server/auth'
 import type { RequestHandler } from './$types'
 
 export const GET: RequestHandler = async () => {
@@ -6,8 +6,7 @@ export const GET: RequestHandler = async () => {
 }
 
 export const POST: RequestHandler = async (event) => {
-	const token = event.cookies.get('token')
-	if (!token) {
+	if (!event.locals.session) {
 		return new Response(
 			JSON.stringify({
 				success: false,
@@ -15,7 +14,12 @@ export const POST: RequestHandler = async (event) => {
 			}),
 		)
 	}
-	logoutUser(token)
-	event.cookies.delete('token', { path: '/' })
+	await lucia.invalidateSession(event.locals.session.id)
+	const sessionCookie = lucia.createBlankSessionCookie()
+	event.cookies.set(sessionCookie.name, sessionCookie.value, {
+		...sessionCookie.attributes,
+		path: '/',
+		secure: Bun.env.APP_ENV === 'prod',
+	})
 	return new Response(JSON.stringify({ success: true }))
 }

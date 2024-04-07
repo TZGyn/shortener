@@ -1,8 +1,8 @@
-import { getUserFromEvent } from '$lib/server/auth'
+import { lucia } from '$lib/server/auth'
 import { redirect, type Handle } from '@sveltejs/kit'
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const userObject = await getUserFromEvent(event)
+	const sessionId = event.cookies.get(lucia.sessionCookieName)
 
 	const pathname = event.url.pathname
 
@@ -14,22 +14,43 @@ export const handle: Handle = async ({ event, resolve }) => {
 	]
 
 	if (allowedPath.includes(pathname)) {
-		if (userObject) {
+		if (sessionId) {
 			redirect(303, '/')
 		}
+		event.locals.session = null
 		const response = await resolve(event)
 
 		return response
 	}
 
-	if (!userObject) {
-		return new Response(null, {
-			status: 300,
-			headers: { location: '/login' },
+	if (!sessionId) {
+		redirect(303, '/login')
+	}
+	const { session, user } = await lucia.validateSession(sessionId)
+
+	if (!user) {
+		redirect(303, '/login')
+	}
+
+	if (session && session.fresh) {
+		const sessionCookie = lucia.createSessionCookie(session.id)
+		// sveltekit types deviates from the de-facto standard
+		// you can use 'as any' too
+		event.cookies.set(sessionCookie.name, sessionCookie.value, {
+			path: '.',
+			...sessionCookie.attributes,
+		})
+	}
+	if (!session) {
+		const sessionCookie = lucia.createBlankSessionCookie()
+		event.cookies.set(sessionCookie.name, sessionCookie.value, {
+			path: '/',
+			...sessionCookie.attributes,
 		})
 	}
 
-	event.locals.userObject = userObject
+	event.locals.user = user
+	event.locals.session = session
 
 	const response = await resolve(event)
 

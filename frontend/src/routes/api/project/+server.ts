@@ -25,7 +25,7 @@ export const POST: RequestHandler = async (event) => {
 		)
 	}
 
-	const user = event.locals.userObject
+	const user = event.locals.user
 
 	await db.insert(project).values({
 		name: projectInsert.data.name,

@@ -4,7 +4,7 @@ import type { PageServerLoad } from './$types'
 export const load = (async (event) => {
 	const settings = await db.query.setting.findFirst({
 		where: (setting, { eq }) =>
-			eq(setting.userId, event.locals.userObject.id),
+			eq(setting.userId, event.locals.user.id),
 	})
 	return { settings }
 }) satisfies PageServerLoad
