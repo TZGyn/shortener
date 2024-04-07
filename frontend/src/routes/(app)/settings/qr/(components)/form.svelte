@@ -15,6 +15,7 @@
 
 	const form = superForm(data, {
 		validators: zodClient(formSchema),
+		invalidateAll: 'force',
 		resetForm: true,
 		onResult: ({ result }) => {
 			if (result.status === 200) {
