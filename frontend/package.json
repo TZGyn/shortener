@@ -14,8 +14,8 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-node": "^2.0.0",
-    "@sveltejs/kit": "^2.0.0",
-    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@sveltejs/kit": "^2.5.5",
+    "@sveltejs/vite-plugin-svelte": "^3.0.2",
     "@types/qrcode": "^1.5.5",
     "autoprefixer": "^10.4.14",
     "bun-types": "^1.0.11",
@@ -26,13 +26,13 @@
     "prettier": "^3.1.0",
     "prettier-plugin-svelte": "^3.1.0",
     "prettier-plugin-tailwindcss": "^0.5.7",
-    "svelte": "^4.0.5",
+    "svelte": "^4.2.12",
     "svelte-adapter-bun": "^0.5.1",
     "svelte-check": "^3.4.3",
     "tailwindcss": "^3.3.2",
     "tslib": "^2.4.1",
     "typescript": "^5.0.0",
-    "vite": "^5.0.0"
+    "vite": "^5.2.8"
   },
   "type": "module",
   "dependencies": {
@@ -40,10 +40,11 @@
     "@prgm/sveltekit-progress-bar": "^2.0.0",
     "@types/he": "^1.2.3",
     "apexcharts": "^3.44.0",
-    "bits-ui": "^0.19.7",
+    "bits-ui": "^0.21.2",
     "clsx": "^2.0.0",
     "cmdk-sv": "^0.0.13",
     "drizzle-orm": "latest",
+    "formsnap": "^1.0.0",
     "he": "^1.2.0",
     "lucide-svelte": "^0.356.0",
     "mode-watcher": "^0.1.2",
@@ -54,6 +55,7 @@
     "postgres": "^3.4.3",
     "qrcode": "^1.5.3",
     "svelte-sonner": "^0.3.10",
+    "sveltekit-superforms": "^2.12.2",
     "tailwind-merge": "^2.0.0",
     "tailwind-variants": "^0.1.18",
     "zod": "^3.22.4"

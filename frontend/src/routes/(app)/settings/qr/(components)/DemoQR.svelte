@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte'
 	import QRCode from 'qrcode'
+	import { browser } from '$app/environment'
 
 	export let background = '#fff'
 	export let color = '#000'
@@ -27,6 +28,8 @@
 			image = ''
 		}
 	}
+
+	$: browser && background && color && generateQrCode()
 
 	onMount(() => {
 		generateQrCode()
