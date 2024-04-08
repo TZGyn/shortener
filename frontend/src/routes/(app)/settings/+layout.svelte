@@ -2,39 +2,26 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area'
 	import { Separator } from '$lib/components/ui/separator'
 	import SidebarNav from './(components)/sidebar-nav.svelte'
-
-	const sidebarNavItems = [
-		{
-			title: 'Account',
-			href: '/settings/account',
-		},
-		{
-			title: 'QR',
-			href: '/settings/qr',
-		},
-	]
 </script>
 
 <svelte:head>
 	<title>Settings</title>
 </svelte:head>
 
-<div class="flex h-auto flex-col overflow-hidden p-10">
+<div class="flex overflow-hidden flex-col p-10 h-auto">
 	<div class="space-y-0.5">
 		<h2 class="text-2xl font-bold tracking-tight">Settings</h2>
-		<p class="text-muted-foreground">
-			Manage your account settings and set e-mail preferences.
-		</p>
+		<p class="text-muted-foreground">Manage your account settings.</p>
 	</div>
 	<Separator class="my-4 lg:my-6" />
-	<div class="flex h-auto flex-col overflow-hidden lg:flex-row">
-		<aside class="border-b pb-4 lg:w-1/5 lg:border-none">
-			<SidebarNav items={sidebarNavItems} />
+	<div class="flex overflow-hidden flex-col h-auto lg:flex-row">
+		<aside class="pb-4 border-b lg:w-1/5 lg:border-none">
+			<SidebarNav />
 		</aside>
 		<div
-			class="m-0 flex h-auto w-full overflow-hidden p-0 lg:max-w-2xl">
+			class="flex overflow-hidden p-0 m-0 w-full h-auto lg:max-w-2xl">
 			<ScrollArea class="mt-0 w-full">
-				<div class="py-6 lg:px-8 lg:py-0">
+				<div class="py-6 lg:py-0 lg:px-8">
 					<slot />
 				</div>
 			</ScrollArea>

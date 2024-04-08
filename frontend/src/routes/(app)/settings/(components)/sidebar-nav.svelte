@@ -3,8 +3,18 @@
 	import { page } from '$app/stores'
 	import { Button } from '$lib/components/ui/button'
 	let className: string | undefined | null = undefined
-	export let items: { href: string; title: string }[]
 	export { className as class }
+
+	const items = [
+		{
+			title: 'Account',
+			href: '/settings/account',
+		},
+		{
+			title: 'QR',
+			href: '/settings/qr',
+		},
+	] as const
 </script>
 
 <nav
