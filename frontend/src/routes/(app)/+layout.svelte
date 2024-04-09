@@ -20,10 +20,10 @@
 </script>
 
 <div
-	class="max-w-screen flex h-screen max-h-screen w-full flex-col overflow-hidden">
-	<div class="flex border-b">
+	class="flex overflow-hidden flex-col w-full h-screen max-h-screen max-w-screen">
+	<div class="flex border-b bg-muted/40">
 		<div
-			class="flex h-20 w-full items-center justify-between gap-6 p-4">
+			class="flex gap-6 justify-between items-center py-2 px-4 w-full">
 			<UserIcon email={data.user.email} />
 
 			<div class="w-full">
@@ -61,7 +61,7 @@
 	</div>
 
 	<div
-		class="block w-full border-b bg-background px-4 py-2 lg:hidden">
+		class="block py-2 px-4 w-full border-b lg:hidden bg-background">
 		<Sheet.Root bind:open={sheetOpen}>
 			<Sheet.Trigger asChild let:builder>
 				<Button builders={[builder]} variant="ghost" class="p-2">
@@ -72,7 +72,7 @@
 				<Sheet.Header class="pb-16">
 					<Sheet.Title>Shortener</Sheet.Title>
 				</Sheet.Header>
-				<div class="flex grow flex-col gap-4">
+				<div class="flex flex-col gap-4 grow">
 					<Button
 						on:click={closeSheet}
 						variant="ghost"
@@ -87,18 +87,18 @@
 						on:click={closeSheet}
 						variant="ghost"
 						href="/projects"
-						class="justify-start text-base ">Projects</Button>
+						class="justify-start text-base">Projects</Button>
 					<Button
 						on:click={closeSheet}
 						variant="ghost"
 						href="/settings"
-						class="justify-start text-base ">Settings</Button>
+						class="justify-start text-base">Settings</Button>
 				</div>
 				<div class="flex flex-col justify-between">
 					<div></div>
 					<div class="flex flex-col gap-4">
 						<Separator />
-						<div class="flex items-center justify-between">
+						<div class="flex justify-between items-center">
 							<UserIcon
 								email={data.user.email}
 								onClick={closeSheet} />
@@ -109,9 +109,9 @@
 		</Sheet.Root>
 	</div>
 
-	<div class="flex flex-grow overflow-hidden">
+	<div class="flex overflow-hidden flex-grow">
 		<Sidebar class="hidden lg:flex" />
-		<div class="flex h-auto w-full flex-col">
+		<div class="flex flex-col w-full h-auto">
 			<slot />
 		</div>
 	</div>

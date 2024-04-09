@@ -64,7 +64,6 @@ export const load = (async (event) => {
 		.select({
 			...shortenerColumns,
 			projectName: project.name,
-			fullcount: sql<number>`count(*) over()`.as('fullcount'),
 			visitorCount: sql<number>`count(${visitor.id})`,
 		})
 		.from(shortener)

@@ -66,8 +66,6 @@ export const user = pgTable('user', {
 		.notNull(),
 })
 
-export type User = InferSelectModel<typeof user>
-
 export const visitor = pgTable('visitor', {
 	id: serial('id').primaryKey().notNull(),
 	shortenerId: integer('shortener_id').notNull(),

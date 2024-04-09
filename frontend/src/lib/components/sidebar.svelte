@@ -2,6 +2,7 @@
 	import { page } from '$app/stores'
 	import { Button } from '$lib/components/ui/button'
 	import { cn } from '$lib/utils'
+	import { Blocks, Home, Link, Settings } from 'lucide-svelte'
 	import { createRegExp, exactly, word } from 'magic-regexp'
 
 	let className: string | undefined = undefined
@@ -12,6 +13,7 @@
 			href: '/',
 			name: 'Home',
 			regex: createRegExp(exactly('/').notBefore(word)),
+			icon: Home,
 		},
 		{
 			href: '/links',
@@ -19,6 +21,7 @@
 			regex: createRegExp(
 				exactly('/links').or(exactly('/links/').before(word)),
 			),
+			icon: Link,
 		},
 		{
 			href: '/projects',
@@ -26,6 +29,7 @@
 			regex: createRegExp(
 				exactly('/projects').or(exactly('/projects/').before(word)),
 			),
+			icon: Blocks,
 		},
 		{
 			href: '/settings/account',
@@ -33,13 +37,14 @@
 			regex: createRegExp(
 				exactly('/settings').or(exactly('/settings/').before(word)),
 			),
+			icon: Settings,
 		},
 	] as const
 </script>
 
 <div
 	class={cn(
-		'flex h-full min-w-[350px] flex-col justify-between border-r',
+		'flex h-full min-w-[300px] flex-col justify-between border-r bg-muted/40',
 		className,
 	)}>
 	<div>
@@ -50,8 +55,10 @@
 						? 'secondary'
 						: 'ghost'}
 					href={route.href}
-					class="justify-start text-base hover:bg-secondary/50"
-					>{route.name}</Button>
+					class="flex gap-4 justify-start items-center text-base hover:bg-secondary/50">
+					<svelte:component this={route.icon} class="w-4 h-4" />
+					{route.name}
+				</Button>
 			{/each}
 		</div>
 	</div>
