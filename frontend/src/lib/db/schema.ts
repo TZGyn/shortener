@@ -8,8 +8,6 @@ import {
 	boolean,
 } from 'drizzle-orm/pg-core'
 
-import { relations, type InferSelectModel } from 'drizzle-orm'
-
 export const shortener = pgTable('shortener', {
 	id: serial('id').primaryKey().notNull(),
 	link: varchar('link', { length: 255 }).notNull(),
@@ -22,38 +20,12 @@ export const shortener = pgTable('shortener', {
 	projectId: integer('project_id'),
 })
 
-export const shortenerRelations = relations(
-	shortener,
-	({ one, many }) => ({
-		user: one(user, {
-			fields: [shortener.userId],
-			references: [user.id],
-		}),
-		project: one(project, {
-			fields: [shortener.projectId],
-			references: [project.id],
-		}),
-		visitor: many(visitor),
-	}),
-)
-
 export const project = pgTable('project', {
 	id: serial('id').primaryKey().notNull(),
 	uuid: uuid('uuid').defaultRandom(),
 	name: varchar('name', { length: 255 }).notNull(),
 	userId: integer('user_id').notNull(),
 })
-
-export const projectRelations = relations(
-	project,
-	({ one, many }) => ({
-		user: one(user, {
-			fields: [project.userId],
-			references: [user.id],
-		}),
-		shortener: many(shortener),
-	}),
-)
 
 export const user = pgTable('user', {
 	id: serial('id').primaryKey().notNull(),
@@ -82,13 +54,6 @@ export const visitor = pgTable('visitor', {
 	os: varchar('os', { length: 255 }),
 })
 
-export const visitorRelations = relations(visitor, ({ one }) => ({
-	shortener: one(shortener, {
-		fields: [visitor.shortenerId],
-		references: [shortener.id],
-	}),
-}))
-
 export const session = pgTable('session', {
 	id: varchar('id', { length: 255 }).primaryKey(),
 	userId: integer('user_id').notNull(),
@@ -98,22 +63,10 @@ export const session = pgTable('session', {
 	}).notNull(),
 })
 
-export const sessionRelations = relations(session, ({ one }) => ({
-	user: one(user, {
-		fields: [session.userId],
-		references: [user.id],
-	}),
-}))
-
 export const setting = pgTable('setting', {
 	userId: integer('user_id').notNull(),
 	qr_background: varchar('qr_background', { length: 7 }),
 	qr_foreground: varchar('qr_foreground', { length: 7 }),
 })
 
-export const settingRelations = relations(setting, ({ one }) => ({
-	user: one(user, {
-		fields: [setting.userId],
-		references: [user.id],
-	}),
-}))
+export * from './relations'
