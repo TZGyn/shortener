@@ -53,54 +53,31 @@
 	}
 </script>
 
-<div class="flex gap-4 justify-start items-center p-4">
-	<Popover.Root bind:open>
-		<Popover.Trigger asChild let:builder>
-			<Button
-				builders={[builder]}
-				variant="outline"
-				role="combobox"
-				aria-expanded={open}
-				class="justify-between w-[200px]">
-				{selectedProject}
-				<ChevronsUpDown class="ml-2 w-4 h-4 opacity-50 shrink-0" />
-			</Button>
-		</Popover.Trigger>
-		<Popover.Content class="p-0 w-[200px]">
-			<Command.Root>
-				<Command.Input placeholder="Search project..." />
-				<Command.Empty>No project found.</Command.Empty>
-				<Command.Group>
-					<a
-						href={updateSearchParam([
-							{
-								name: 'project',
-								value: undefined,
-							},
-							{
-								name: 'page',
-								value: 1,
-							},
-						])}>
-						<Command.Item
-							onSelect={() => {
-								open = false
-							}}>
-							<Check
-								class={cn(
-									'mr-2 h-4 w-4',
-									data.selected_project.value !== null &&
-										'text-transparent',
-								)} />
-							All
-						</Command.Item>
-					</a>
-					{#each data.projects as project}
+<div
+	class="flex flex-wrap-reverse gap-4 justify-start items-center p-4">
+	<div class="flex gap-4 items-center">
+		<Popover.Root bind:open>
+			<Popover.Trigger asChild let:builder>
+				<Button
+					builders={[builder]}
+					variant="outline"
+					role="combobox"
+					aria-expanded={open}
+					class="justify-between w-[200px]">
+					{selectedProject}
+					<ChevronsUpDown class="ml-2 w-4 h-4 opacity-50 shrink-0" />
+				</Button>
+			</Popover.Trigger>
+			<Popover.Content class="p-0 w-[200px]">
+				<Command.Root>
+					<Command.Input placeholder="Search project..." />
+					<Command.Empty>No project found.</Command.Empty>
+					<Command.Group>
 						<a
 							href={updateSearchParam([
 								{
 									name: 'project',
-									value: project.uuid,
+									value: undefined,
 								},
 								{
 									name: 'page',
@@ -114,54 +91,83 @@
 								<Check
 									class={cn(
 										'mr-2 h-4 w-4',
-										data.selected_project.value !== project.uuid &&
+										data.selected_project.value !== null &&
 											'text-transparent',
 									)} />
-								{project.name}
+								All
 							</Command.Item>
 						</a>
+						{#each data.projects as project}
+							<a
+								href={updateSearchParam([
+									{
+										name: 'project',
+										value: project.uuid,
+									},
+									{
+										name: 'page',
+										value: 1,
+									},
+								])}>
+								<Command.Item
+									onSelect={() => {
+										open = false
+									}}>
+									<Check
+										class={cn(
+											'mr-2 h-4 w-4',
+											data.selected_project.value !== project.uuid &&
+												'text-transparent',
+										)} />
+									{project.name}
+								</Command.Item>
+							</a>
+						{/each}
+					</Command.Group>
+				</Command.Root>
+			</Popover.Content>
+		</Popover.Root>
+		<Select.Root
+			selected={{ label: data.sortBy, value: data.sortBy }}>
+			<Select.Trigger class="w-[180px]" customIcon={SortDescIcon}>
+				<Select.Value placeholder="Sort By" />
+			</Select.Trigger>
+			<Select.Content>
+				<Select.Group>
+					<Select.Label>Sort By</Select.Label>
+					{#each ['latest', 'oldest', 'most_visited'] as sortBy}
+						<a
+							href={updateSearchParam([
+								{ name: 'sortBy', value: sortBy },
+								{ name: 'page', value: 1 },
+							])}>
+							<Select.Item value={sortBy} label={sortBy}>
+								{sortBy}
+							</Select.Item>
+						</a>
 					{/each}
-				</Command.Group>
-			</Command.Root>
-		</Popover.Content>
-	</Popover.Root>
-	<Select.Root selected={{ label: data.sortBy, value: data.sortBy }}>
-		<Select.Trigger class="w-[180px]" customIcon={SortDescIcon}>
-			<Select.Value placeholder="Sort By" />
-		</Select.Trigger>
-		<Select.Content>
-			<Select.Group>
-				<Select.Label>Sort By</Select.Label>
-				{#each ['latest', 'oldest', 'most_visited'] as sortBy}
-					<a
-						href={updateSearchParam([
-							{ name: 'sortBy', value: sortBy },
-							{ name: 'page', value: 1 },
-						])}>
-						<Select.Item value={sortBy} label={sortBy}>
-							{sortBy}
-						</Select.Item>
-					</a>
-				{/each}
-			</Select.Group>
-		</Select.Content>
-		<Select.Input name="favoriteFruit" />
-	</Select.Root>
-	<Input
-		type="text"
-		placeholder="search"
-		class="max-w-[250px]"
-		autofocus
-		value={search}
-		on:input={({ target }) => {
-			clearTimeout(searchUpdateTimeout)
-			searchUpdateTimeout = setTimeout(() => {
-				search = target.value
-			}, 500)
-		}} />
-	<Button disabled={!search} on:click={() => (search = '')}
-		>Clear</Button>
-	<AddShortenerDialog bind:dialogOpen projects={data.projects} />
+				</Select.Group>
+			</Select.Content>
+			<Select.Input name="favoriteFruit" />
+		</Select.Root>
+	</div>
+	<div class="flex gap-4 items-center">
+		<Input
+			type="text"
+			placeholder="search"
+			class="max-w-[250px]"
+			autofocus
+			value={search}
+			on:input={({ target }) => {
+				clearTimeout(searchUpdateTimeout)
+				searchUpdateTimeout = setTimeout(() => {
+					search = target.value
+				}, 500)
+			}} />
+		<Button disabled={!search} on:click={() => (search = '')}
+			>Clear</Button>
+		<AddShortenerDialog bind:dialogOpen projects={data.projects} />
+	</div>
 </div>
 
 {#await data.shorteners}
@@ -184,16 +190,23 @@
 			</div>
 		</ScrollArea>
 	{:else}
-		<div class="flex flex-grow justify-center items-center w-full">
-			<div class="flex flex-col gap-12 items-center">
-				<div class="flex flex-col gap-4 items-center">
-					<div class="text-4xl font-bold">No Shortener Found</div>
+		<div class="flex flex-grow p-4">
+			<div
+				class="flex flex-1 justify-center items-center rounded-lg border border-dashed shadow-sm">
+				<div
+					class="flex flex-grow justify-center items-center w-full">
+					<div class="flex flex-col gap-8 items-center">
+						<div class="flex flex-col gap-2 items-center">
+							<div class="text-4xl font-bold">No Shortener Found</div>
+							<p class="text-muted-foreground">Add a new shortener</p>
+						</div>
+						<Button
+							on:click={() => {
+								dialogOpen = true
+							}}
+							class="w-fit">Add Shortener</Button>
+					</div>
 				</div>
-				<Button
-					on:click={() => {
-						dialogOpen = true
-					}}
-					class="w-fit">Add Shortener</Button>
 			</div>
 		</div>
 	{/if}

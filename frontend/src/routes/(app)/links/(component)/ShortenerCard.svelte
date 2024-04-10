@@ -16,7 +16,7 @@
 	import Qr from '$lib/components/QR.svelte'
 
 	export let shortener: Shortener & {
-		projectName: string
+		projectName: string | null
 		visitorCount: number
 	}
 	export let shortener_url: string
