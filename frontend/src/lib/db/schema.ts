@@ -7,6 +7,7 @@ import {
 	uuid,
 	boolean,
 } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
 
 export const shortener = pgTable('shortener', {
 	id: serial('id').primaryKey().notNull(),
@@ -69,4 +70,49 @@ export const setting = pgTable('setting', {
 	qr_foreground: varchar('qr_foreground', { length: 7 }),
 })
 
-export * from './relations'
+export const shortenerRelations = relations(
+	shortener,
+	({ one, many }) => ({
+		user: one(user, {
+			fields: [shortener.userId],
+			references: [user.id],
+		}),
+		project: one(project, {
+			fields: [shortener.projectId],
+			references: [project.id],
+		}),
+		visitor: many(visitor),
+	}),
+)
+
+export const projectRelations = relations(
+	project,
+	({ one, many }) => ({
+		user: one(user, {
+			fields: [project.userId],
+			references: [user.id],
+		}),
+		shortener: many(shortener),
+	}),
+)
+
+export const visitorRelations = relations(visitor, ({ one }) => ({
+	shortener: one(shortener, {
+		fields: [visitor.shortenerId],
+		references: [shortener.id],
+	}),
+}))
+
+export const sessionRelations = relations(session, ({ one }) => ({
+	user: one(user, {
+		fields: [session.userId],
+		references: [user.id],
+	}),
+}))
+
+export const settingRelations = relations(setting, ({ one }) => ({
+	user: one(user, {
+		fields: [setting.userId],
+		references: [user.id],
+	}),
+}))
