@@ -1,3 +1,4 @@
+import { env } from '$lib/env'
 import type { LayoutServerLoad } from './$types'
 
 export const load = (async (event) => {
@@ -6,8 +7,7 @@ export const load = (async (event) => {
 	const breadcrumbs = [{ name: 'Home', path: '/' }]
 
 	return {
-		shortener_url:
-			process.env.PUBLIC_SHORTENER_URL ?? '3000.tzgyn.com',
+		shortener_url: env.PUBLIC_SHORTENER_URL,
 		user: user,
 		breadcrumbs,
 	}

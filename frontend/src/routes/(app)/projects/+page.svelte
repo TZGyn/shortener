@@ -39,7 +39,7 @@
 	<title>Projects</title>
 </svelte:head>
 
-<div class="flex items-center justify-start p-4">
+<div class="flex justify-start items-center p-4">
 	<Dialog.Root bind:open={dialogOpen}>
 		<Dialog.Trigger
 			class={buttonVariants({ variant: 'default' }) + 'flex gap-2'}>
@@ -54,7 +54,7 @@
 				</Dialog.Description>
 			</Dialog.Header>
 			<div class="grid gap-4 py-4">
-				<div class="grid grid-cols-4 items-center gap-4">
+				<div class="grid grid-cols-4 gap-4 items-center">
 					<Label class="text-right">Name</Label>
 					<Input
 						id="name"
@@ -75,20 +75,20 @@
 </div>
 
 {#if data.projects.length > 0}
-	<div class="flex flex-wrap gap-4 overflow-scroll p-4">
+	<div class="flex overflow-scroll flex-wrap gap-4 p-4">
 		{#each data.projects as project}
-			<a href={'/links?project=' + project.uuid}>
+			<a href={'/projects/' + project.uuid}>
 				<Card.Root
-					class="w-[500px] hover:cursor-pointer hover:bg-secondary">
+					class="hover:cursor-pointer w-[500px] hover:bg-secondary">
 					<Card.Header>
-						<Card.Title class="flex items-center gap-2">
+						<Card.Title class="flex gap-2 items-center">
 							{project.name}
 						</Card.Title>
 					</Card.Header>
 					<Card.Content>
-						<div class="flex w-full justify-between">
+						<div class="flex justify-between w-full">
 							<Button
-								class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm">
+								class="flex gap-1 justify-center items-center h-8 text-sm rounded bg-secondary">
 								<ExternalLink size={20} />
 								{project.shortener.length}
 								Shorteners
@@ -100,5 +100,22 @@
 		{/each}
 	</div>
 {:else}
-	<div>No Data</div>
+	<div class="flex flex-grow p-4">
+		<div
+			class="flex flex-1 justify-center items-center rounded-lg border border-dashed shadow-sm">
+			<div class="flex flex-grow justify-center items-center w-full">
+				<div class="flex flex-col gap-8 items-center">
+					<div class="flex flex-col gap-2 items-center">
+						<div class="text-4xl font-bold">No Project Found</div>
+						<p class="text-muted-foreground">Add a new project</p>
+					</div>
+					<Button
+						on:click={() => {
+							dialogOpen = true
+						}}
+						class="w-fit">Add Project</Button>
+				</div>
+			</div>
+		</div>
+	</div>
 {/if}

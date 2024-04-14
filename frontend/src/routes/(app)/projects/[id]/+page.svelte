@@ -1,31 +1,26 @@
 <script lang="ts">
-	import type { PageData } from './$types'
-	import { cn } from '$lib/utils'
 	import { goto } from '$app/navigation'
 	import { browser } from '$app/environment'
 
-	import { Button } from '$lib/components/ui/button'
-	import * as Select from '$lib/components/ui/select'
-	import * as Command from '$lib/components/ui/command'
-	import * as Popover from '$lib/components/ui/popover'
-	import * as Pagination from '$lib/components/ui/pagination'
-	import { Input } from '$lib/components/ui/input'
-	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
-	import { Skeleton } from '$lib/components/ui/skeleton'
-
-	import { Check, ChevronsUpDown, SortDescIcon } from 'lucide-svelte'
-
-	import AddShortenerDialog from '$lib/components/AddShortenerDialog.svelte'
 	import ShortenerCard from '$lib/components/ShortenerCard.svelte'
+	import { Button } from '$lib/components/ui/button'
+	import { Skeleton } from '$lib/components/ui/skeleton'
+	import { Input } from '$lib/components/ui/input'
+	import * as Select from '$lib/components/ui/select'
+
+	import { SortDescIcon } from 'lucide-svelte'
+
+	import type { PageData } from './$types'
+	import AddShortenerDialog from '$lib/components/AddShortenerDialog.svelte'
+	import {
+		ScrollArea,
+		Scrollbar,
+	} from '$lib/components/ui/scroll-area'
+	import * as Pagination from '$lib/components/ui/pagination'
 
 	export let data: PageData
 
 	let dialogOpen = false
-
-	let open: boolean = false
-	let selectedProject: any = data.selected_project.label
-
-	$: selectedProject = data.selected_project.label
 
 	let search: string | null = data.search
 	let searchUpdateTimeout: any
@@ -46,87 +41,16 @@
 		})
 		const searchParams = urlParams.toString()
 		if (searchParams) {
-			return '/links?' + searchParams
+			return `/projects/${data.selectedProject.uuid}?` + searchParams
 		} else {
-			return '/links'
+			return '/projects/' + data.selectedProject.uuid
 		}
 	}
 </script>
 
 <div
-	class="flex flex-wrap-reverse gap-4 justify-start items-center p-4">
+	class="flex flex-wrap-reverse gap-4 justify-start items-center py-4 px-10">
 	<div class="flex gap-4 items-center">
-		<Popover.Root bind:open>
-			<Popover.Trigger asChild let:builder>
-				<Button
-					builders={[builder]}
-					variant="outline"
-					role="combobox"
-					aria-expanded={open}
-					class="justify-between w-[200px]">
-					{selectedProject}
-					<ChevronsUpDown class="ml-2 w-4 h-4 opacity-50 shrink-0" />
-				</Button>
-			</Popover.Trigger>
-			<Popover.Content class="p-0 w-[200px]">
-				<Command.Root>
-					<Command.Input placeholder="Search project..." />
-					<Command.Empty>No project found.</Command.Empty>
-					<Command.Group>
-						<a
-							href={updateSearchParam([
-								{
-									name: 'project',
-									value: undefined,
-								},
-								{
-									name: 'page',
-									value: 1,
-								},
-							])}>
-							<Command.Item
-								onSelect={() => {
-									open = false
-								}}>
-								<Check
-									class={cn(
-										'mr-2 h-4 w-4',
-										data.selected_project.value !== null &&
-											'text-transparent',
-									)} />
-								All
-							</Command.Item>
-						</a>
-						{#each data.projects as project}
-							<a
-								href={updateSearchParam([
-									{
-										name: 'project',
-										value: project.uuid,
-									},
-									{
-										name: 'page',
-										value: 1,
-									},
-								])}>
-								<Command.Item
-									onSelect={() => {
-										open = false
-									}}>
-									<Check
-										class={cn(
-											'mr-2 h-4 w-4',
-											data.selected_project.value !== project.uuid &&
-												'text-transparent',
-										)} />
-									{project.name}
-								</Command.Item>
-							</a>
-						{/each}
-					</Command.Group>
-				</Command.Root>
-			</Popover.Content>
-		</Popover.Root>
 		<Select.Root
 			selected={{ label: data.sortBy, value: data.sortBy }}>
 			<Select.Trigger class="w-[180px]" customIcon={SortDescIcon}>
@@ -171,7 +95,7 @@
 </div>
 
 {#await data.shorteners}
-	<div class="flex flex-wrap gap-4 p-4">
+	<div class="flex flex-wrap gap-4 py-4 px-10">
 		{#each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as _}
 			<Skeleton class="rounded-lg h-[150px] w-[500px]" />
 		{/each}
@@ -179,7 +103,7 @@
 {:then shorteners}
 	{#if shorteners.length > 0}
 		<ScrollArea class="flex-grow">
-			<div class="flex flex-wrap gap-4 p-4">
+			<div class="flex flex-wrap gap-4 py-4 px-10">
 				{#each shorteners as shortener}
 					<ShortenerCard
 						{shortener}
@@ -190,7 +114,7 @@
 			</div>
 		</ScrollArea>
 	{:else}
-		<div class="flex flex-grow p-4">
+		<div class="flex flex-grow py-4 px-10">
 			<div
 				class="flex flex-1 justify-center items-center rounded-lg border border-dashed shadow-sm">
 				<div

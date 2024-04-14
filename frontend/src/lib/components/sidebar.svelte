@@ -19,7 +19,9 @@
 			href: '/links',
 			name: 'Links',
 			regex: createRegExp(
-				exactly('/links').or(exactly('/links/').before(word)),
+				exactly('/links')
+					.at.lineStart()
+					.or(exactly('/links/').and(word)),
 			),
 			icon: Link,
 		},
@@ -27,7 +29,9 @@
 			href: '/projects',
 			name: 'Projects',
 			regex: createRegExp(
-				exactly('/projects').or(exactly('/projects/').before(word)),
+				exactly('/projects')
+					.at.lineStart()
+					.or(exactly('/projects/').and(word)),
 			),
 			icon: Blocks,
 		},
@@ -35,7 +39,9 @@
 			href: '/settings/account',
 			name: 'Settings',
 			regex: createRegExp(
-				exactly('/settings').or(exactly('/settings/').before(word)),
+				exactly('/settings')
+					.at.lineStart()
+					.or(exactly('/settings/').and(word)),
 			),
 			icon: Settings,
 		},

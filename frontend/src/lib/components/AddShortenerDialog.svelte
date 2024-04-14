@@ -7,10 +7,9 @@
 	import { Loader2, PlusCircle } from 'lucide-svelte'
 	import { invalidateAll } from '$app/navigation'
 	import { toast } from 'svelte-sonner'
-	import type { PageData } from '../$types'
+	import type { Project } from '$lib/db/types'
 
-	let data: PageData
-	export let projects: typeof data.projects
+	export let projects: Project[]
 	export let dialogOpen: boolean
 	let inputLink = ''
 	let isLoading = false
@@ -72,7 +71,7 @@
 			</Dialog.Description>
 		</Dialog.Header>
 		<div class="grid gap-8 py-4">
-			<div class="grid grid-cols-4 items-center gap-4">
+			<div class="grid grid-cols-4 gap-4 items-center">
 				<Label>Link</Label>
 				<Input
 					id="name"
@@ -81,7 +80,7 @@
 					placeholder="https://example.com"
 					class="col-span-3" />
 			</div>
-			<div class="grid grid-cols-4 items-center gap-4">
+			<div class="grid grid-cols-4 gap-4 items-center">
 				<Label>Category</Label>
 				<Select.Root
 					bind:selected={shortenerCategory}
@@ -97,21 +96,21 @@
 					</Select.Content>
 				</Select.Root>
 			</div>
-			<div class="grid grid-cols-4 items-center gap-4">
+			<div class="grid grid-cols-4 gap-4 items-center">
 				<div class="font-bold">Preview</div>
-				<div class="col-span-4 flex flex-col justify-center border">
-					<div class="relative h-64 overflow-hidden">
+				<div class="flex flex-col col-span-4 justify-center border">
+					<div class="overflow-hidden relative h-64">
 						{#if isPreviewLoading}
-							<div class="flex h-full items-center justify-center">
+							<div class="flex justify-center items-center h-full">
 								<Loader2 class="animate-spin" />
 							</div>
 						{:else if previewData}
 							<img
 								src={previewData.image}
 								alt=""
-								class="h-64 w-full object-cover" />
+								class="object-cover w-full h-64" />
 							<div
-								class="absolute bottom-2 left-2 rounded-lg bg-secondary px-2">
+								class="absolute bottom-2 left-2 px-2 rounded-lg bg-secondary">
 								{previewData.title}
 							</div>
 						{/if}
