@@ -4,9 +4,8 @@ import { eq } from 'drizzle-orm'
 import type { RequestHandler } from './$types'
 import QRCode from 'qrcode'
 import { redirect } from '@sveltejs/kit'
-import { env } from '$lib/env'
 
-const shortenerUrl = env.PUBLIC_SHORTENER_URL
+const shortenerUrl = Bun.env.PUBLIC_SHORTENER_URL ?? ''
 
 export const GET: RequestHandler = async (event) => {
 	const shortenerId = event.params.id

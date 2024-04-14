@@ -1,4 +1,3 @@
-import { env } from '$lib/env'
 import type { LayoutServerLoad } from './$types'
 
 export const load = (async (event) => {
@@ -7,7 +6,7 @@ export const load = (async (event) => {
 	const breadcrumbs = [{ name: 'Home', path: '/' }]
 
 	return {
-		shortener_url: env.PUBLIC_SHORTENER_URL,
+		shortener_url: Bun.env.PUBLIC_SHORTENER_URL ?? '',
 		user: user,
 		breadcrumbs,
 	}
