@@ -93,6 +93,8 @@ export const load = (async (event) => {
 		.where(eq(visitorSchema.shortenerId, shortener.id))
 		.groupBy(visitorSchema.deviceType)
 
+	const page_title = 'Shortener | ' + shortener.link
+
 	return {
 		shortener,
 		visitor,
@@ -101,5 +103,6 @@ export const load = (async (event) => {
 		visitorByOS,
 		visitorByDeviceVendor,
 		visitorByDeviceType,
+		page_title,
 	}
 }) satisfies PageServerLoad

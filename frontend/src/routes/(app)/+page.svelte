@@ -8,35 +8,31 @@
 	export let data: PageData
 </script>
 
-<svelte:head>
-	<title>Home</title>
-</svelte:head>
-
-<div class="flex flex-col gap-4 px-10 py-8">
+<div class="flex flex-col gap-4 py-8 px-10">
 	<h2 class="text-2xl font-bold tracking-tight">Projects</h2>
 	<Separator class="" />
 </div>
 
-<div class="flex w-full flex-wrap items-stretch gap-2 px-6">
+<div class="flex flex-wrap gap-2 items-stretch px-6 w-full">
 	{#each data.projects as project}
 		<a href={'/links?project=' + project.uuid}>
 			<Card.Root
-				class="w-[500px] hover:cursor-pointer hover:bg-secondary">
+				class="hover:cursor-pointer w-[500px] hover:bg-secondary">
 				<Card.Header>
-					<Card.Title class="flex items-center gap-2">
+					<Card.Title class="flex gap-2 items-center">
 						{project.name}
 					</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					<div class="flex w-full gap-4">
+					<div class="flex gap-4 w-full">
 						<Button
-							class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm">
+							class="flex gap-1 justify-center items-center h-8 text-sm rounded bg-secondary">
 							<ExternalLink size={20} />
 							{project.shortener.length}
 							Shorteners
 						</Button>
 						<Button
-							class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm">
+							class="flex gap-1 justify-center items-center h-8 text-sm rounded bg-secondary">
 							<BarChart size={20} />
 							{project.shortener.reduce(
 								(curr, shortener) => shortener.visitor.length + curr,

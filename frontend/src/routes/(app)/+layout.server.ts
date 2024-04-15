@@ -5,9 +5,12 @@ export const load = (async (event) => {
 
 	const breadcrumbs = [{ name: 'Home', path: '/' }]
 
+	const page_title = 'Home'
+
 	return {
 		shortener_url: Bun.env.PUBLIC_SHORTENER_URL ?? '',
 		user: user,
 		breadcrumbs,
+		page_title,
 	}
 }) satisfies LayoutServerLoad

@@ -4,10 +4,6 @@
 	import SidebarNav from './(components)/sidebar-nav.svelte'
 </script>
 
-<svelte:head>
-	<title>Settings</title>
-</svelte:head>
-
 <div class="flex overflow-hidden flex-col p-10 h-auto">
 	<div class="space-y-0.5">
 		<h2 class="text-2xl font-bold tracking-tight">Settings</h2>

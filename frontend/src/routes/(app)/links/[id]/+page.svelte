@@ -98,16 +98,12 @@
 	})
 </script>
 
-<svelte:head>
-	<title>Shortener {data.shortener.link}</title>
-</svelte:head>
-
-<div class="flex min-h-[80px] items-center justify-between p-4">
+<div class="flex justify-between items-center p-4 min-h-[80px]">
 	<div class="text-3xl font-bold">{data.shortener.link}</div>
 </div>
 <Separator />
 
-<div class="flex flex-wrap gap-4 overflow-y-scroll p-4">
+<div class="flex overflow-y-scroll flex-wrap gap-4 p-4">
 	<Card.Root class="w-[700px]">
 		<Card.Header>
 			<Card.Title>Clicks</Card.Title>
@@ -121,7 +117,7 @@
 	<Card.Root class="min-h-[500px] w-[500px]">
 		<Tabs.Root value="country">
 			<Card.Header
-				class="flex w-full flex-row items-center justify-between space-y-0">
+				class="flex flex-row justify-between items-center space-y-0 w-full">
 				<div>
 					<Card.Title>Visitors</Card.Title>
 					<Card.Description
@@ -135,8 +131,8 @@
 			<Card.Content>
 				<Tabs.Content value="country">
 					{#each data.visitorByCountry as visitorByCountry}
-						<div class="flex items-center justify-between">
-							<div class="flex items-center gap-4">
+						<div class="flex justify-between items-center">
+							<div class="flex gap-4 items-center">
 								<img
 									src={`https://flagsapi.com/${visitorByCountry.code}/flat/64.png`}
 									alt="" />
@@ -148,8 +144,8 @@
 				</Tabs.Content>
 				<Tabs.Content value="city">
 					{#each data.visitorByCity as visitorByCity}
-						<div class="flex items-center justify-between">
-							<div class="flex items-center gap-4">
+						<div class="flex justify-between items-center">
+							<div class="flex gap-4 items-center">
 								<img
 									src={`https://flagsapi.com/${visitorByCity.code}/flat/64.png`}
 									alt="" />
@@ -165,7 +161,7 @@
 	<Card.Root class="min-h-[500px] w-[500px]">
 		<Tabs.Root value="vendor">
 			<Card.Header
-				class="flex w-full flex-row items-center justify-between space-y-0">
+				class="flex flex-row justify-between items-center space-y-0 w-full">
 				<div>
 					<Card.Title>Devices</Card.Title>
 					<Card.Description>Devices by Country/City</Card.Description>
@@ -180,8 +176,8 @@
 				<Tabs.Content value="vendor">
 					<div class="flex flex-col gap-6">
 						{#each data.visitorByDeviceVendor as visitorByDeviceVendor}
-							<div class="flex items-center justify-between">
-								<div class="flex items-center gap-4">
+							<div class="flex justify-between items-center">
+								<div class="flex gap-4 items-center">
 									<TabletSmartphone />
 									<div>
 										{visitorByDeviceVendor.vendor ??
@@ -196,8 +192,8 @@
 				<Tabs.Content value="type">
 					<div class="flex flex-col gap-6">
 						{#each data.visitorByDeviceType as visitorByDeviceType}
-							<div class="flex items-center justify-between">
-								<div class="flex items-center gap-4">
+							<div class="flex justify-between items-center">
+								<div class="flex gap-4 items-center">
 									{#if visitorByDeviceType.type === 'mobile'}
 										<Smartphone />
 									{:else if visitorByDeviceType.type === 'tablet'}
@@ -218,8 +214,8 @@
 				<Tabs.Content value="os">
 					<div class="flex flex-col gap-6">
 						{#each data.visitorByOS as visitorByOS}
-							<div class="flex items-center justify-between">
-								<div class="flex items-center gap-4">
+							<div class="flex justify-between items-center">
+								<div class="flex gap-4 items-center">
 									<TabletSmartphone />
 									<div>{visitorByOS.os ?? 'Undefined OS'}</div>
 								</div>

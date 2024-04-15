@@ -35,10 +35,6 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Projects</title>
-</svelte:head>
-
 <div class="flex justify-start items-center p-4">
 	<Dialog.Root bind:open={dialogOpen}>
 		<Dialog.Trigger

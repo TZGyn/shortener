@@ -6,5 +6,6 @@ export const load = (async (event) => {
 		...parentBreadcrumbs,
 		{ name: 'Projects', path: '/projects' },
 	]
-	return { breadcrumbs }
+	const page_title = 'Projects'
+	return { breadcrumbs, page_title }
 }) satisfies LayoutServerLoad
