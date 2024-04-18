@@ -8,6 +8,7 @@
 
 <svelte:head>
 	<title>{$page.data.page_title || 'Link Shortener'}</title>
+	<meta name="description" content="Link shortener with analytics" />
 </svelte:head>
 
 <ModeWatcher />
