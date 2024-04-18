@@ -10,6 +10,7 @@
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import { toast } from 'svelte-sonner'
 	import DemoQr from './DemoQR.svelte'
+	import { LoaderCircle } from 'lucide-svelte'
 
 	export let data: SuperValidated<Infer<FormSchema>>
 
@@ -27,7 +28,7 @@
 		},
 	})
 
-	const { form: formData, enhance } = form
+	const { form: formData, enhance, submitting } = form
 </script>
 
 <DemoQr
@@ -51,5 +52,10 @@
 		<Form.Description>QR Code foreground color</Form.Description>
 		<Form.FieldErrors />
 	</Form.Field>
-	<Form.Button class="w-fit">Save</Form.Button>
+	<Form.Button class="w-fit">
+		{#if $submitting}
+			<LoaderCircle class="animate-spin" />
+		{/if}
+		Save
+	</Form.Button>
 </form>

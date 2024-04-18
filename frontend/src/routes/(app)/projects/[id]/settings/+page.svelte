@@ -9,6 +9,7 @@
 	import { toast } from 'svelte-sonner'
 	import { Checkbox } from '$lib/components/ui/checkbox'
 	import { Input } from '$lib/components/ui/input'
+	import { LoaderCircle } from 'lucide-svelte'
 
 	export let data: PageData
 
@@ -28,7 +29,7 @@
 		},
 	})
 
-	const { form: formData, enhance } = form
+	const { form: formData, enhance, submitting } = form
 </script>
 
 <div class="py-4 px-10 space-y-6 max-w-2xl">
@@ -88,8 +89,12 @@
 							variant="outline"
 							on:click={() => (deleteDialogOpen = false)}
 							>Cancel</Button>
-						<Form.Button variant="destructive" class="w-fit"
-							>Delete</Form.Button>
+						<Form.Button variant="destructive" class="w-fit">
+							{#if $submitting}
+								<LoaderCircle class="animate-spin" />
+							{/if}
+							Delete
+						</Form.Button>
 					</div>
 				</form>
 			</Dialog.Content>

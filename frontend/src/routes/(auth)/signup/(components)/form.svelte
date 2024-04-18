@@ -9,6 +9,7 @@
 	} from 'sveltekit-superforms'
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import { toast } from 'svelte-sonner'
+	import { LoaderCircle } from 'lucide-svelte'
 
 	export let data: SuperValidated<Infer<FormSchema>>
 
@@ -26,7 +27,7 @@
 		},
 	})
 
-	const { form: formData, enhance } = form
+	const { form: formData, enhance, submitting } = form
 </script>
 
 <form method="POST" use:enhance class="flex flex-col gap-4">
@@ -65,5 +66,10 @@
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
-	<Form.Button>Sign Up</Form.Button>
+	<Form.Button>
+		{#if $submitting}
+			<LoaderCircle class="animate-spin" />
+		{/if}
+		Sign Up
+	</Form.Button>
 </form>
