@@ -20,6 +20,7 @@ export const load = (async (event) => {
 			android: true,
 			android_link: true,
 			link: true,
+			active: true,
 		},
 		where: (shortener, { eq, and }) =>
 			and(

@@ -40,8 +40,6 @@
 	let previewData: any
 	let isPreviewLoading: boolean = false
 
-	$: $formData.link && getMetadata()
-
 	const getMetadata = async () => {
 		isPreviewLoading = true
 		clearTimeout(inputTimer)
@@ -105,7 +103,8 @@
 						<Input
 							{...attrs}
 							bind:value={$formData.link}
-							placeholder="https://example.com" />
+							placeholder="https://example.com"
+							on:input={getMetadata} />
 					</Form.Control>
 					<Form.Description>Shortener link</Form.Description>
 					<Form.FieldErrors />

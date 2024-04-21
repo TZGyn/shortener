@@ -12,7 +12,7 @@
 	import { toast } from 'svelte-sonner'
 	import { Loader2, LoaderCircle } from 'lucide-svelte'
 	import { Checkbox } from '$lib/components/ui/checkbox'
-	import { browser } from '$app/environment'
+	import { onMount } from 'svelte'
 
 	export let data: SuperValidated<Infer<FormSchema>>
 
@@ -36,8 +36,6 @@
 	let previewData: any
 	let isPreviewLoading: boolean = false
 
-	$: $formData.link && browser && getMetadata()
-
 	const getMetadata = async () => {
 		isPreviewLoading = true
 		clearTimeout(inputTimer)
@@ -53,6 +51,10 @@
 			console.log(previewData)
 		}, 1000)
 	}
+
+	onMount(() => {
+		getMetadata()
+	})
 </script>
 
 <div class="grid grid-cols-4 gap-4 items-center pb-4">
@@ -83,7 +85,8 @@
 			<Input
 				{...attrs}
 				bind:value={$formData.link}
-				placeholder="https://example.com" />
+				placeholder="https://example.com"
+				on:input={getMetadata} />
 		</Form.Control>
 		<Form.Description>Shortener link</Form.Description>
 		<Form.FieldErrors />
