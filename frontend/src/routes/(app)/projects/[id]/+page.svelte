@@ -1,22 +1,22 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
 	import { browser } from '$app/environment'
+	import { page } from '$app/stores'
 
-	import ShortenerCard from '$lib/components/ShortenerCard.svelte'
+	import ShortenerCard from './(components)/ShortenerCard.svelte'
 	import { Button } from '$lib/components/ui/button'
 	import { Skeleton } from '$lib/components/ui/skeleton'
 	import { Input } from '$lib/components/ui/input'
 	import * as Select from '$lib/components/ui/select'
+	import * as Dialog from '$lib/components/ui/dialog'
 
 	import { SortDescIcon } from 'lucide-svelte'
 
 	import type { PageData } from './$types'
-	import AddShortenerDialog from '$lib/components/AddShortenerDialog.svelte'
-	import {
-		ScrollArea,
-		Scrollbar,
-	} from '$lib/components/ui/scroll-area'
+	import { ScrollArea } from '$lib/components/ui/scroll-area'
 	import * as Pagination from '$lib/components/ui/pagination'
+	import Form from './(components)/form.svelte'
+	import EditProjectLinkPage from './links/[linkid]/edit/+page.svelte'
 
 	export let data: PageData
 
@@ -46,6 +46,10 @@
 			return '/projects/' + data.selectedProject.uuid
 		}
 	}
+
+	let editProjectLinkOpen = false
+
+	$: editProjectLinkOpen = !!$page.state.editProjectLink
 </script>
 
 <div
@@ -90,7 +94,7 @@
 			}} />
 		<Button disabled={!search} on:click={() => (search = '')}
 			>Clear</Button>
-		<AddShortenerDialog bind:dialogOpen projects={data.projects} />
+		<Form bind:dialogOpen data={data.form} />
 	</div>
 </div>
 
@@ -107,7 +111,7 @@
 				{#each shorteners as shortener}
 					<ShortenerCard
 						{shortener}
-						projects={data.projects}
+						selected_project={data.selectedProject}
 						shortener_url={data.shortener_url}
 						settings={data.settings} />
 				{/each}
@@ -236,3 +240,23 @@
 		</Pagination.Root>
 	</div>
 {/await}
+
+<Dialog.Root
+	bind:open={editProjectLinkOpen}
+	onOpenChange={(open) => {
+		if (!open) {
+			history.back()
+		}
+	}}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>Edit Shortener</Dialog.Title>
+			<Dialog.Description>
+				Edit Shortener Here. Click Save To Save.
+			</Dialog.Description>
+		</Dialog.Header>
+		<ScrollArea class="max-h-[calc(100vh-200px)]">
+			<EditProjectLinkPage data={$page.state.editProjectLink} />
+		</ScrollArea>
+	</Dialog.Content>
+</Dialog.Root>

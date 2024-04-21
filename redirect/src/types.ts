@@ -17,6 +17,10 @@ export interface Database {
 export interface ShortenerTable {
 	id: Generated<number>
 	link: string
+	ios: boolean
+	ios_link: string | null
+	android: boolean
+	android_link: string | null
 	code: string
 	active: boolean
 	created_at: ColumnType<Date, string | undefined, never>

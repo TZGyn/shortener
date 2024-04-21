@@ -18,7 +18,8 @@
     "zod": "^3.22.2"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "typescript": "^5.4.5"
   },
   "module": "src/index.js"
 }

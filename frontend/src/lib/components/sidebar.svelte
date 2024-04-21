@@ -21,7 +21,7 @@
 			regex: createRegExp(
 				exactly('/links')
 					.at.lineStart()
-					.or(exactly('/links/').and(word)),
+					.or(exactly('/links/').notBefore(word).and(word)),
 			),
 			icon: Link,
 		},
@@ -31,7 +31,7 @@
 			regex: createRegExp(
 				exactly('/projects')
 					.at.lineStart()
-					.or(exactly('/projects/').and(word)),
+					.or(exactly('/projects/').notBefore(word).and(word)),
 			),
 			icon: Blocks,
 		},
@@ -41,7 +41,7 @@
 			regex: createRegExp(
 				exactly('/settings')
 					.at.lineStart()
-					.or(exactly('/settings/').and(word)),
+					.or(exactly('/settings/').notBefore(word).and(word)),
 			),
 			icon: Settings,
 		},

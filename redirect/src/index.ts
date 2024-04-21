@@ -7,23 +7,23 @@ const fallback_url = Bun.env.FALLBACK_URL ?? 'https://shortener.tzgyn.com'
 
 const app = new Elysia().use(cors())
 
-app.get('/', () => 'Hello Elysia')
+app.get('/', ({ set }) => (set.redirect = fallback_url))
 app.get('/invalid', () => 'Invalid Shortener')
 
 app.get(
 	'/:shortenerCode',
 	async ({ params: { shortenerCode }, set, request }) => {
-		const ip = request.headers.get('x-forwarded-for')
-
-		const geolocation = await (
-			await fetch(`https://api.ipbase.com/v2/info?ip=${ip}`)
-		).json()
-
-		const user_agent = request.headers.get('User-Agent')
-
-		const ua_parser = new UAParser(user_agent ?? '')
-
 		try {
+			const ip = request.headers.get('x-forwarded-for')
+
+			const geolocation = await (
+				await fetch(`https://api.ipbase.com/v2/info?ip=${ip}`)
+			).json()
+
+			const user_agent = request.headers.get('User-Agent')
+
+			const ua_parser = new UAParser(user_agent ?? '')
+
 			const shortener = await db
 				.selectFrom('shortener')
 				.selectAll()
@@ -49,8 +49,23 @@ app.get(
 
 			await db.insertInto('visitor').values(visitor_data).execute()
 
-			set.redirect = shortener[0].link
-		} catch {
+			if (
+				ua_parser.getOS().name === 'iOS' &&
+				shortener[0].ios &&
+				shortener[0].ios_link
+			) {
+				set.redirect = shortener[0].ios_link
+			} else if (
+				ua_parser.getOS().name === 'Android' &&
+				shortener[0].android &&
+				shortener[0].android_link
+			) {
+				set.redirect = shortener[0].android_link
+			} else {
+				set.redirect = shortener[0].link
+			}
+		} catch (error) {
+			console.error(error)
 			set.redirect = fallback_url
 		}
 	}

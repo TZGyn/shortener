@@ -12,7 +12,11 @@ import { relations } from 'drizzle-orm'
 export const shortener = pgTable('shortener', {
 	id: serial('id').primaryKey().notNull(),
 	link: varchar('link', { length: 255 }).notNull(),
-	code: varchar('code', { length: 255 }).notNull(),
+	ios: boolean('ios').notNull().default(false),
+	ios_link: varchar('ios_link', { length: 255 }),
+	android: boolean('android').notNull().default(false),
+	android_link: varchar('android_link', { length: 255 }),
+	code: varchar('code', { length: 255 }).notNull().unique(),
 	createdAt: timestamp('created_at', { mode: 'string' })
 		.defaultNow()
 		.notNull(),
