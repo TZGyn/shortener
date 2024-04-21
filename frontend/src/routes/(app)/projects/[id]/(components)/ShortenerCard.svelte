@@ -3,6 +3,7 @@
 	import * as Dialog from '$lib/components/ui/dialog'
 	import * as Card from '$lib/components/ui/card'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+	import * as Tooltip from '$lib/components/ui/tooltip'
 	import { Badge } from '$lib/components/ui/badge'
 	import type { Shortener, Project, Setting } from '$lib/db/types'
 	import {
@@ -16,7 +17,6 @@
 	import { goto, preloadData, pushState } from '$app/navigation'
 
 	export let shortener: Shortener & {
-		projectName: string | null
 		visitorCount: number
 	}
 	export let shortener_url: string
@@ -75,9 +75,6 @@
 				<ExternalLink size={16} />
 			</div>
 			<div class="flex gap-4">
-				{#if shortener.projectName}
-					<Badge variant="secondary">{shortener.projectName}</Badge>
-				{/if}
 				<Badge variant="outline" class="flex gap-2">
 					{#if shortener.active}
 						<span
@@ -93,7 +90,34 @@
 				</Badge>
 			</div>
 		</Card.Title>
-		<Card.Description>{shortener.link}</Card.Description>
+		<Card.Description>
+			<div class="flex gap-2 items-center">
+				<div>
+					{shortener.link}
+				</div>
+				{#if shortener.ios}
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							<Badge variant="outline" class="flex gap-2">iOS</Badge>
+						</Tooltip.Trigger>
+						<Tooltip.Content>
+							<p>{shortener.ios_link}</p>
+						</Tooltip.Content>
+					</Tooltip.Root>
+				{/if}
+				{#if shortener.android}
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							<Badge variant="outline" class="flex gap-2"
+								>Android</Badge>
+						</Tooltip.Trigger>
+						<Tooltip.Content>
+							<p>{shortener.android_link}</p>
+						</Tooltip.Content>
+					</Tooltip.Root>
+				{/if}
+			</div>
+		</Card.Description>
 	</Card.Header>
 	<Card.Content>
 		<div class="flex justify-between items-center">

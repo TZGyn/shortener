@@ -9,7 +9,7 @@ import {
 	sql,
 } from 'drizzle-orm'
 import type { PageServerLoad } from './$types'
-import { project, shortener, visitor } from '$lib/db/schema'
+import { shortener, visitor } from '$lib/db/schema'
 import { fail, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 import { formSchema } from './schema'
@@ -48,7 +48,6 @@ export const load = (async (event) => {
 	const shorteners = db
 		.select({
 			...shortenerColumns,
-			projectName: project.name,
 			visitorCount: sql<number>`count(${visitor.id})`,
 		})
 		.from(shortener)
@@ -62,8 +61,7 @@ export const load = (async (event) => {
 			),
 		)
 		.leftJoin(visitor, eq(shortener.id, visitor.shortenerId))
-		.leftJoin(project, eq(shortener.projectId, project.id))
-		.groupBy(shortener.id, project.id)
+		.groupBy(shortener.id)
 		.offset(perPage * (page - 1))
 		.limit(perPage)
 
@@ -90,10 +88,6 @@ export const load = (async (event) => {
 			),
 		)
 
-	const projects = db.query.project.findMany({
-		where: (project, { eq }) => eq(project.userId, user.id),
-	})
-
 	const settings = db.query.setting.findFirst({
 		where: (settings, { eq }) => eq(settings.userId, user.id),
 	})
@@ -101,7 +95,6 @@ export const load = (async (event) => {
 	return {
 		selectedProject,
 		shorteners,
-		projects: await projects,
 		settings: await settings,
 		page,
 		perPage,
