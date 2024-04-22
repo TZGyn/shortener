@@ -1,5 +1,7 @@
 // See https://kit.svelte.dev/docs/types#app
 
+import type { Project } from '$lib/db/types'
+
 // for information about these interfaces
 declare global {
 	namespace App {
@@ -11,13 +13,21 @@ declare global {
 		// interface PageData {}
 		// interface Platform {}
 		interface PageState {
-			editProjectLink: {
-				project: {
-					id: number
+			projectLinkQR: {
+				user: User
+				breadcrumbs: {
 					name: string
-					userId: number
-					uuid: string | null
+					path: string
+				}[]
+				page_title: string
+				shortener_url: string
+				shortener: {
+					code: string
 				}
+				project: Project
+			}
+			editProjectLink: {
+				project: Project
 				user: User
 				breadcrumbs: {
 					name: string

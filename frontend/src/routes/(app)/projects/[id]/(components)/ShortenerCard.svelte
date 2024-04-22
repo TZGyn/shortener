@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button'
+	import { Button, buttonVariants } from '$lib/components/ui/button'
 	import * as Dialog from '$lib/components/ui/dialog'
 	import * as Card from '$lib/components/ui/card'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
@@ -15,6 +15,7 @@
 	import DeleteShortenerDialog from './DeleteShortenerDialog.svelte'
 	import Qr from '$lib/components/QR.svelte'
 	import { goto, preloadData, pushState } from '$app/navigation'
+	import { cn } from '$lib/utils'
 
 	export let shortener: Shortener & {
 		visitorCount: number
@@ -57,6 +58,19 @@
 			pushState(href, { editProjectLink: result.data })
 		} else {
 			// something bad happened! try navigating
+			goto(href)
+		}
+	}
+
+	const showQRModal = async (e: MouseEvent) => {
+		if (innerWidth < 640) return
+
+		const { href } = e.currentTarget as HTMLAnchorElement
+		const result = await preloadData(href)
+
+		if (result.type === 'loaded' && result.status === 200) {
+			pushState(href, { projectLinkQR: result.data })
+		} else {
 			goto(href)
 		}
 	}
@@ -130,11 +144,20 @@
 						{shortener.visitorCount} visits
 					</div>
 				</Button>
-				<Button
-					class="flex gap-1 justify-center items-center h-8 text-sm rounded bg-secondary"
-					on:click={() => openQRDialog(shortener.code)}>
+				<!-- <Button -->
+				<!-- 	class="flex gap-1 justify-center items-center h-8 text-sm rounded bg-secondary" -->
+				<!-- 	on:click={() => openQRDialog(shortener.code)}> -->
+				<!-- 	<QrCode size={20} /> -->
+				<!-- </Button> -->
+				<a
+					class={cn(
+						buttonVariants({ variant: 'default' }),
+						'flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm',
+					)}
+					href={`/projects/${selected_project.uuid}/links/${shortener.code}/qr`}
+					on:click|preventDefault={showQRModal}>
 					<QrCode size={20} />
-				</Button>
+				</a>
 			</div>
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>

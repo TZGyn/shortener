@@ -30,6 +30,12 @@ export const project = pgTable('project', {
 	uuid: uuid('uuid').defaultRandom(),
 	name: varchar('name', { length: 255 }).notNull(),
 	userId: integer('user_id').notNull(),
+	qr_background: varchar('qr_background', { length: 7 })
+		.default('#ffffff')
+		.notNull(),
+	qr_foreground: varchar('qr_foreground', { length: 7 })
+		.default('#000000')
+		.notNull(),
 })
 
 export const user = pgTable('user', {

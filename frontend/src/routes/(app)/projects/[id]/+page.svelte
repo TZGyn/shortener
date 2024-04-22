@@ -17,6 +17,7 @@
 	import * as Pagination from '$lib/components/ui/pagination'
 	import Form from './(components)/form.svelte'
 	import EditProjectLinkPage from './links/[linkid]/edit/+page.svelte'
+	import ProjectLinkQRPage from './links/[linkid]/qr/+page.svelte'
 
 	export let data: PageData
 
@@ -50,6 +51,7 @@
 	let editProjectLinkOpen = false
 
 	$: editProjectLinkOpen = !!$page.state.editProjectLink
+	$: projectLinkQROpen = !!$page.state.projectLinkQR
 </script>
 
 <div
@@ -256,7 +258,31 @@
 			</Dialog.Description>
 		</Dialog.Header>
 		<ScrollArea class="max-h-[calc(100vh-200px)]">
-			<EditProjectLinkPage data={$page.state.editProjectLink} />
+			<EditProjectLinkPage
+				data={$page.state.editProjectLink}
+				shallowRouting />
+		</ScrollArea>
+	</Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root
+	bind:open={projectLinkQROpen}
+	onOpenChange={(open) => {
+		if (!open) {
+			history.back()
+		}
+	}}>
+	<Dialog.Content class="sm:max-w-[425px]">
+		<Dialog.Header>
+			<Dialog.Title>Shortener QR</Dialog.Title>
+			<Dialog.Description>
+				Use this QR code to share the shortener.
+			</Dialog.Description>
+		</Dialog.Header>
+		<ScrollArea class="max-h-[calc(100vh-200px)]">
+			<ProjectLinkQRPage
+				data={$page.state.projectLinkQR}
+				shallowRouting />
 		</ScrollArea>
 	</Dialog.Content>
 </Dialog.Root>

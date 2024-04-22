@@ -12,7 +12,11 @@ export const load = (async (event) => {
 
 	return {
 		form: await superValidate(
-			{ name: project.name },
+			{
+				name: project.name,
+				qr_background: project.qr_background,
+				qr_foreground: project.qr_foreground,
+			},
 			zod(formSchema),
 		),
 		deleteForm: await superValidate(
@@ -38,7 +42,11 @@ export const actions: Actions = {
 
 		await db
 			.update(project)
-			.set({ name: form.data.name })
+			.set({
+				name: form.data.name,
+				qr_background: form.data.qr_background,
+				qr_foreground: form.data.qr_foreground,
+			})
 			.where(
 				and(
 					eq(project.uuid, event.params.id),

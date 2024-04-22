@@ -18,6 +18,12 @@
 				? 'secondary'
 				: 'ghost'}>Shorteners</Button>
 		<Button
+			href={`/projects/${data.project.uuid}/members`}
+			variant={$page.url.pathname ===
+			`/projects/${data.project.uuid}/members`
+				? 'secondary'
+				: 'ghost'}>Members</Button>
+		<Button
 			href={`/projects/${data.project.uuid}/settings`}
 			variant={$page.url.pathname ===
 			`/projects/${data.project.uuid}/settings`

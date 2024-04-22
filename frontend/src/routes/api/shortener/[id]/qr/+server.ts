@@ -1,5 +1,5 @@
 import { db } from '$lib/db'
-import { setting, shortener, user } from '$lib/db/schema'
+import { project, setting, shortener, user } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import type { RequestHandler } from './$types'
 import QRCode from 'qrcode'
@@ -22,12 +22,30 @@ export const GET: RequestHandler = async (event) => {
 	}
 
 	let colorSetting = {}
-	if (color === 'true' && shortenerWithUserSetting[0].setting) {
-		colorSetting = {
-			color: {
-				light: shortenerWithUserSetting[0].setting.qr_background,
-				dark: shortenerWithUserSetting[0].setting.qr_foreground,
-			},
+	if (color === 'true') {
+		if (shortenerWithUserSetting[0].shortener.projectId) {
+			const selectedProject = await db
+				.select()
+				.from(project)
+				.where(
+					eq(
+						project.id,
+						shortenerWithUserSetting[0].shortener.projectId,
+					),
+				)
+			colorSetting = {
+				color: {
+					light: selectedProject[0].qr_background,
+					dark: selectedProject[0].qr_foreground,
+				},
+			}
+		} else if (shortenerWithUserSetting[0].setting) {
+			colorSetting = {
+				color: {
+					light: shortenerWithUserSetting[0].setting.qr_background,
+					dark: shortenerWithUserSetting[0].setting.qr_foreground,
+				},
+			}
 		}
 	}
 
