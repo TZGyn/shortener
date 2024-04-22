@@ -15,7 +15,7 @@
 
 <div class="flex flex-wrap gap-2 items-stretch px-6 w-full">
 	{#each data.projects as project}
-		<a href={'/links?project=' + project.uuid}>
+		<a href={'/projects/' + project.uuid}>
 			<Card.Root
 				class="hover:cursor-pointer w-[500px] hover:bg-secondary">
 				<Card.Header>
