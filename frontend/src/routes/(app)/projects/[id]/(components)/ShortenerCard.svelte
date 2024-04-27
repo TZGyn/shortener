@@ -8,9 +8,12 @@
 	import type { Shortener, Project, Setting } from '$lib/db/types'
 	import {
 		BarChart,
+		DeleteIcon,
+		EditIcon,
 		ExternalLink,
 		MoreVertical,
 		QrCode,
+		TrashIcon,
 	} from 'lucide-svelte'
 	import DeleteShortenerDialog from './DeleteShortenerDialog.svelte'
 	import Qr from '$lib/components/QR.svelte'
@@ -144,11 +147,6 @@
 						{shortener.visitorCount} visits
 					</div>
 				</Button>
-				<!-- <Button -->
-				<!-- 	class="flex gap-1 justify-center items-center h-8 text-sm rounded bg-secondary" -->
-				<!-- 	on:click={() => openQRDialog(shortener.code)}> -->
-				<!-- 	<QrCode size={20} /> -->
-				<!-- </Button> -->
 				<a
 					class={cn(
 						buttonVariants({ variant: 'default' }),
@@ -168,11 +166,14 @@
 						<a
 							href={`/projects/${selected_project.uuid}/links/${shortener.code}/edit`}
 							on:click|preventDefault={showEditModal}>
-							<DropdownMenu.Item>Edit</DropdownMenu.Item>
+							<DropdownMenu.Item class="flex gap-2 items-center">
+								<EditIcon size={16} />Edit
+							</DropdownMenu.Item>
 						</a>
 						<DropdownMenu.Item
 							on:click={() => openDeleteDialog(shortener.code)}
-							class="text-destructive data-[highlighted]:bg-destructive">
+							class="flex gap-2 items-center text-destructive data-[highlighted]:bg-destructive">
+							<TrashIcon size={16} />
 							Delete
 						</DropdownMenu.Item>
 					</DropdownMenu.Group>

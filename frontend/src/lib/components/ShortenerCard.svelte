@@ -7,9 +7,11 @@
 	import type { Shortener, Project, Setting } from '$lib/db/types'
 	import {
 		BarChart,
+		EditIcon,
 		ExternalLink,
 		MoreVertical,
 		QrCode,
+		TrashIcon,
 	} from 'lucide-svelte'
 	import EditShortenerDialog from './EditShortenerDialog.svelte'
 	import DeleteShortenerDialog from './DeleteShortenerDialog.svelte'
@@ -127,12 +129,14 @@
 									shortener.projectId,
 									shortener.projectName,
 									shortener.active,
-								)}>
-							Edit
+								)}
+							class="flex gap-2 items-center">
+							<EditIcon size={16} />Edit
 						</DropdownMenu.Item>
 						<DropdownMenu.Item
 							on:click={() => openDeleteDialog(shortener.code)}
-							class="text-destructive data-[highlighted]:bg-destructive">
+							class="flex gap-2 items-center text-destructive data-[highlighted]:bg-destructive">
+							<TrashIcon size={16} />
 							Delete
 						</DropdownMenu.Item>
 					</DropdownMenu.Group>
