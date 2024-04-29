@@ -1,0 +1,1 @@
+ALTER TABLE "visitor" ADD COLUMN "browser" varchar(255);
