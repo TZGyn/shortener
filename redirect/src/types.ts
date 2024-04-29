@@ -39,6 +39,7 @@ export interface VisitorTable {
 	device_type: string | null
 	device_vendor: string | null
 	os: string | null
+	browser: string | null
 	created_at: ColumnType<Date, string | undefined, never>
 }
 

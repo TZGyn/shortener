@@ -75,6 +75,15 @@ export const load = (async (event) => {
 		.where(eq(visitorSchema.shortenerId, shortener.id))
 		.groupBy(visitorSchema.os)
 
+	const visitorByBrowser = await db
+		.select({
+			count: sql<number>`cast(count(*) as int)`,
+			browser: visitorSchema.browser,
+		})
+		.from(visitorSchema)
+		.where(eq(visitorSchema.shortenerId, shortener.id))
+		.groupBy(visitorSchema.browser)
+
 	const visitorByDeviceVendor = await db
 		.select({
 			count: sql<number>`cast(count(*) as int)`,
@@ -101,6 +110,7 @@ export const load = (async (event) => {
 		visitorByCountry,
 		visitorByCity,
 		visitorByOS,
+		visitorByBrowser,
 		visitorByDeviceVendor,
 		visitorByDeviceType,
 		page_title,

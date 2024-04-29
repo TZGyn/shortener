@@ -63,6 +63,7 @@ export const visitor = pgTable('visitor', {
 	deviceType: varchar('device_type', { length: 255 }),
 	deviceVendor: varchar('device_vendor', { length: 255 }),
 	os: varchar('os', { length: 255 }),
+	browser: varchar('browser', { length: 255 }),
 })
 
 export const session = pgTable('session', {

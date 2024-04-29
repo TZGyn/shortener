@@ -44,6 +44,7 @@ app.get(
 				city: geolocation.data.location.city.name as string,
 				device_type: ua_parser.getDevice().type,
 				device_vendor: ua_parser.getDevice().vendor,
+				browser: ua_parser.getBrowser().name,
 				os: ua_parser.getOS().name,
 			}
 

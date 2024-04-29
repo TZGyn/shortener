@@ -19,7 +19,7 @@
     "@types/qrcode": "^1.5.5",
     "autoprefixer": "^10.4.14",
     "bun-types": "^1.0.11",
-    "drizzle-kit": "latest",
+    "drizzle-kit": "^0.20.14",
     "lucia": "^3.1.1",
     "postcss": "^8.4.24",
     "postcss-load-config": "^4.0.1",

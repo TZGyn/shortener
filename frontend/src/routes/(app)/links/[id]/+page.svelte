@@ -99,12 +99,13 @@
 </script>
 
 <div class="flex justify-between items-center p-4 min-h-[80px]">
-	<div class="text-3xl font-bold">{data.shortener.link}</div>
+	<div class="text-2xl font-bold">{data.shortener.link}</div>
 </div>
 <Separator />
 
-<div class="flex overflow-y-scroll flex-wrap gap-4 p-4">
-	<Card.Root class="w-[700px]">
+<div
+	class="grid grid-cols-[repeat(auto-fit,_minmax(600px,_1fr))] gap-4 overflow-y-scroll p-4">
+	<Card.Root>
 		<Card.Header>
 			<Card.Title>Clicks</Card.Title>
 			<Card.Description
@@ -114,7 +115,8 @@
 			<div bind:this={container}></div>
 		</Card.Content>
 	</Card.Root>
-	<Card.Root class="min-h-[500px] w-[500px]">
+
+	<Card.Root class="min-h-[500px]">
 		<Tabs.Root value="country">
 			<Card.Header
 				class="flex flex-row justify-between items-center space-y-0 w-full">
@@ -158,7 +160,7 @@
 			</Card.Content>
 		</Tabs.Root>
 	</Card.Root>
-	<Card.Root class="min-h-[500px] w-[500px]">
+	<Card.Root class="min-h-[500px]">
 		<Tabs.Root value="vendor">
 			<Card.Header
 				class="flex flex-row justify-between items-center space-y-0 w-full">
@@ -170,6 +172,7 @@
 					<Tabs.Trigger value="vendor">Vendor</Tabs.Trigger>
 					<Tabs.Trigger value="type">Type</Tabs.Trigger>
 					<Tabs.Trigger value="os">OS</Tabs.Trigger>
+					<Tabs.Trigger value="browser">Browser</Tabs.Trigger>
 				</Tabs.List>
 			</Card.Header>
 			<Card.Content>
@@ -220,6 +223,21 @@
 									<div>{visitorByOS.os ?? 'Undefined OS'}</div>
 								</div>
 								<div>{visitorByOS.count}</div>
+							</div>
+						{/each}
+					</div>
+				</Tabs.Content>
+				<Tabs.Content value="browser">
+					<div class="flex flex-col gap-6">
+						{#each data.visitorByBrowser as visitorByBrowser}
+							<div class="flex justify-between items-center">
+								<div class="flex gap-4 items-center">
+									<TabletSmartphone />
+									<div>
+										{visitorByBrowser.browser ?? 'Undefined Browser'}
+									</div>
+								</div>
+								<div>{visitorByBrowser.count}</div>
 							</div>
 						{/each}
 					</div>
