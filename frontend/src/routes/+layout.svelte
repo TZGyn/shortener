@@ -13,6 +13,6 @@
 </svelte:head>
 
 <ModeWatcher />
-<ProgressBar />
+<ProgressBar class="text-orange-400" />
 <slot />
 <Toaster />
