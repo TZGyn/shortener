@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button'
-	import * as Dialog from '$lib/components/ui/dialog'
+	import { Button, buttonVariants } from '$lib/components/ui/button'
 	import * as Card from '$lib/components/ui/card'
+	import * as Tooltip from '$lib/components/ui/tooltip'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import { Badge } from '$lib/components/ui/badge'
-	import type { Shortener, Project, Setting } from '$lib/db/types'
+	import type { Shortener, Project } from '$lib/db/types'
 	import {
 		BarChart,
 		EditIcon,
@@ -15,14 +15,16 @@
 	} from 'lucide-svelte'
 	import EditShortenerDialog from './EditShortenerDialog.svelte'
 	import DeleteShortenerDialog from './DeleteShortenerDialog.svelte'
-	import Qr from '$lib/components/QR.svelte'
+
+	import { goto, preloadData, pushState } from '$app/navigation'
+	import { cn } from '$lib/utils'
 
 	export let shortener: Shortener & {
 		projectName: string | null
+		projectUuid: string | null
 		visitorCount: number
 	}
 	export let shortener_url: string
-	export let settings: Setting | undefined
 	export let projects: Project[]
 
 	let editDialogOpen = false
@@ -56,12 +58,43 @@
 		deleteDialogOpen = true
 	}
 
-	let qrDialogOpen = false
-	let qrCode = ''
+	const getUrl = () => {
+		if (shortener.projectUuid) {
+			return `/projects/${shortener.projectUuid}`
+		}
+		return ''
+	}
 
-	const openQRDialog = (code: string) => {
-		qrCode = code
-		qrDialogOpen = true
+	const showEditModal = async (e: MouseEvent) => {
+		if (innerWidth < 640) return
+
+		const { href } = e.currentTarget as HTMLAnchorElement
+
+		const result = await preloadData(href)
+
+		if (result.type === 'loaded' && result.status === 200) {
+			pushState(href, { editLink: result.data })
+		} else {
+			// something bad happened! try navigating
+			goto(href)
+		}
+	}
+
+	const showQRModal = async (e: MouseEvent) => {
+		if (innerWidth < 640) return
+
+		const { href } = e.currentTarget as HTMLAnchorElement
+		const result = await preloadData(href)
+
+		if (result.type === 'loaded' && result.status === 200) {
+			if (getUrl().startsWith('/projects')) {
+				pushState(href, { projectLinkQR: result.data })
+			} else {
+				pushState(href, { linkQR: result.data })
+			}
+		} else {
+			goto(href)
+		}
 	}
 </script>
 
@@ -96,7 +129,34 @@
 				</Badge>
 			</div>
 		</Card.Title>
-		<Card.Description>{shortener.link}</Card.Description>
+		<Card.Description>
+			<div class="flex gap-2 items-center">
+				<div>
+					{shortener.link}
+				</div>
+				{#if shortener.ios}
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							<Badge variant="outline" class="flex gap-2">iOS</Badge>
+						</Tooltip.Trigger>
+						<Tooltip.Content>
+							<p>{shortener.ios_link}</p>
+						</Tooltip.Content>
+					</Tooltip.Root>
+				{/if}
+				{#if shortener.android}
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							<Badge variant="outline" class="flex gap-2"
+								>Android</Badge>
+						</Tooltip.Trigger>
+						<Tooltip.Content>
+							<p>{shortener.android_link}</p>
+						</Tooltip.Content>
+					</Tooltip.Root>
+				{/if}
+			</div>
+		</Card.Description>
 	</Card.Header>
 	<Card.Content>
 		<div class="flex justify-between items-center">
@@ -109,11 +169,15 @@
 						{shortener.visitorCount} visits
 					</div>
 				</Button>
-				<Button
-					class="flex gap-1 justify-center items-center h-8 text-sm rounded bg-secondary"
-					on:click={() => openQRDialog(shortener.code)}>
+				<a
+					class={cn(
+						buttonVariants({ variant: 'default' }),
+						'flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm',
+					)}
+					href={`${getUrl()}/links/${shortener.code}/qr`}
+					on:click|preventDefault={showQRModal}>
 					<QrCode size={20} />
-				</Button>
+				</a>
 			</div>
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>
@@ -121,18 +185,13 @@
 				</DropdownMenu.Trigger>
 				<DropdownMenu.Content>
 					<DropdownMenu.Group>
-						<DropdownMenu.Item
-							on:click={() =>
-								openEditDialog(
-									shortener.code,
-									shortener.link,
-									shortener.projectId,
-									shortener.projectName,
-									shortener.active,
-								)}
-							class="flex gap-2 items-center">
-							<EditIcon size={16} />Edit
-						</DropdownMenu.Item>
+						<a
+							href={`/links/${shortener.code}/edit`}
+							on:click|preventDefault={showEditModal}>
+							<DropdownMenu.Item class="flex gap-2 items-center">
+								<EditIcon size={16} />Edit
+							</DropdownMenu.Item>
+						</a>
 						<DropdownMenu.Item
 							on:click={() => openDeleteDialog(shortener.code)}
 							class="flex gap-2 items-center text-destructive data-[highlighted]:bg-destructive">
@@ -155,24 +214,3 @@
 	{editShortenerCategory} />
 
 <DeleteShortenerDialog bind:deleteDialogOpen {deleteShortenerCode} />
-
-<Dialog.Root bind:open={qrDialogOpen}>
-	<Dialog.Content class="sm:max-w-[425px]">
-		<Dialog.Header>
-			<Dialog.Title>Shortener QR</Dialog.Title>
-			<Dialog.Description>
-				Use this QR code to share the shortener.
-			</Dialog.Description>
-		</Dialog.Header>
-		<div class="flex flex-col gap-4 items-center h-full">
-			<Badge variant="secondary">
-				{shortener_url + '/' + qrCode}
-			</Badge>
-			<Qr
-				bind:code={qrCode}
-				value={shortener_url + '/' + qrCode}
-				background={settings?.qr_background || '#fff'}
-				color={settings?.qr_foreground || '#000'} />
-		</div>
-	</Dialog.Content>
-</Dialog.Root>

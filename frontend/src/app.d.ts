@@ -1,6 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 
-import type { Project } from '$lib/db/types'
+import type { Project, Setting } from '$lib/db/types'
 
 // for information about these interfaces
 declare global {
@@ -13,6 +13,56 @@ declare global {
 		// interface PageData {}
 		// interface Platform {}
 		interface PageState {
+			linkQR: {
+				user: User
+				breadcrumbs: {
+					name: string
+					path: string
+				}[]
+				page_title: string
+				shortener_url: string
+				shortener: {
+					code: string
+				}
+				settings: Setting
+			}
+			editLink: {
+				user: User
+				breadcrumbs: {
+					name: string
+					path: string
+				}[]
+				page_title: string
+				shortener_url: string
+				projects: Project[]
+				selectedCategory:
+					| {
+							value: string | null
+							label: string
+					  }
+					| undefined
+				form: SuperValidated<
+					{
+						link: string
+						ios: boolean
+						ios_link: string
+						android: boolean
+						android_link: string
+						active: boolean
+						project?: string | undefined
+					},
+					any,
+					{
+						link: string
+						ios: boolean
+						ios_link: string
+						android: boolean
+						android_link: string
+						active: boolean
+						project?: string | undefined
+					}
+				>
+			}
 			projectLinkQR: {
 				user: User
 				breadcrumbs: {

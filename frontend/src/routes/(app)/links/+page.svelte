@@ -3,20 +3,26 @@
 	import { cn } from '$lib/utils'
 	import { goto } from '$app/navigation'
 	import { browser } from '$app/environment'
+	import { page } from '$app/stores'
 
 	import { Button } from '$lib/components/ui/button'
 	import * as Select from '$lib/components/ui/select'
 	import * as Command from '$lib/components/ui/command'
 	import * as Popover from '$lib/components/ui/popover'
 	import * as Pagination from '$lib/components/ui/pagination'
+	import * as Dialog from '$lib/components/ui/dialog'
 	import { Input } from '$lib/components/ui/input'
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
 	import { Skeleton } from '$lib/components/ui/skeleton'
 
 	import { Check, ChevronsUpDown, SortDescIcon } from 'lucide-svelte'
 
-	import AddShortenerDialog from '$lib/components/AddShortenerDialog.svelte'
 	import ShortenerCard from '$lib/components/ShortenerCard.svelte'
+	import Form from './(components)/form.svelte'
+	import EditProjectLinkPage from '../projects/[id]/links/[linkid]/edit/+page.svelte'
+	import ProjectLinkQRPage from '../projects/[id]/links/[linkid]/qr/+page.svelte'
+	import EditLinkQRPage from './[id]/edit/+page.svelte'
+	import LinkQRPage from './[id]/qr/+page.svelte'
 
 	export let data: PageData
 
@@ -51,6 +57,11 @@
 			return '/links'
 		}
 	}
+
+	$: editProjectLinkOpen = !!$page.state.editProjectLink
+	$: projectLinkQROpen = !!$page.state.projectLinkQR
+	$: editLinkOpen = !!$page.state.editLink
+	$: linkQROpen = !!$page.state.linkQR
 </script>
 
 <div
@@ -166,7 +177,7 @@
 			}} />
 		<Button disabled={!search} on:click={() => (search = '')}
 			>Clear</Button>
-		<AddShortenerDialog bind:dialogOpen projects={data.projects} />
+		<Form bind:dialogOpen data={data.form} projects={data.projects} />
 	</div>
 </div>
 
@@ -312,3 +323,87 @@
 		</Pagination.Root>
 	</div>
 {/await}
+
+<Dialog.Root
+	bind:open={editProjectLinkOpen}
+	onOpenChange={(open) => {
+		if (!open) {
+			history.back()
+		}
+	}}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>Edit Shortener</Dialog.Title>
+			<Dialog.Description>
+				Edit Shortener Here. Click Save To Save.
+			</Dialog.Description>
+		</Dialog.Header>
+		<ScrollArea class="max-h-[calc(100vh-200px)]">
+			<EditProjectLinkPage
+				data={$page.state.editProjectLink}
+				shallowRouting />
+		</ScrollArea>
+	</Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root
+	bind:open={editLinkOpen}
+	onOpenChange={(open) => {
+		if (!open) {
+			history.back()
+		}
+	}}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>Edit Shortener</Dialog.Title>
+			<Dialog.Description>
+				Edit Shortener Here. Click Save To Save.
+			</Dialog.Description>
+		</Dialog.Header>
+		<ScrollArea class="max-h-[calc(100vh-200px)]">
+			<EditLinkQRPage data={$page.state.editLink} shallowRouting />
+		</ScrollArea>
+	</Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root
+	bind:open={linkQROpen}
+	onOpenChange={(open) => {
+		if (!open) {
+			history.back()
+		}
+	}}>
+	<Dialog.Content class="sm:max-w-[425px]">
+		<Dialog.Header>
+			<Dialog.Title>Shortener QR bla</Dialog.Title>
+			<Dialog.Description>
+				Use this QR code to share the shortener.
+			</Dialog.Description>
+		</Dialog.Header>
+		<ScrollArea class="max-h-[calc(100vh-200px)]">
+			<LinkQRPage data={$page.state.linkQR} shallowRouting />
+		</ScrollArea>
+	</Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root
+	bind:open={projectLinkQROpen}
+	onOpenChange={(open) => {
+		if (!open) {
+			history.back()
+		}
+	}}>
+	<Dialog.Content class="sm:max-w-[425px]">
+		<Dialog.Header>
+			<Dialog.Title>Shortener QR</Dialog.Title>
+			<Dialog.Description>
+				Use this QR code to share the shortener.
+			</Dialog.Description>
+		</Dialog.Header>
+		<ScrollArea class="max-h-[calc(100vh-200px)]">
+			<ProjectLinkQRPage
+				data={$page.state.projectLinkQR}
+				shallowRouting />
+		</ScrollArea>
+	</Dialog.Content>
+</Dialog.Root>
