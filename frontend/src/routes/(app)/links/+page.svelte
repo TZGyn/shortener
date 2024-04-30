@@ -375,7 +375,7 @@
 	}}>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
-			<Dialog.Title>Shortener QR bla</Dialog.Title>
+			<Dialog.Title>Shortener QR</Dialog.Title>
 			<Dialog.Description>
 				Use this QR code to share the shortener.
 			</Dialog.Description>
