@@ -22,8 +22,8 @@
 
 	const form = superForm(data, {
 		validators: zodClient(formSchema),
-		invalidateAll: 'force',
-		resetForm: true,
+		invalidateAll: false,
+		resetForm: false,
 		onResult: ({ result }) => {
 			if (result.status === 200) {
 				toast.success('Project shortener updated')
