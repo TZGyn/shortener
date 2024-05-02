@@ -1,3 +1,4 @@
+import { env } from '$env/dynamic/public'
 import type { LayoutServerLoad } from './$types'
 
 export const load = (async (event) => {
@@ -8,7 +9,7 @@ export const load = (async (event) => {
 	const page_title = 'Home'
 
 	return {
-		shortener_url: Bun.env.PUBLIC_SHORTENER_URL ?? '',
+		shortener_url: env.PUBLIC_SHORTENER_URL,
 		user: user,
 		breadcrumbs,
 		page_title,

@@ -7,6 +7,7 @@ import { db } from '$lib/db'
 import { user as userSchema } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { lucia } from '$lib/server/auth'
+import { env } from '$env/dynamic/private'
 
 export const load = (async (event) => {
 	return {
@@ -44,7 +45,7 @@ export const actions: Actions = {
 		event.cookies.set(sessionCookie.name, sessionCookie.value, {
 			...sessionCookie.attributes,
 			path: '/',
-			secure: Bun.env.APP_ENV === 'prod',
+			secure: env.APP_ENV === 'prod',
 		})
 
 		return {

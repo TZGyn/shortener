@@ -1,3 +1,4 @@
+import { env } from '$env/dynamic/private'
 import { lucia } from '$lib/server/auth'
 import type { RequestHandler } from './$types'
 
@@ -19,7 +20,7 @@ export const POST: RequestHandler = async (event) => {
 	event.cookies.set(sessionCookie.name, sessionCookie.value, {
 		...sessionCookie.attributes,
 		path: '/',
-		secure: Bun.env.APP_ENV === 'prod',
+		secure: env.APP_ENV === 'prod',
 	})
 	return new Response(JSON.stringify({ success: true }))
 }
