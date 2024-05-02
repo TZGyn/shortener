@@ -9,7 +9,6 @@ COPY . .
 # COPY ./.env.example ./.env
 
 RUN bun install
-RUN bunx @sveltejs/kit sync
 
 RUN bun run build
 
