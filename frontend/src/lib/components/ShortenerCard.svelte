@@ -2,9 +2,11 @@
 	import { Button, buttonVariants } from '$lib/components/ui/button'
 	import * as Card from '$lib/components/ui/card'
 	import * as Tooltip from '$lib/components/ui/tooltip'
+	import * as Dialog from '$lib/components/ui/dialog'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import { Badge } from '$lib/components/ui/badge'
-	import type { Shortener, Project } from '$lib/db/types'
+	import { ScrollArea } from '$lib/components/ui/scroll-area'
+	import type { Shortener } from '$lib/db/types'
 	import {
 		BarChart,
 		EditIcon,
@@ -13,11 +15,12 @@
 		QrCode,
 		TrashIcon,
 	} from 'lucide-svelte'
-	import EditShortenerDialog from './EditShortenerDialog.svelte'
 	import DeleteShortenerDialog from './DeleteShortenerDialog.svelte'
+	import EditLinkPage from '$lib/../routes/(app)/links/[id]/edit/+page.svelte'
 
 	import { goto, preloadData, pushState } from '$app/navigation'
 	import { cn } from '$lib/utils'
+	import type { page } from '$app/stores'
 
 	export let shortener: Shortener & {
 		projectName: string | null
@@ -25,31 +28,6 @@
 		visitorCount: number
 	}
 	export let shortener_url: string
-	export let projects: Project[]
-
-	let editDialogOpen = false
-	let editShortenerCode = ''
-	let editShortenerLink = ''
-	let editShortenerCategory: any = undefined
-	let editShortenerActive = false
-
-	const openEditDialog = (
-		code: string,
-		link: string,
-		projectId: number | null,
-		projectName: string | undefined,
-		active: boolean,
-	) => {
-		editShortenerCode = code
-		editShortenerLink = link
-		editShortenerActive = active
-		if (projectId) {
-			editShortenerCategory = { value: projectId, label: projectName }
-		} else {
-			editShortenerCategory = undefined
-		}
-		editDialogOpen = true
-	}
 
 	let deleteDialogOpen = false
 	let deleteShortenerCode = ''
@@ -74,6 +52,22 @@
 
 		if (result.type === 'loaded' && result.status === 200) {
 			pushState(href, { editLink: result.data })
+		} else {
+			// something bad happened! try navigating
+			goto(href)
+		}
+	}
+
+	let editProjectLinkOpen = false
+	let editData: typeof $page.state.editLink
+
+	const showEditModalNew = async (code: string) => {
+		const href = `/links/${code}/edit`
+		const result = await preloadData(href)
+
+		if (result.type === 'loaded' && result.status === 200) {
+			editData = result.data as typeof $page.state.editLink
+			editProjectLinkOpen = true
 		} else {
 			// something bad happened! try navigating
 			goto(href)
@@ -187,7 +181,8 @@
 					<DropdownMenu.Group>
 						<a
 							href={`/links/${shortener.code}/edit`}
-							on:click|preventDefault={showEditModal}>
+							on:click|preventDefault={() =>
+								showEditModalNew(shortener.code)}>
 							<DropdownMenu.Item class="flex gap-2 items-center">
 								<EditIcon size={16} />Edit
 							</DropdownMenu.Item>
@@ -205,12 +200,18 @@
 	</Card.Content>
 </Card.Root>
 
-<EditShortenerDialog
-	{projects}
-	bind:editDialogOpen
-	{editShortenerCode}
-	{editShortenerLink}
-	{editShortenerActive}
-	{editShortenerCategory} />
-
 <DeleteShortenerDialog bind:deleteDialogOpen {deleteShortenerCode} />
+
+<Dialog.Root bind:open={editProjectLinkOpen}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>Edit Shortener</Dialog.Title>
+			<Dialog.Description>
+				Edit Shortener Here. Click Save To Save.
+			</Dialog.Description>
+		</Dialog.Header>
+		<ScrollArea class="max-h-[calc(100vh-200px)]">
+			<EditLinkPage data={editData} shallowRouting />
+		</ScrollArea>
+	</Dialog.Content>
+</Dialog.Root>

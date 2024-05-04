@@ -18,6 +18,7 @@
 
 	export let data: SuperValidated<Infer<FormSchema>>
 	export let projects: Project[]
+	export let code: string
 	export let shortenerCategory: any = undefined
 
 	const form = superForm(data, {
@@ -82,7 +83,11 @@
 		</div>
 	</div>
 </div>
-<form method="POST" use:enhance class="flex flex-col gap-6">
+<form
+	method="POST"
+	use:enhance
+	class="flex flex-col gap-6"
+	action={`/links/${code}/edit`}>
 	<Form.Field {form} name="link" class="flex flex-col gap-2">
 		<Form.Control let:attrs>
 			<Form.Label>Link</Form.Label>

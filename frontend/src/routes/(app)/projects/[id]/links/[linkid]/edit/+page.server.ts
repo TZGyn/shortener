@@ -34,6 +34,7 @@ export const load = (async (event) => {
 	}
 
 	return {
+		shortener,
 		form: await superValidate({ ...shortener }, zod(formSchema)),
 	}
 }) satisfies PageServerLoad

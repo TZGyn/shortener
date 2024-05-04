@@ -1,6 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 
-import type { Project, Setting } from '$lib/db/types'
+import type { Project, Setting, Shortener } from '$lib/db/types'
 
 // for information about these interfaces
 declare global {
@@ -41,6 +41,7 @@ declare global {
 							label: string
 					  }
 					| undefined
+				shortener: Shortener
 				form: SuperValidated<
 					{
 						link: string
@@ -85,6 +86,7 @@ declare global {
 				}[]
 				page_title: string
 				shortener_url: string
+				shortener: Shortener
 				form: SuperValidated<
 					{
 						link: string

@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { Button, buttonVariants } from '$lib/components/ui/button'
 	import * as Card from '$lib/components/ui/card'
+	import * as Dialog from '$lib/components/ui/dialog'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import * as Tooltip from '$lib/components/ui/tooltip'
 	import { Badge } from '$lib/components/ui/badge'
+	import { ScrollArea } from '$lib/components/ui/scroll-area'
 	import type { Shortener, Project, Setting } from '$lib/db/types'
 	import {
 		BarChart,
@@ -14,8 +16,10 @@
 		TrashIcon,
 	} from 'lucide-svelte'
 	import DeleteShortenerDialog from './DeleteShortenerDialog.svelte'
+	import EditProjectLinkPage from '../links/[linkid]/edit/+page.svelte'
 	import { goto, preloadData, pushState } from '$app/navigation'
 	import { cn } from '$lib/utils'
+	import type { page } from '$app/stores'
 
 	export let shortener: Shortener & {
 		visitorCount: number
@@ -48,6 +52,25 @@
 
 		if (result.type === 'loaded' && result.status === 200) {
 			pushState(href, { editProjectLink: result.data })
+		} else {
+			// something bad happened! try navigating
+			goto(href)
+		}
+	}
+
+	let editProjectLinkOpen = false
+	let editData: typeof $page.state.editProjectLink
+
+	const showEditModalNew = async (
+		projectUuid: string,
+		code: string,
+	) => {
+		const href = `/projects/${projectUuid}/links/${code}/edit`
+		const result = await preloadData(href)
+
+		if (result.type === 'loaded' && result.status === 200) {
+			editData = result.data as typeof $page.state.editProjectLink
+			editProjectLinkOpen = true
 		} else {
 			// something bad happened! try navigating
 			goto(href)
@@ -160,9 +183,20 @@
 				</DropdownMenu.Trigger>
 				<DropdownMenu.Content>
 					<DropdownMenu.Group>
+						<!-- <a -->
+						<!-- 	href={`/projects/${selected_project.uuid}/links/${shortener.code}/edit`} -->
+						<!-- 	on:click|preventDefault={showEditModal}> -->
+						<!-- 	<DropdownMenu.Item class="flex gap-2 items-center"> -->
+						<!-- 		<EditIcon size={16} />Edit -->
+						<!-- 	</DropdownMenu.Item> -->
+						<!-- </a> -->
 						<a
 							href={`/projects/${selected_project.uuid}/links/${shortener.code}/edit`}
-							on:click|preventDefault={showEditModal}>
+							on:click|preventDefault={() =>
+								showEditModalNew(
+									selected_project.uuid || '',
+									shortener.code,
+								)}>
 							<DropdownMenu.Item class="flex gap-2 items-center">
 								<EditIcon size={16} />Edit
 							</DropdownMenu.Item>
@@ -181,3 +215,17 @@
 </Card.Root>
 
 <DeleteShortenerDialog bind:deleteDialogOpen {deleteShortenerCode} />
+
+<Dialog.Root bind:open={editProjectLinkOpen}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>Edit Shortener</Dialog.Title>
+			<Dialog.Description>
+				Edit Shortener Here. Click Save To Save.
+			</Dialog.Description>
+		</Dialog.Header>
+		<ScrollArea class="max-h-[calc(100vh-200px)]">
+			<EditProjectLinkPage data={editData} shallowRouting />
+		</ScrollArea>
+	</Dialog.Content>
+</Dialog.Root>

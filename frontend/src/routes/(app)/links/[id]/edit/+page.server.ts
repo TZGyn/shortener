@@ -47,6 +47,7 @@ export const load = (async (event) => {
 
 	return {
 		projects,
+		shortener,
 		selectedCategory,
 		form: await superValidate(
 			{

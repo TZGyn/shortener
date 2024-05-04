@@ -15,6 +15,8 @@
 	import { onMount } from 'svelte'
 
 	export let data: SuperValidated<Infer<FormSchema>>
+	export let uuid: string
+	export let code: string
 
 	const form = superForm(data, {
 		validators: zodClient(formSchema),
@@ -78,7 +80,11 @@
 		</div>
 	</div>
 </div>
-<form method="POST" use:enhance class="flex flex-col gap-6">
+<form
+	method="POST"
+	use:enhance
+	class="flex flex-col gap-6"
+	action={`/projects/${uuid}/links/${code}/edit`}>
 	<Form.Field {form} name="link" class="flex flex-col gap-2">
 		<Form.Control let:attrs>
 			<Form.Label>Link</Form.Label>

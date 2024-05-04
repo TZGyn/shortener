@@ -7,11 +7,12 @@
 	export let data: PageData
 </script>
 
-<div class="flex flex-col gap-4 px-10 pt-8 h-fit">
-	<h2 class="text-2xl font-bold tracking-tight">
-		{data.project.name}
-	</h2>
-	<div class="flex gap-4">
+<div class="flex flex-col gap-2 px-10 pt-8 h-fit">
+	<div class="flex gap-4 items-center pb-4">
+		<h2 class="pr-8 text-2xl font-bold tracking-tight">
+			{data.project.name}
+		</h2>
+		<Separator orientation="vertical" />
 		<Button
 			href={`/projects/${data.project.uuid}`}
 			variant={$page.url.pathname === `/projects/${data.project.uuid}`
@@ -30,7 +31,6 @@
 				? 'secondary'
 				: 'ghost'}>Settings</Button>
 	</div>
-	<Separator />
 </div>
 
 <div class="flex overflow-hidden flex-col flex-grow w-full">
