@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Button, buttonVariants } from '$lib/components/ui/button'
-	import * as Dialog from '$lib/components/ui/dialog'
 	import * as Card from '$lib/components/ui/card'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import * as Tooltip from '$lib/components/ui/tooltip'
@@ -8,7 +7,6 @@
 	import type { Shortener, Project, Setting } from '$lib/db/types'
 	import {
 		BarChart,
-		DeleteIcon,
 		EditIcon,
 		ExternalLink,
 		MoreVertical,
@@ -16,7 +14,6 @@
 		TrashIcon,
 	} from 'lucide-svelte'
 	import DeleteShortenerDialog from './DeleteShortenerDialog.svelte'
-	import Qr from '$lib/components/QR.svelte'
 	import { goto, preloadData, pushState } from '$app/navigation'
 	import { cn } from '$lib/utils'
 
@@ -32,14 +29,6 @@
 	const openDeleteDialog = (code: string) => {
 		deleteShortenerCode = code
 		deleteDialogOpen = true
-	}
-
-	let qrDialogOpen = false
-	let qrCode = ''
-
-	const openQRDialog = (code: string) => {
-		qrCode = code
-		qrDialogOpen = true
 	}
 
 	const showEditModal = async (e: MouseEvent) => {
@@ -109,9 +98,17 @@
 		</Card.Title>
 		<Card.Description>
 			<div class="flex gap-2 items-center">
-				<div>
-					{shortener.link}
-				</div>
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						<div
+							class="overflow-hidden whitespace-nowrap max-w-[200px] overflow-ellipsis">
+							{shortener.link}
+						</div>
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						<p>{shortener.link}</p>
+					</Tooltip.Content>
+				</Tooltip.Root>
 				{#if shortener.ios}
 					<Tooltip.Root>
 						<Tooltip.Trigger>
@@ -184,24 +181,3 @@
 </Card.Root>
 
 <DeleteShortenerDialog bind:deleteDialogOpen {deleteShortenerCode} />
-
-<Dialog.Root bind:open={qrDialogOpen}>
-	<Dialog.Content class="sm:max-w-[425px]">
-		<Dialog.Header>
-			<Dialog.Title>Shortener QR</Dialog.Title>
-			<Dialog.Description>
-				Use this QR code to share the shortener.
-			</Dialog.Description>
-		</Dialog.Header>
-		<div class="flex flex-col gap-4 items-center h-full">
-			<Badge variant="secondary">
-				{shortener_url + '/' + qrCode}
-			</Badge>
-			<Qr
-				bind:code={qrCode}
-				value={shortener_url + '/' + qrCode}
-				background={settings?.qr_background || '#fff'}
-				color={settings?.qr_foreground || '#000'} />
-		</div>
-	</Dialog.Content>
-</Dialog.Root>
