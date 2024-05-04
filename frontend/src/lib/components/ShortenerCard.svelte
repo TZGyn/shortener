@@ -125,9 +125,17 @@
 		</Card.Title>
 		<Card.Description>
 			<div class="flex gap-2 items-center">
-				<div>
-					{shortener.link}
-				</div>
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						<div
+							class="overflow-hidden whitespace-nowrap max-w-[200px] overflow-ellipsis">
+							{shortener.link}
+						</div>
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						<p>{shortener.link}</p>
+					</Tooltip.Content>
+				</Tooltip.Root>
 				{#if shortener.ios}
 					<Tooltip.Root>
 						<Tooltip.Trigger>
