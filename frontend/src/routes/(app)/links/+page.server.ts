@@ -154,6 +154,24 @@ export const actions: Actions = {
 			return setError(form, 'android_link', 'Link must be HTTPS')
 		}
 
+		if (form.data.custom_code_enable) {
+			if (!form.data.custom_code) {
+				return setError(
+					form,
+					'custom_code',
+					'Please Enter Custom Code',
+				)
+			}
+			const customCodeExist = await db.query.shortener.findFirst({
+				where: (shortener, { eq }) =>
+					eq(shortener.code, form.data.custom_code),
+			})
+
+			if (customCodeExist) {
+				return setError(form, 'custom_code', 'Duplicated Custom Code')
+			}
+		}
+
 		const user = event.locals.user
 		let project = undefined
 		const selected_project = form.data.project
@@ -187,7 +205,9 @@ export const actions: Actions = {
 			}
 		}
 
-		const code = nanoid(8)
+		const code = form.data.custom_code_enable
+			? form.data.custom_code
+			: nanoid(8)
 		await db.insert(shortener).values({
 			link: form.data.link.startsWith('https://')
 				? form.data.link

@@ -52,6 +52,8 @@ export const load = (async (event) => {
 		form: await superValidate(
 			{
 				...shortener,
+				custom_code_enable: true,
+				custom_code: shortener.code,
 				project: selectedCategory?.value || undefined,
 			},
 			zod(formSchema),
@@ -84,6 +86,27 @@ export const actions: Actions = {
 			form.data.android_link.startsWith('http://')
 		) {
 			return setError(form, 'android_link', 'Link must be HTTPS')
+		}
+
+		if (form.data.custom_code_enable) {
+			if (!form.data.custom_code) {
+				return setError(
+					form,
+					'custom_code',
+					'Please Enter Custom Code',
+				)
+			}
+			const customCodeExist = await db.query.shortener.findFirst({
+				where: (shortener, { eq, and, ne }) =>
+					and(
+						eq(shortener.code, form.data.custom_code),
+						ne(shortener.code, event.params.id),
+					),
+			})
+
+			if (customCodeExist) {
+				return setError(form, 'custom_code', 'Duplicated Custom Code')
+			}
 		}
 
 		const user = event.locals.user
@@ -128,6 +151,9 @@ export const actions: Actions = {
 					: `https://${form.data.link}`,
 				projectId: project ? project.id : null,
 				userId: user.id,
+				code: form.data.custom_code_enable
+					? form.data.custom_code
+					: undefined,
 				ios: form.data.ios,
 				ios_link: ios_link,
 				android: form.data.android,

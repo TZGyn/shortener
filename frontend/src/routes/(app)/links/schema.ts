@@ -8,6 +8,8 @@ export const formSchema = z.object({
 	ios_link: z.string(),
 	android: z.boolean(),
 	android_link: z.string(),
+	custom_code_enable: z.boolean(),
+	custom_code: z.string(),
 })
 
 export type FormSchema = typeof formSchema

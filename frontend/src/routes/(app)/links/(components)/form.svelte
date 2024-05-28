@@ -75,21 +75,21 @@
 			</Dialog.Description>
 		</Dialog.Header>
 		<ScrollArea class="max-h-[calc(100vh-200px)]">
-			<div class="grid grid-cols-4 gap-4 items-center pb-4">
+			<div class="grid grid-cols-4 items-center gap-4 pb-4">
 				<div class="font-bold">Preview</div>
-				<div class="flex flex-col col-span-4 justify-center border">
-					<div class="overflow-hidden relative h-64">
+				<div class="col-span-4 flex flex-col justify-center border">
+					<div class="relative h-64 overflow-hidden">
 						{#if isPreviewLoading}
-							<div class="flex justify-center items-center h-full">
+							<div class="flex h-full items-center justify-center">
 								<Loader2 class="animate-spin" />
 							</div>
 						{:else if previewData}
 							<img
 								src={previewData.image}
 								alt=""
-								class="object-cover w-full h-64" />
+								class="h-64 w-full object-cover" />
 							<div
-								class="absolute bottom-2 left-2 px-2 rounded-lg bg-secondary">
+								class="bg-secondary absolute bottom-2 left-2 rounded-lg px-2">
 								{previewData.title}
 							</div>
 						{/if}
@@ -147,11 +147,38 @@
 				</Form.Field>
 				<Form.Field
 					{form}
-					name="ios"
-					class="flex gap-2 items-center space-y-0">
+					name="custom_code_enable"
+					class="flex items-center gap-2 space-y-0">
 					<Form.Control let:attrs>
-						<Form.Label>iOS Link</Form.Label>
+						<Switch
+							{...attrs}
+							bind:checked={$formData.custom_code_enable} />
+						<Form.Label>Custom Code</Form.Label>
+					</Form.Control>
+				</Form.Field>
+				{#if $formData.custom_code_enable}
+					<Form.Field
+						{form}
+						name="custom_code"
+						class="flex flex-col gap-2">
+						<Form.Control let:attrs>
+							<Input
+								{...attrs}
+								bind:value={$formData.custom_code}
+								placeholder="abcde" />
+						</Form.Control>
+						<Form.Description
+							>Custom Code For The Shortener</Form.Description>
+						<Form.FieldErrors />
+					</Form.Field>
+				{/if}
+				<Form.Field
+					{form}
+					name="ios"
+					class="flex items-center gap-2 space-y-0">
+					<Form.Control let:attrs>
 						<Switch {...attrs} bind:checked={$formData.ios} />
+						<Form.Label>iOS Link</Form.Label>
 					</Form.Control>
 				</Form.Field>
 				{#if $formData.ios}
@@ -173,10 +200,10 @@
 				<Form.Field
 					{form}
 					name="android"
-					class="flex gap-2 items-center space-y-0">
+					class="flex items-center gap-2 space-y-0">
 					<Form.Control let:attrs>
-						<Form.Label>Android Link</Form.Label>
 						<Switch {...attrs} bind:checked={$formData.android} />
+						<Form.Label>Android Link</Form.Label>
 					</Form.Control>
 				</Form.Field>
 				{#if $formData.android}
@@ -198,7 +225,7 @@
 				<Form.Field
 					{form}
 					name="active"
-					class="flex gap-2 items-center space-y-0">
+					class="flex items-center gap-2 space-y-0">
 					<Form.Control let:attrs>
 						<Checkbox {...attrs} bind:checked={$formData.active} />
 						<Form.Label>Active</Form.Label>
