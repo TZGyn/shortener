@@ -1,19 +1,10 @@
-import {
-	drizzle,
-	type PostgresJsDatabase,
-} from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
 import * as schema from './schema'
 import { env } from '$env/dynamic/private'
+import { drizzle } from 'drizzle-orm/node-postgres'
+import pg from 'pg'
+const { Pool } = pg
 
-declare global {
-	var db: PostgresJsDatabase<typeof schema> | undefined
-}
-
-let db: PostgresJsDatabase<typeof schema>
-if (!global.db) {
-	global.db = drizzle(postgres(env.DATABASE_URL), { schema })
-}
-db = global.db
-
-export { db }
+const pool = new Pool({
+	connectionString: env.DATABASE_URL,
+})
+export const db = drizzle(pool, { schema })
