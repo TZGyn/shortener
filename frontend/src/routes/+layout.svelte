@@ -7,7 +7,11 @@
 </script>
 
 <svelte:head>
-	<title>{$page.data.page_title || 'Link Shortener'}</title>
+	<title>
+		{$page.data.page_title
+			? $page.data.page_title + ' | Kon.sh'
+			: 'Kon.sh'}
+	</title>
 	<meta name="description" content="Link shortener with analytics" />
 	<meta property="og:image" content="/logo.png" />
 </svelte:head>
