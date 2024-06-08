@@ -75,9 +75,10 @@
 	}
 
 	const showQRModal = async (e: MouseEvent) => {
-		if (innerWidth < 640) return
-
 		const { href } = e.currentTarget as HTMLAnchorElement
+
+		if (innerWidth < 640) goto(href)
+
 		const result = await preloadData(href)
 
 		if (result.type === 'loaded' && result.status === 200) {
@@ -94,8 +95,8 @@
 
 <Card.Root class="w-full max-w-[500px]">
 	<Card.Header>
-		<Card.Title class="flex gap-2 justify-between items-center">
-			<div class="flex gap-2 items-center">
+		<Card.Title class="flex items-center justify-between gap-2">
+			<div class="flex items-center gap-2">
 				<a
 					href={'https://' + shortener_url + '/' + shortener.code}
 					target="_blank"
@@ -111,12 +112,12 @@
 				<Badge variant="outline" class="flex gap-2">
 					{#if shortener.active}
 						<span
-							class="inline-flex relative w-2 h-2 bg-green-400 rounded-full"
+							class="relative inline-flex h-2 w-2 rounded-full bg-green-400"
 						></span>
 						Active
 					{:else}
 						<span
-							class="inline-flex relative w-2 h-2 bg-gray-600 rounded-full"
+							class="relative inline-flex h-2 w-2 rounded-full bg-gray-600"
 						></span>
 						Inactive
 					{/if}
@@ -124,11 +125,11 @@
 			</div>
 		</Card.Title>
 		<Card.Description>
-			<div class="flex gap-2 items-center">
+			<div class="flex items-center gap-2">
 				<Tooltip.Root>
 					<Tooltip.Trigger>
 						<div
-							class="overflow-hidden whitespace-nowrap max-w-[200px] overflow-ellipsis">
+							class="max-w-[200px] overflow-hidden overflow-ellipsis whitespace-nowrap">
 							{shortener.link}
 						</div>
 					</Tooltip.Trigger>
@@ -161,11 +162,11 @@
 		</Card.Description>
 	</Card.Header>
 	<Card.Content>
-		<div class="flex justify-between items-center">
+		<div class="flex items-center justify-between">
 			<div class="flex gap-2">
 				<Button
 					href={`/links/${shortener.code}`}
-					class="flex gap-1 justify-center items-center h-8 text-sm rounded bg-secondary">
+					class="bg-secondary flex h-8 items-center justify-center gap-1 rounded text-sm">
 					<BarChart size={20} />
 					<div>
 						{shortener.visitorCount} visits
@@ -174,7 +175,7 @@
 				<a
 					class={cn(
 						buttonVariants({ variant: 'default' }),
-						'flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm',
+						'bg-secondary flex h-8 items-center justify-center gap-1 rounded text-sm',
 					)}
 					href={`${getUrl()}/links/${shortener.code}/qr`}
 					on:click|preventDefault={showQRModal}>
@@ -191,13 +192,13 @@
 							href={`/links/${shortener.code}/edit`}
 							on:click|preventDefault={() =>
 								showEditModalNew(shortener.code)}>
-							<DropdownMenu.Item class="flex gap-2 items-center">
+							<DropdownMenu.Item class="flex items-center gap-2">
 								<EditIcon size={16} />Edit
 							</DropdownMenu.Item>
 						</a>
 						<DropdownMenu.Item
 							on:click={() => openDeleteDialog(shortener.code)}
-							class="flex gap-2 items-center text-destructive data-[highlighted]:bg-destructive">
+							class="text-destructive data-[highlighted]:bg-destructive flex items-center gap-2">
 							<TrashIcon size={16} />
 							Delete
 						</DropdownMenu.Item>
