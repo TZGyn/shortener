@@ -9,8 +9,9 @@
 	import { Input } from '$lib/components/ui/input'
 	import * as Select from '$lib/components/ui/select'
 	import * as Dialog from '$lib/components/ui/dialog'
+	import * as Drawer from '$lib/components/ui/drawer'
 
-	import { SortDescIcon } from 'lucide-svelte'
+	import { SortAscIcon, SortDescIcon } from 'lucide-svelte'
 
 	import type { PageData } from './$types'
 	import { ScrollArea } from '$lib/components/ui/scroll-area'
@@ -27,7 +28,15 @@
 	let searchUpdateTimeout: any
 
 	$: browser &&
-		goto(updateSearchParam([{ name: 'search', value: search }]))
+		goto(
+			updateSearchParam([
+				{ name: 'search', value: search },
+				{
+					name: 'page',
+					value: 1,
+				},
+			]),
+		)
 
 	const updateSearchParam = (
 		params: { name: string; value: any }[],
@@ -56,7 +65,62 @@
 
 <div
 	class="flex flex-wrap-reverse items-center justify-start gap-4 px-4 py-4 md:px-10">
-	<div class="flex items-center gap-4">
+	<Drawer.Root>
+		<Drawer.Trigger class="md:hidden">
+			<Button size="icon"><SortAscIcon /></Button>
+		</Drawer.Trigger>
+		<Drawer.Content>
+			<Drawer.Header>
+				<Drawer.Title>Filter</Drawer.Title>
+				<Drawer.Description>Sort & Search</Drawer.Description>
+			</Drawer.Header>
+			<Drawer.Footer class="gap-6">
+				<Select.Root
+					selected={{ label: data.sortBy, value: data.sortBy }}>
+					<Select.Trigger customIcon={SortDescIcon}>
+						<Select.Value placeholder="Sort By" />
+					</Select.Trigger>
+					<Select.Content>
+						<Select.Group>
+							<Select.Label>Sort By</Select.Label>
+							{#each ['latest', 'oldest', 'most_visited'] as sortBy}
+								<a
+									href={updateSearchParam([
+										{ name: 'sortBy', value: sortBy },
+										{ name: 'page', value: 1 },
+									])}>
+									<Select.Item value={sortBy} label={sortBy}>
+										{sortBy}
+									</Select.Item>
+								</a>
+							{/each}
+						</Select.Group>
+					</Select.Content>
+					<Select.Input name="favoriteFruit" />
+				</Select.Root>
+
+				<div class="flex gap-2">
+					<Input
+						type="text"
+						placeholder="search"
+						value={search}
+						on:input={({ target }) => {
+							clearTimeout(searchUpdateTimeout)
+							searchUpdateTimeout = setTimeout(() => {
+								search = target.value
+							}, 500)
+						}} />
+					<Button disabled={!search} on:click={() => (search = '')}
+						>Clear</Button>
+				</div>
+				<div></div>
+				<Drawer.Close>
+					<Button class="w-full">Close</Button>
+				</Drawer.Close>
+			</Drawer.Footer>
+		</Drawer.Content>
+	</Drawer.Root>
+	<div class="hidden items-center gap-4 md:flex">
 		<Select.Root
 			selected={{ label: data.sortBy, value: data.sortBy }}>
 			<Select.Trigger class="w-[180px]" customIcon={SortDescIcon}>
@@ -81,7 +145,7 @@
 			<Select.Input name="favoriteFruit" />
 		</Select.Root>
 	</div>
-	<div class="flex items-center gap-4">
+	<div class="hidden items-center gap-4 sm:flex">
 		<Input
 			type="text"
 			placeholder="search"
@@ -96,8 +160,8 @@
 			}} />
 		<Button disabled={!search} on:click={() => (search = '')}
 			>Clear</Button>
-		<Form bind:dialogOpen data={data.form} />
 	</div>
+	<Form bind:dialogOpen data={data.form} />
 </div>
 
 {#await data.shorteners}
@@ -120,7 +184,7 @@
 			</div>
 		</ScrollArea>
 	{:else}
-		<div class="flex flex-grow px-10 py-4">
+		<div class="flex flex-grow px-4 py-4 md:px-10">
 			<div
 				class="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm">
 				<div
@@ -173,73 +237,76 @@
 			</Select.Content>
 			<Select.Input name="favoriteFruit" />
 		</Select.Root>
-		<Pagination.Root
-			class="items-end"
-			count={pagination[0].total}
-			page={data.page}
-			perPage={data.perPage}
-			let:pages
-			let:currentPage>
-			<Pagination.Content>
-				{#if data.page <= 1}
-					<Pagination.Item>
-						<Pagination.PrevButton />
-					</Pagination.Item>
-				{:else}
-					<a
-						href={updateSearchParam([
-							{
-								name: 'page',
-								value: data.page - 1,
-							},
-						])}>
+		{#if pagination[0].total > 0}
+			<Pagination.Root
+				class="items-end"
+				count={pagination[0].total}
+				page={data.page}
+				perPage={data.perPage}
+				let:pages
+				let:currentPage>
+				<Pagination.Content>
+					{#if data.page <= 1}
 						<Pagination.Item>
 							<Pagination.PrevButton />
-						</Pagination.Item>
-					</a>
-				{/if}
-				{#each pages as page (page.key)}
-					{#if page.type === 'ellipsis'}
-						<Pagination.Item>
-							<Pagination.Ellipsis />
 						</Pagination.Item>
 					{:else}
 						<a
 							href={updateSearchParam([
 								{
 									name: 'page',
-									value: page.value,
+									value: data.page - 1,
 								},
 							])}>
-							<Pagination.Item isVisible={currentPage == page.value}>
-								<Pagination.Link
-									{page}
-									isActive={currentPage == page.value}>
-									{page.value}
-								</Pagination.Link>
+							<Pagination.Item>
+								<Pagination.PrevButton />
 							</Pagination.Item>
 						</a>
 					{/if}
-				{/each}
-				{#if data.page >= pagination[0].total / data.perPage}
-					<Pagination.Item>
-						<Pagination.NextButton />
-					</Pagination.Item>
-				{:else}
-					<a
-						href={updateSearchParam([
-							{
-								name: 'page',
-								value: data.page + 1,
-							},
-						])}>
+					{#each pages as page (page.key)}
+						{#if page.type === 'ellipsis'}
+							<Pagination.Item>
+								<Pagination.Ellipsis />
+							</Pagination.Item>
+						{:else}
+							<a
+								href={updateSearchParam([
+									{
+										name: 'page',
+										value: page.value,
+									},
+								])}>
+								<Pagination.Item
+									isVisible={currentPage == page.value}>
+									<Pagination.Link
+										{page}
+										isActive={currentPage == page.value}>
+										{page.value}
+									</Pagination.Link>
+								</Pagination.Item>
+							</a>
+						{/if}
+					{/each}
+					{#if data.page >= pagination[0].total / data.perPage}
 						<Pagination.Item>
 							<Pagination.NextButton />
 						</Pagination.Item>
-					</a>
-				{/if}
-			</Pagination.Content>
-		</Pagination.Root>
+					{:else}
+						<a
+							href={updateSearchParam([
+								{
+									name: 'page',
+									value: data.page + 1,
+								},
+							])}>
+							<Pagination.Item>
+								<Pagination.NextButton />
+							</Pagination.Item>
+						</a>
+					{/if}
+				</Pagination.Content>
+			</Pagination.Root>
+		{/if}
 	</div>
 {/await}
 
