@@ -14,28 +14,30 @@
 			{data.project.name}
 		</h2>
 		<Separator orientation="vertical" />
-		<ScrollArea orientation="horizontal">
-			<div class="flex items-center gap-4">
-				<Button
-					href={`/projects/${data.project.uuid}`}
-					variant={$page.url.pathname ===
-					`/projects/${data.project.uuid}`
-						? 'secondary'
-						: 'ghost'}>Shorteners</Button>
-				<Button
-					href={`/projects/${data.project.uuid}/members`}
-					variant={$page.url.pathname ===
-					`/projects/${data.project.uuid}/members`
-						? 'secondary'
-						: 'ghost'}>Members</Button>
-				<Button
-					href={`/projects/${data.project.uuid}/settings`}
-					variant={$page.url.pathname ===
-					`/projects/${data.project.uuid}/settings`
-						? 'secondary'
-						: 'ghost'}>Settings</Button>
-			</div>
-		</ScrollArea>
+		{#key $page.url.pathname}
+			<ScrollArea orientation="horizontal">
+				<div class="flex items-center gap-4">
+					<Button
+						href={`/projects/${data.project.uuid}`}
+						variant={$page.url.pathname ===
+						`/projects/${data.project.uuid}`
+							? 'secondary'
+							: 'ghost'}>Shorteners</Button>
+					<Button
+						href={`/projects/${data.project.uuid}/members`}
+						variant={$page.url.pathname ===
+						`/projects/${data.project.uuid}/members`
+							? 'secondary'
+							: 'ghost'}>Members</Button>
+					<Button
+						href={`/projects/${data.project.uuid}/settings`}
+						variant={$page.url.pathname ===
+						`/projects/${data.project.uuid}/settings`
+							? 'secondary'
+							: 'ghost'}>Settings</Button>
+				</div>
+			</ScrollArea>
+		{/key}
 	</div>
 </div>
 
