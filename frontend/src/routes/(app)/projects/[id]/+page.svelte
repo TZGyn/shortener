@@ -55,8 +55,8 @@
 </script>
 
 <div
-	class="flex flex-wrap-reverse gap-4 justify-start items-center py-4 px-10">
-	<div class="flex gap-4 items-center">
+	class="flex flex-wrap-reverse items-center justify-start gap-4 px-4 py-4 md:px-10">
+	<div class="flex items-center gap-4">
 		<Select.Root
 			selected={{ label: data.sortBy, value: data.sortBy }}>
 			<Select.Trigger class="w-[180px]" customIcon={SortDescIcon}>
@@ -81,7 +81,7 @@
 			<Select.Input name="favoriteFruit" />
 		</Select.Root>
 	</div>
-	<div class="flex gap-4 items-center">
+	<div class="flex items-center gap-4">
 		<Input
 			type="text"
 			placeholder="search"
@@ -101,15 +101,15 @@
 </div>
 
 {#await data.shorteners}
-	<div class="flex flex-wrap gap-4 py-4 px-10">
+	<div class="flex flex-wrap gap-4 px-4 py-4 md:px-10">
 		{#each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as _}
-			<Skeleton class="rounded-lg h-[150px] w-[500px]" />
+			<Skeleton class="h-[150px] w-[500px] rounded-lg" />
 		{/each}
 	</div>
 {:then shorteners}
 	{#if shorteners.length > 0}
 		<ScrollArea class="flex-grow">
-			<div class="flex flex-wrap gap-4 py-4 px-10">
+			<div class="flex flex-wrap gap-4 px-4 py-4 md:px-10">
 				{#each shorteners as shortener}
 					<ShortenerCard
 						{shortener}
@@ -120,13 +120,13 @@
 			</div>
 		</ScrollArea>
 	{:else}
-		<div class="flex flex-grow py-4 px-10">
+		<div class="flex flex-grow px-10 py-4">
 			<div
-				class="flex flex-1 justify-center items-center rounded-lg border border-dashed shadow-sm">
+				class="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm">
 				<div
-					class="flex flex-grow justify-center items-center w-full">
-					<div class="flex flex-col gap-8 items-center">
-						<div class="flex flex-col gap-2 items-center">
+					class="flex w-full flex-grow items-center justify-center">
+					<div class="flex flex-col items-center gap-8">
+						<div class="flex flex-col items-center gap-2">
 							<div class="text-4xl font-bold">No Shortener Found</div>
 							<p class="text-muted-foreground">Add a new shortener</p>
 						</div>
@@ -143,7 +143,7 @@
 {/await}
 
 {#await data.pagination then pagination}
-	<div class="flex justify-between items-center p-4 border-t">
+	<div class="flex items-center justify-between border-t p-4">
 		<Select.Root
 			selected={{ label: data.perPage, value: data.perPage }}>
 			<Select.Trigger class="w-[180px]">
