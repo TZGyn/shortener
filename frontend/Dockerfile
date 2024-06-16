@@ -10,7 +10,7 @@ COPY . .
 
 RUN bun install
 
-RUN echo $DATABASE_URL
+ARG DATABASE_URL
 
 RUN bun run db:migrate
 
