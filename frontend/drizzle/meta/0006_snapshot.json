@@ -1,10 +1,8 @@
 {
-  "id": "e844bfa3-4e98-4158-ab90-5324489aab54",
-  "prevId": "41b90ddc-497c-47fb-8870-16e1ad9b492b",
-  "version": "5",
-  "dialect": "pg",
+  "version": "6",
+  "dialect": "postgresql",
   "tables": {
-    "project": {
+    "public.project": {
       "name": "project",
       "schema": "",
       "columns": {
@@ -39,7 +37,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "session": {
+    "public.session": {
       "name": "session",
       "schema": "",
       "columns": {
@@ -67,7 +65,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "setting": {
+    "public.setting": {
       "name": "setting",
       "schema": "",
       "columns": {
@@ -95,7 +93,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "shortener": {
+    "public.shortener": {
       "name": "shortener",
       "schema": "",
       "columns": {
@@ -149,7 +147,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "user": {
+    "public.user": {
       "name": "user",
       "schema": "",
       "columns": {
@@ -198,14 +196,14 @@
       "uniqueConstraints": {
         "user_email_unique": {
           "name": "user_email_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "email"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "visitor": {
+    "public.visitor": {
       "name": "visitor",
       "schema": "",
       "columns": {
@@ -274,8 +272,10 @@
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "e844bfa3-4e98-4158-ab90-5324489aab54",
+  "prevId": "41b90ddc-497c-47fb-8870-16e1ad9b492b"
 }

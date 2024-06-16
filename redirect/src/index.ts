@@ -3,7 +3,8 @@ import { db } from './database'
 import { cors } from '@elysiajs/cors'
 import { UAParser } from 'ua-parser-js'
 
-const fallback_url = Bun.env.FALLBACK_URL ?? 'https://shortener.tzgyn.com'
+const fallback_url = Bun.env.FALLBACK_URL ?? 'https://app.kon.com'
+const app_url = Bun.env.APP_URL ?? 'kon.sh'
 
 const app = new Elysia().use(cors())
 
@@ -14,6 +15,9 @@ app.get(
 	'/:shortenerCode',
 	async ({ params: { shortenerCode }, set, request }) => {
 		try {
+			const request_domain = request.headers.get('host')
+			const domain = request_domain !== app_url ? request_domain : null
+
 			const ip = request.headers.get('x-forwarded-for')
 
 			const geolocation = await (
@@ -24,12 +28,19 @@ app.get(
 
 			const ua_parser = new UAParser(user_agent ?? '')
 
-			const shortener = await db
+			const query = db
 				.selectFrom('shortener')
-				.selectAll()
-				.where('code', '=', shortenerCode)
+				.leftJoin('project', 'project.id', 'shortener.project_id')
+				.selectAll('shortener')
+				.select(['project.custom_domain as domain'])
+				.where('shortener.code', '=', shortenerCode)
 				.orderBy('created_at', 'desc')
-				.execute()
+
+			if (domain) {
+				query.where('project.custom_domain', '=', domain)
+			}
+
+			const shortener = await query.execute()
 
 			if (!shortener.length || !shortener[0].active) {
 				set.redirect = '/invalid'

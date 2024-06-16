@@ -36,6 +36,7 @@ export const project = pgTable('project', {
 	qr_foreground: varchar('qr_foreground', { length: 7 })
 		.default('#000000')
 		.notNull(),
+	custom_domain: varchar('custom_domain', { length: 255 }),
 })
 
 export const user = pgTable('user', {

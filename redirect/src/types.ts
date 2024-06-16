@@ -12,6 +12,7 @@ export interface Database {
 	shortener: ShortenerTable
 	visitor: VisitorTable
 	user: UserTable
+	project: ProjectTable
 }
 
 export interface ShortenerTable {
@@ -24,6 +25,7 @@ export interface ShortenerTable {
 	code: string
 	active: boolean
 	created_at: ColumnType<Date, string | undefined, never>
+	project_id: number | null
 }
 
 export type Shortener = Selectable<ShortenerTable>
@@ -58,3 +60,15 @@ export interface UserTable {
 export type User = Selectable<UserTable>
 export type NewUser = Insertable<UserTable>
 export type UserUpdate = Updateable<UserTable>
+
+export interface ProjectTable {
+	id: Generated<number>
+	uuid: Generated<string>
+	name: string
+	userId: number
+	custom_domain: string | null
+}
+
+export type Project = Selectable<ProjectTable>
+export type NewProject = Insertable<ProjectTable>
+export type ProjectUpdate = Updateable<ProjectTable>

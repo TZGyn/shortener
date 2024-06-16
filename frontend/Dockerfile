@@ -10,6 +10,8 @@ COPY . .
 
 RUN bun install
 
+RUN bun run db:migrate
+
 RUN bun run build
 
 EXPOSE 3000

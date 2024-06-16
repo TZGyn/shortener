@@ -1,4 +1,6 @@
 {
+  "id": "f5e2ea5c-7287-40ae-928a-3914f03045b5",
+  "prevId": "a6bbb8da-a08f-46a0-8536-427293c7940c",
   "version": "6",
   "dialect": "postgresql",
   "tables": {
@@ -30,6 +32,26 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "qr_background": {
+          "name": "qr_background",
+          "type": "varchar(7)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'#ffffff'"
+        },
+        "qr_foreground": {
+          "name": "qr_foreground",
+          "type": "varchar(7)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'#000000'"
+        },
+        "custom_domain": {
+          "name": "custom_domain",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -41,10 +63,10 @@
       "name": "session",
       "schema": "",
       "columns": {
-        "token": {
-          "name": "token",
+        "id": {
+          "name": "id",
           "type": "varchar(255)",
-          "primaryKey": false,
+          "primaryKey": true,
           "notNull": true
         },
         "user_id": {
@@ -53,11 +75,39 @@
           "primaryKey": false,
           "notNull": true
         },
-        "expires": {
-          "name": "expires",
-          "type": "timestamp",
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.setting": {
+      "name": "setting",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "qr_background": {
+          "name": "qr_background",
+          "type": "varchar(7)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "qr_foreground": {
+          "name": "qr_foreground",
+          "type": "varchar(7)",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -81,6 +131,32 @@
           "primaryKey": false,
           "notNull": true
         },
+        "ios": {
+          "name": "ios",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "ios_link": {
+          "name": "ios_link",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "android": {
+          "name": "android",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "android_link": {
+          "name": "android_link",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "code": {
           "name": "code",
           "type": "varchar(255)",
@@ -100,6 +176,13 @@
           "primaryKey": false,
           "notNull": true
         },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
         "project_id": {
           "name": "project_id",
           "type": "integer",
@@ -110,7 +193,15 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "shortener_code_unique": {
+          "name": "shortener_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        }
+      }
     },
     "public.user": {
       "name": "user",
@@ -161,10 +252,10 @@
       "uniqueConstraints": {
         "user_email_unique": {
           "name": "user_email_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "email"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       }
     },
@@ -208,6 +299,30 @@
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
+        },
+        "device_type": {
+          "name": "device_type",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "device_vendor": {
+          "name": "device_vendor",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "os": {
+          "name": "os",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "browser": {
+          "name": "browser",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -219,10 +334,8 @@
   "enums": {},
   "schemas": {},
   "_meta": {
+    "columns": {},
     "schemas": {},
-    "tables": {},
-    "columns": {}
-  },
-  "id": "9a3733db-b0ef-4744-b0bf-f69e9b03917c",
-  "prevId": "8f8ae49c-43bf-4e07-a30d-383e2b767524"
+    "tables": {}
+  }
 }

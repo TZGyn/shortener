@@ -1,15 +1,11 @@
 // drizzle.config.ts
-import type { Config } from 'drizzle-kit'
+import { defineConfig } from 'drizzle-kit'
 
-export default {
+export default defineConfig({
 	schema: './src/lib/db/schema.ts',
 	out: './drizzle',
 	dialect: 'postgresql',
 	dbCredentials: {
-		user: 'postgres',
-		password: 'password',
-		host: '192.168.100.110',
-		port: 5432,
-		database: 'link-shortener',
+		url: process.env.DATABASE_URL,
 	},
-} satisfies Config
+})

@@ -1,10 +1,8 @@
 {
-  "id": "40db88d0-871d-4184-840e-60589d58cde3",
-  "prevId": "c9fd34bb-dc5b-4930-93d7-3ea26ec28e43",
-  "version": "5",
-  "dialect": "pg",
+  "version": "6",
+  "dialect": "postgresql",
   "tables": {
-    "project": {
+    "public.project": {
       "name": "project",
       "schema": "",
       "columns": {
@@ -39,7 +37,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "session": {
+    "public.session": {
       "name": "session",
       "schema": "",
       "columns": {
@@ -67,7 +65,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "setting": {
+    "public.setting": {
       "name": "setting",
       "schema": "",
       "columns": {
@@ -95,7 +93,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "shortener": {
+    "public.shortener": {
       "name": "shortener",
       "schema": "",
       "columns": {
@@ -176,14 +174,14 @@
       "uniqueConstraints": {
         "shortener_code_unique": {
           "name": "shortener_code_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "code"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "user": {
+    "public.user": {
       "name": "user",
       "schema": "",
       "columns": {
@@ -232,14 +230,14 @@
       "uniqueConstraints": {
         "user_email_unique": {
           "name": "user_email_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "email"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "visitor": {
+    "public.visitor": {
       "name": "visitor",
       "schema": "",
       "columns": {
@@ -308,8 +306,10 @@
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "40db88d0-871d-4184-840e-60589d58cde3",
+  "prevId": "c9fd34bb-dc5b-4930-93d7-3ea26ec28e43"
 }
