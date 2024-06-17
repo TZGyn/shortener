@@ -1,7 +1,7 @@
 # Link Shortener
 
 Link Shortener is a site to manage your short urls while providing analytics to the url traffics.
-[Demo Here](https://shortener.tzgyn.com)
+[Demo Here](https://app.kon.sh)
 
 ## Preview
 
