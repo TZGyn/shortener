@@ -8,7 +8,7 @@ const app_url = Bun.env.APP_URL ?? 'kon.sh'
 
 const app = new Elysia().use(cors())
 
-app.get('/', ({ set }) => (set.redirect = fallback_url))
+app.get('/', ({ set }) => (set.redirect = fallback_url + '/landing'))
 app.get('/invalid', () => 'Invalid Shortener')
 
 app.get(

@@ -10,9 +10,11 @@
 	<title>
 		{$page.data.page_title
 			? $page.data.page_title + ' | Kon.sh'
-			: 'Kon.sh'}
+			: 'Kon.sh - URL shortener'}
 	</title>
-	<meta name="description" content="Link shortener with analytics" />
+	<meta
+		name="description"
+		content="Kon.sh URL shortener - Open source self-hostable link shortener with analytics" />
 	<meta property="og:image" content="/logo.png" />
 </svelte:head>
 
