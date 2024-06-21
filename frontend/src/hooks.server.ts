@@ -6,12 +6,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	const pathname = event.url.pathname
 
-	const allowedPath = [
-		'/login',
-		'/signup',
-		'/api/login',
-		'/api/signup',
-	]
+	if (pathname.startsWith('/landing')) {
+		const response = await resolve(event)
+
+		return response
+	}
+
+	const allowedPath = ['/login', '/signup']
 
 	if (allowedPath.includes(pathname)) {
 		if (sessionId) {

@@ -1,6 +1,14 @@
 <script lang="ts">
 	import ThemeToggle from '$lib/components/theme-toggle.svelte'
 	import { Button } from '$lib/components/ui/button'
+
+	function scrollIntoView({ target }) {
+		const el = document.querySelector(target.getAttribute('href'))
+		if (!el) return
+		el.scrollIntoView({
+			behavior: 'smooth',
+		})
+	}
 </script>
 
 <div class="flex flex-col items-center w-screen h-screen">
@@ -11,7 +19,8 @@
 		</div>
 		<div class="flex gap-8 items-center">
 			<a href="/landing/docs">Docs</a>
-			<a href="/landing/pricing">Pricing</a>
+			<a href="#pricing" on:click|preventDefault={scrollIntoView}
+				>Pricing</a>
 		</div>
 		<div class="flex gap-4 items-center">
 			<a
