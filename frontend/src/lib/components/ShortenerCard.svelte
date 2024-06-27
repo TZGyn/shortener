@@ -4,8 +4,10 @@
 	import * as Tooltip from '$lib/components/ui/tooltip'
 	import * as Dialog from '$lib/components/ui/dialog'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+	import * as Avatar from '$lib/components/ui/avatar'
 	import { Badge } from '$lib/components/ui/badge'
 	import { ScrollArea } from '$lib/components/ui/scroll-area'
+	import { Separator } from '$lib/components/ui/separator'
 	import type { Shortener } from '$lib/db/types'
 	import {
 		BarChart,
@@ -43,25 +45,10 @@
 		return ''
 	}
 
-	const showEditModal = async (e: MouseEvent) => {
-		if (innerWidth < 640) return
-
-		const { href } = e.currentTarget as HTMLAnchorElement
-
-		const result = await preloadData(href)
-
-		if (result.type === 'loaded' && result.status === 200) {
-			pushState(href, { editLink: result.data })
-		} else {
-			// something bad happened! try navigating
-			goto(href)
-		}
-	}
-
 	let editProjectLinkOpen = false
 	let editData: typeof $page.state.editLink
 
-	const showEditModalNew = async (code: string) => {
+	const showEditModal = async (code: string) => {
 		const href = `/links/${code}/edit`
 		const result = await preloadData(href)
 
@@ -91,45 +78,27 @@
 			goto(href)
 		}
 	}
+
+	const hostDomain = 'https://' + shortener.link.split('/')[2]
 </script>
 
-<Card.Root class="w-full max-w-[500px]">
+<Card.Root>
 	<Card.Header>
-		<Card.Title class="flex items-center justify-between gap-2">
-			<div class="flex items-center gap-2">
-				<a
-					href={'https://' + shortener_url + '/' + shortener.code}
-					target="_blank"
-					class="hover:underline">
-					{shortener_url + '/' + shortener.code}
-				</a>
-				<ExternalLink size={16} />
-			</div>
-			<div class="flex gap-4">
-				{#if shortener.projectName}
-					<Badge variant="secondary">{shortener.projectName}</Badge>
-				{/if}
-				<Badge variant="outline" class="flex gap-2">
-					{#if shortener.active}
-						<span
-							class="relative inline-flex h-2 w-2 rounded-full bg-green-400"
-						></span>
-						Active
-					{:else}
-						<span
-							class="relative inline-flex h-2 w-2 rounded-full bg-gray-600"
-						></span>
-						Inactive
-					{/if}
-				</Badge>
-			</div>
-		</Card.Title>
-		<Card.Description>
-			<div class="flex items-center gap-2">
+		<Card.Title class="flex gap-4 justify-between items-center">
+			<Avatar.Root>
+				<Avatar.Image
+					src={hostDomain + '/favicon.ico'}
+					alt="favicon" />
+				<Avatar.Fallback class="bg-opacity-0">
+					<img src="/favicon.png" alt="favicon" />
+				</Avatar.Fallback>
+			</Avatar.Root>
+
+			<div class="flex flex-col flex-grow gap-2 items-start">
 				<Tooltip.Root>
 					<Tooltip.Trigger>
 						<div
-							class="max-w-[200px] overflow-hidden overflow-ellipsis whitespace-nowrap">
+							class="whitespace-nowrap max-w-[250px] overflow-x-clip overflow-ellipsis">
 							{shortener.link}
 						</div>
 					</Tooltip.Trigger>
@@ -137,6 +106,65 @@
 						<p>{shortener.link}</p>
 					</Tooltip.Content>
 				</Tooltip.Root>
+
+				<div
+					class="flex gap-2 items-center text-sm text-muted-foreground">
+					<a
+						href={'https://' + shortener_url + '/' + shortener.code}
+						target="_blank"
+						class="hover:underline">
+						{shortener_url + '/' + shortener.code}
+					</a>
+					<ExternalLink size={16} />
+				</div>
+			</div>
+
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger>
+					<MoreVertical />
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content>
+					<DropdownMenu.Group>
+						<a
+							href={`/links/${shortener.code}/edit`}
+							on:click|preventDefault={() =>
+								showEditModal(shortener.code)}>
+							<DropdownMenu.Item class="flex gap-2 items-center">
+								<EditIcon size={16} />Edit
+							</DropdownMenu.Item>
+						</a>
+						<DropdownMenu.Item
+							on:click={() => openDeleteDialog(shortener.code)}
+							class="flex gap-2 items-center text-destructive data-[highlighted]:bg-destructive">
+							<TrashIcon size={16} />
+							Delete
+						</DropdownMenu.Item>
+					</DropdownMenu.Group>
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
+		</Card.Title>
+	</Card.Header>
+	<Card.Content>
+		<div class="flex justify-between items-center">
+			<div class="flex gap-2">
+				<Button
+					href={`/links/${shortener.code}`}
+					class="flex gap-1 justify-center items-center h-8 text-sm rounded bg-secondary">
+					<BarChart size={20} />
+					<div>
+						{shortener.visitorCount} visits
+					</div>
+				</Button>
+				<a
+					class={cn(
+						buttonVariants({ variant: 'default' }),
+						'flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm',
+					)}
+					href={`${getUrl()}/links/${shortener.code}/qr`}
+					on:click|preventDefault={showQRModal}>
+					<QrCode size={20} />
+				</a>
+				<Separator orientation="vertical" />
 				{#if shortener.ios}
 					<Tooltip.Root>
 						<Tooltip.Trigger>
@@ -159,52 +187,24 @@
 					</Tooltip.Root>
 				{/if}
 			</div>
-		</Card.Description>
-	</Card.Header>
-	<Card.Content>
-		<div class="flex items-center justify-between">
-			<div class="flex gap-2">
-				<Button
-					href={`/links/${shortener.code}`}
-					class="bg-secondary flex h-8 items-center justify-center gap-1 rounded text-sm">
-					<BarChart size={20} />
-					<div>
-						{shortener.visitorCount} visits
-					</div>
-				</Button>
-				<a
-					class={cn(
-						buttonVariants({ variant: 'default' }),
-						'bg-secondary flex h-8 items-center justify-center gap-1 rounded text-sm',
-					)}
-					href={`${getUrl()}/links/${shortener.code}/qr`}
-					on:click|preventDefault={showQRModal}>
-					<QrCode size={20} />
-				</a>
+			<div class="flex gap-4">
+				{#if shortener.projectName}
+					<Badge variant="secondary">{shortener.projectName}</Badge>
+				{/if}
+				<Badge variant="outline" class="flex gap-2">
+					{#if shortener.active}
+						<span
+							class="inline-flex relative w-2 h-2 bg-green-400 rounded-full"
+						></span>
+						Active
+					{:else}
+						<span
+							class="inline-flex relative w-2 h-2 bg-gray-600 rounded-full"
+						></span>
+						Inactive
+					{/if}
+				</Badge>
 			</div>
-			<DropdownMenu.Root>
-				<DropdownMenu.Trigger>
-					<MoreVertical />
-				</DropdownMenu.Trigger>
-				<DropdownMenu.Content>
-					<DropdownMenu.Group>
-						<a
-							href={`/links/${shortener.code}/edit`}
-							on:click|preventDefault={() =>
-								showEditModalNew(shortener.code)}>
-							<DropdownMenu.Item class="flex items-center gap-2">
-								<EditIcon size={16} />Edit
-							</DropdownMenu.Item>
-						</a>
-						<DropdownMenu.Item
-							on:click={() => openDeleteDialog(shortener.code)}
-							class="text-destructive data-[highlighted]:bg-destructive flex items-center gap-2">
-							<TrashIcon size={16} />
-							Delete
-						</DropdownMenu.Item>
-					</DropdownMenu.Group>
-				</DropdownMenu.Content>
-			</DropdownMenu.Root>
 		</div>
 	</Card.Content>
 </Card.Root>
