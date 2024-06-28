@@ -73,7 +73,7 @@
 <Card.Root>
 	<Card.Header>
 		<Card.Title class="flex gap-4 justify-between items-center">
-			<Avatar.Root>
+			<Avatar.Root class="overflow-visible">
 				<Avatar.Image
 					src={hostDomain + '/favicon.ico'}
 					alt="favicon" />
