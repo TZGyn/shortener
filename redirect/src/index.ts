@@ -3,7 +3,7 @@ import { db } from './database'
 import { cors } from '@elysiajs/cors'
 import { UAParser } from 'ua-parser-js'
 
-const fallback_url = Bun.env.FALLBACK_URL ?? 'https://app.kon.com'
+const fallback_url = Bun.env.FALLBACK_URL ?? 'https://app.kon.sh'
 const app_url = Bun.env.APP_URL ?? 'kon.sh'
 
 const app = new Elysia().use(cors())
