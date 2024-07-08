@@ -21,7 +21,6 @@
 		CircleCheckBigIcon,
 		TriangleAlertIcon,
 	} from 'lucide-svelte'
-	import { PUBLIC_SHORTENER_URL } from '$env/static/public'
 	import { env } from '$env/dynamic/public'
 	import { invalidateAll } from '$app/navigation'
 
@@ -126,7 +125,7 @@
 							</Card.Description>
 						{:else}
 							<Card.Title>
-								{PUBLIC_SHORTENER_URL}
+								{env.PUBLIC_SHORTENER_URL}
 							</Card.Title>
 
 							<Card.Description>default domain</Card.Description>
