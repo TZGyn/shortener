@@ -85,6 +85,13 @@
       "when": 1718525942420,
       "tag": "0011_striped_paper_doll",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1720469333262,
+      "tag": "0012_lame_vengeance",
+      "breakpoints": true
     }
   ]
 }

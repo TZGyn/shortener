@@ -36,6 +36,17 @@ export const project = pgTable('project', {
 	qr_foreground: varchar('qr_foreground', { length: 7 })
 		.default('#000000')
 		.notNull(),
+	domain_status: varchar('domain_status', {
+		length: 255,
+	})
+		.$type<'pending' | 'verified' | 'disabled'>()
+		.notNull()
+		.default('verified'),
+	enable_custom_domain: boolean('enable_custom_domain')
+		.notNull()
+		.default(false),
+	custom_ip: varchar('custom_ip', { length: 255 }),
+	custom_domain_id: varchar('custom_domain_id', { length: 255 }),
 	custom_domain: varchar('custom_domain', { length: 255 }),
 })
 

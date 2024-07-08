@@ -34,10 +34,11 @@ app.get(
 				.selectAll('shortener')
 				.select(['project.custom_domain as domain'])
 				.where('shortener.code', '=', shortenerCode)
+				.where('project.custom_domain', '=', domain)
 				.orderBy('created_at', 'desc')
 
 			if (domain) {
-				query.where('project.custom_domain', '=', domain)
+				query.where('project.enable_custom_domain', '=', true)
 			}
 
 			const shortener = await query.execute()

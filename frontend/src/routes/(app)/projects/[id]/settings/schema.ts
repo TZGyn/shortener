@@ -12,6 +12,10 @@ export const formSchema = z.object({
 		.max(7),
 })
 
+export const customDomainFormSchema = z.object({
+	domain: z.string(),
+})
+
 export type FormSchema = typeof formSchema
 
 export const deleteSchema = z.object({

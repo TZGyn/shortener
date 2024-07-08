@@ -1,11 +1,24 @@
 import { db } from '$lib/db'
 import type { PageServerLoad, Actions } from './$types'
 import { fail } from '@sveltejs/kit'
-import { superValidate } from 'sveltekit-superforms'
-import { formSchema, deleteSchema } from './schema'
+import { setError, superValidate } from 'sveltekit-superforms'
+import {
+	formSchema,
+	deleteSchema,
+	customDomainFormSchema,
+} from './schema'
 import { zod } from 'sveltekit-superforms/adapters'
-import { project, shortener, visitor } from '$lib/db/schema'
+import {
+	project as projectTable,
+	shortener,
+	visitor,
+} from '$lib/db/schema'
 import { and, eq } from 'drizzle-orm'
+import {
+	checkDomainAvailable,
+	createCustomDomain,
+	deleteCustomDomain,
+} from '$lib/server/domain'
 
 export const load = (async (event) => {
 	const { project } = await event.parent()
@@ -18,6 +31,10 @@ export const load = (async (event) => {
 				qr_foreground: project.qr_foreground,
 			},
 			zod(formSchema),
+		),
+		customDomainForm: await superValidate(
+			{ domain: project.custom_domain || '' },
+			zod(customDomainFormSchema),
 		),
 		deleteForm: await superValidate(
 			{ deleteShorteners: true },
@@ -41,7 +58,7 @@ export const actions: Actions = {
 		const userId = event.locals.user.id
 
 		await db
-			.update(project)
+			.update(projectTable)
 			.set({
 				name: form.data.name,
 				qr_background: form.data.qr_background,
@@ -49,8 +66,163 @@ export const actions: Actions = {
 			})
 			.where(
 				and(
-					eq(project.uuid, event.params.id),
-					eq(project.userId, userId),
+					eq(projectTable.uuid, event.params.id),
+					eq(projectTable.userId, userId),
+				),
+			)
+
+		return {
+			form,
+		}
+	},
+	enable_custom_domain: async (event) => {
+		const userId = event.locals.user.id
+
+		const existingProject = await db.query.project.findFirst({
+			where: (projectTable, { eq, and }) =>
+				and(
+					eq(projectTable.uuid, event.params.id),
+					eq(projectTable.userId, userId),
+				),
+		})
+
+		if (!existingProject) {
+			return fail(400, { message: 'Project not found' })
+		}
+
+		await db
+			.update(projectTable)
+			.set({
+				enable_custom_domain: true,
+			})
+			.where(
+				and(
+					eq(projectTable.uuid, event.params.id),
+					eq(projectTable.userId, userId),
+				),
+			)
+
+		return { message: 'Custom domain enabled' }
+	},
+	disable_custom_domain: async (event) => {
+		return { message: 'Disable custom domain is not available yet' }
+		const userId = event.locals.user.id
+
+		const existingProject = await db.query.project.findFirst({
+			where: (projectTable, { eq, and }) =>
+				and(
+					eq(projectTable.uuid, event.params.id),
+					eq(projectTable.userId, userId),
+				),
+		})
+
+		if (!existingProject) {
+			return fail(400, { message: 'Project not found' })
+		}
+
+		await db
+			.update(projectTable)
+			.set({
+				enable_custom_domain: false,
+			})
+			.where(
+				and(
+					eq(projectTable.uuid, event.params.id),
+					eq(projectTable.userId, userId),
+				),
+			)
+
+		return { message: 'Custom domain disabled' }
+	},
+	update_custom_domain: async (event) => {
+		const form = await superValidate(
+			event,
+			zod(customDomainFormSchema),
+		)
+		if (!form.valid) {
+			return fail(400, {
+				form,
+			})
+		}
+
+		const userId = event.locals.user.id
+
+		const existingProject = await db.query.project.findFirst({
+			where: (projectTable, { eq, and }) =>
+				and(
+					eq(projectTable.uuid, event.params.id),
+					eq(projectTable.userId, userId),
+				),
+		})
+
+		if (!existingProject || !existingProject.enable_custom_domain) {
+			return fail(400, {
+				form,
+			})
+		}
+
+		const sameDomainDifferentProject =
+			await db.query.project.findFirst({
+				where: (projectTable, { eq, and, ne }) =>
+					and(
+						ne(projectTable.uuid, event.params.id),
+						eq(projectTable.custom_domain, form.data.domain),
+					),
+			})
+
+		if (sameDomainDifferentProject) {
+			return setError(form, 'domain', 'Domain already taken')
+		}
+
+		const sameDomainSameProject = await db.query.project.findFirst({
+			where: (projectTable, { eq, and }) =>
+				and(
+					eq(projectTable.uuid, event.params.id),
+					eq(projectTable.custom_domain, form.data.domain),
+				),
+		})
+
+		if (sameDomainSameProject) {
+			return { form }
+		}
+
+		const domainAvailable = await checkDomainAvailable(
+			form.data.domain,
+		)
+
+		if (!domainAvailable) {
+			return setError(form, 'domain', 'Domain is not available')
+		}
+
+		const deleteOldCustomDomain = await deleteCustomDomain(
+			existingProject.custom_domain_id,
+		)
+
+		if (!deleteOldCustomDomain.success) {
+			return setError(
+				form,
+				'domain',
+				'Cannot delete old custom domain',
+			)
+		}
+
+		const customDomain = await createCustomDomain(form.data.domain)
+
+		if (!customDomain.success) {
+			return setError(form, 'domain', 'Cannot create custom domain')
+		}
+
+		await db
+			.update(projectTable)
+			.set({
+				custom_domain: form.data.domain,
+				custom_domain_id: customDomain.id,
+				custom_ip: customDomain.ip,
+			})
+			.where(
+				and(
+					eq(projectTable.uuid, event.params.id),
+					eq(projectTable.userId, userId),
 				),
 			)
 
@@ -71,11 +243,11 @@ export const actions: Actions = {
 
 		try {
 			const deletedProject = await db
-				.delete(project)
+				.delete(projectTable)
 				.where(
 					and(
-						eq(project.uuid, event.params.id),
-						eq(project.userId, userId),
+						eq(projectTable.uuid, event.params.id),
+						eq(projectTable.userId, userId),
 					),
 				)
 				.returning()

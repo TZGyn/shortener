@@ -67,6 +67,7 @@ export interface ProjectTable {
 	name: string
 	userId: number
 	custom_domain: string | null
+	enable_custom_domain: boolean
 }
 
 export type Project = Selectable<ProjectTable>
