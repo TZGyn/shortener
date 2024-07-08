@@ -22,19 +22,23 @@
 						variant={$page.url.pathname ===
 						`/projects/${data.project.uuid}`
 							? 'secondary'
-							: 'ghost'}>Shorteners</Button>
-					<Button
-						href={`/projects/${data.project.uuid}/members`}
-						variant={$page.url.pathname ===
-						`/projects/${data.project.uuid}/members`
-							? 'secondary'
-							: 'ghost'}>Members</Button>
+							: 'ghost'}>
+						Shorteners
+					</Button>
+					<!-- <Button -->
+					<!-- 	href={`/projects/${data.project.uuid}/members`} -->
+					<!-- 	variant={$page.url.pathname === -->
+					<!-- 	`/projects/${data.project.uuid}/members` -->
+					<!-- 		? 'secondary' -->
+					<!-- 		: 'ghost'}>Members</Button> -->
 					<Button
 						href={`/projects/${data.project.uuid}/settings`}
 						variant={$page.url.pathname ===
 						`/projects/${data.project.uuid}/settings`
 							? 'secondary'
-							: 'ghost'}>Settings</Button>
+							: 'ghost'}>
+						Settings
+					</Button>
 				</div>
 			</ScrollArea>
 		{/key}
