@@ -46,7 +46,7 @@ bun run src/index.ts
 
 ## Breaking Changes
 
-### 16 June 2024
+### 16 June 2024 (For builds before this date)
 
 (WARNING) Please backup your database before attempting
 
