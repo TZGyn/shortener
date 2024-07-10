@@ -65,7 +65,7 @@
 </script>
 
 <ScrollArea>
-	<div class="max-w-2xl space-y-6 px-10 py-4">
+	<div class="py-4 px-10 space-y-6 max-w-2xl">
 		<div>
 			<h3 class="text-lg font-medium">Custom Domain</h3>
 			<p class="text-sm text-muted-foreground">
@@ -76,14 +76,14 @@
 
 		<Card.Root>
 			<Card.Header>
-				<div class="flex items-center gap-4">
+				<div class="flex gap-4 items-center">
 					<div class="">
 						{#if data.project.domain_status === 'pending'}
-							<CircleDashedIcon class="h-8 w-8 text-yellow-400" />
+							<CircleDashedIcon class="w-8 h-8 text-warning" />
 						{:else if data.project.domain_status === 'verified'}
-							<CircleCheckBigIcon class="h-8 w-8 text-green-400" />
+							<CircleCheckBigIcon class="w-8 h-8 text-success" />
 						{:else if data.project.domain_status === 'disabled'}
-							<CircleXIcon class="h-8 w-8 text-red-400" />
+							<CircleXIcon class="w-8 h-8 text-destructive" />
 						{/if}
 					</div>
 					<div class="flex-grow">
@@ -96,8 +96,8 @@
 
 							<Card.Description>
 								<Tooltip.Root>
-									<Tooltip.Trigger class="flex items-center gap-1">
-										<InfoIcon class="h-4 w-4" />
+									<Tooltip.Trigger class="flex gap-1 items-center">
+										<InfoIcon class="w-4 h-4" />
 										{#if data.project.custom_ip}
 											{data.project.custom_ip}
 										{:else if env.PUBLIC_SHORTENER_IP}
@@ -145,7 +145,7 @@
 											Are you absolutely sure?
 										</AlertDialog.Title>
 										<Alert.Root variant="destructive">
-											<TriangleAlertIcon class="h-4 w-4" />
+											<TriangleAlertIcon class="w-4 h-4" />
 											<Alert.Description>
 												Disabling custom domain is not available yet.
 											</Alert.Description>
@@ -221,16 +221,24 @@
 					class="flex flex-col gap-2">
 					<Form.Control let:attrs>
 						<Form.Label>Add Custom Domain</Form.Label>
-						<Input
-							{...attrs}
-							bind:value={$customDomainFormData.domain}
-							placeholder="your-custom-domain.com" />
+						<div class="flex items-center space-x-2">
+							<Input
+								{...attrs}
+								bind:value={$customDomainFormData.domain}
+								placeholder="your-custom-domain.com" />
+							<Form.Button class="w-fit">
+								{#if $customDomainSubmitting}
+									<LoaderCircle class="animate-spin" />
+								{/if}
+								Update
+							</Form.Button>
+						</div>
 					</Form.Control>
 					<Form.Description
-						class="flex items-center justify-between gap-2">
+						class="flex gap-2 justify-between items-center">
 						<Tooltip.Root>
-							<Tooltip.Trigger class="flex items-center gap-2">
-								<InfoIcon class="h-4 w-4" />
+							<Tooltip.Trigger class="flex gap-2 items-center">
+								<InfoIcon class="w-4 h-4" />
 								Update Project Domain (leave blank to use default)
 							</Tooltip.Trigger>
 							<Tooltip.Content>
@@ -239,12 +247,6 @@
 								<p>Please contact us if you need a custom domain.</p>
 							</Tooltip.Content>
 						</Tooltip.Root>
-						<Form.Button class="w-fit">
-							{#if $customDomainSubmitting}
-								<LoaderCircle class="animate-spin" />
-							{/if}
-							Update
-						</Form.Button>
 					</Form.Description>
 					<Form.FieldErrors />
 				</Form.Field>
@@ -267,7 +269,7 @@
 			<h3 class="text-lg font-medium">Danger Zone</h3>
 		</div>
 		<div class="rounded-lg border border-destructive">
-			<div class="flex items-center justify-between p-4">
+			<div class="flex justify-between items-center p-4">
 				<div class="flex flex-col gap-1">
 					<span class="text-sm">Delete Project</span>
 					<span class="text-xs text-muted-foreground">
@@ -300,7 +302,7 @@
 										{...attrs}
 										bind:value={$formData.deleteShorteners}
 										type="hidden" />
-									<div class="flex items-center gap-2">
+									<div class="flex gap-2 items-center">
 										<Checkbox
 											{...attrs}
 											id="deleteShorteners"
@@ -312,7 +314,7 @@
 								</Form.Control>
 								<Form.FieldErrors />
 							</Form.Field>
-							<div class="flex justify-end gap-2">
+							<div class="flex gap-2 justify-end">
 								<Button
 									variant="outline"
 									on:click={() => (deleteDialogOpen = false)}>
