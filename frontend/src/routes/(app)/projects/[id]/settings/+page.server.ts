@@ -105,7 +105,6 @@ export const actions: Actions = {
 		return { message: 'Custom domain enabled' }
 	},
 	disable_custom_domain: async (event) => {
-		return { message: 'Disable custom domain is not available yet' }
 		const userId = event.locals.user.id
 
 		const existingProject = await db.query.project.findFirst({
@@ -118,6 +117,14 @@ export const actions: Actions = {
 
 		if (!existingProject) {
 			return fail(400, { message: 'Project not found' })
+		}
+
+		const deleteOldCustomDomain = await deleteCustomDomain(
+			existingProject.custom_domain_id,
+		)
+
+		if (!deleteOldCustomDomain.success) {
+			return { message: 'Cannot delete old custom domain' }
 		}
 
 		await db
