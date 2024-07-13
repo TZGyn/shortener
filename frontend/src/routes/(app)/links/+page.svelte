@@ -9,7 +9,6 @@
 	import * as Select from '$lib/components/ui/select'
 	import * as Command from '$lib/components/ui/command'
 	import * as Popover from '$lib/components/ui/popover'
-	import * as Pagination from '$lib/components/ui/pagination'
 	import * as Dialog from '$lib/components/ui/dialog'
 	import { Input } from '$lib/components/ui/input'
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
@@ -24,6 +23,7 @@
 	} from 'lucide-svelte'
 
 	import ShortenerCard from '$lib/components/ShortenerCard.svelte'
+	import CustomPaginationBar from '$lib/components/Custom-Pagination-Bar.svelte'
 	import Form from './(components)/form.svelte'
 	import EditProjectLinkPage from '../projects/[id]/links/[linkid]/edit/+page.svelte'
 	import ProjectLinkQRPage from '../projects/[id]/links/[linkid]/qr/+page.svelte'
@@ -80,7 +80,7 @@
 </script>
 
 <div
-	class="flex flex-wrap-reverse gap-4 justify-start items-center p-4">
+	class="flex flex-wrap-reverse items-center justify-start gap-4 p-4">
 	<Drawer.Root>
 		<Drawer.Trigger class="md:hidden">
 			<Button size="icon"><SortAscIcon /></Button>
@@ -124,10 +124,10 @@
 							class="justify-between">
 							{selectedProject}
 							<ChevronsUpDown
-								class="ml-2 w-4 h-4 opacity-50 shrink-0" />
+								class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 						</Button>
 					</Popover.Trigger>
-					<Popover.Content class="p-0 w-[200px]">
+					<Popover.Content class="w-[200px] p-0">
 						<Command.Root>
 							<Command.Input placeholder="Search project..." />
 							<Command.Empty>No project found.</Command.Empty>
@@ -186,7 +186,7 @@
 						</Command.Root>
 					</Popover.Content>
 				</Popover.Root>
-				<div class="flex gap-4 items-center">
+				<div class="flex items-center gap-4">
 					<Input
 						type="text"
 						placeholder="search"
@@ -198,8 +198,9 @@
 								search = target.value
 							}, 500)
 						}} />
-					<Button disabled={!search} on:click={() => (search = '')}
-						>Clear</Button>
+					<Button disabled={!search} on:click={() => (search = '')}>
+						Clear
+					</Button>
 				</div>
 				<div></div>
 				<Drawer.Close>
@@ -208,7 +209,7 @@
 			</Drawer.Footer>
 		</Drawer.Content>
 	</Drawer.Root>
-	<div class="hidden gap-4 items-center md:flex">
+	<div class="hidden items-center gap-4 md:flex">
 		<Popover.Root bind:open>
 			<Popover.Trigger asChild let:builder>
 				<Button
@@ -216,12 +217,12 @@
 					variant="outline"
 					role="combobox"
 					aria-expanded={open}
-					class="justify-between w-[200px]">
+					class="w-[200px] justify-between">
 					{selectedProject}
-					<ChevronsUpDown class="ml-2 w-4 h-4 opacity-50 shrink-0" />
+					<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</Popover.Trigger>
-			<Popover.Content class="p-0 w-[200px]">
+			<Popover.Content class="w-[200px] p-0">
 				<Command.Root>
 					<Command.Input placeholder="Search project..." />
 					<Command.Empty>No project found.</Command.Empty>
@@ -304,7 +305,7 @@
 			<Select.Input name="favoriteFruit" />
 		</Select.Root>
 	</div>
-	<div class="hidden gap-4 items-center sm:flex">
+	<div class="hidden items-center gap-4 sm:flex">
 		<Input
 			type="text"
 			placeholder="search"
@@ -317,8 +318,9 @@
 					search = target.value
 				}, 500)
 			}} />
-		<Button disabled={!search} on:click={() => (search = '')}
-			>Clear</Button>
+		<Button disabled={!search} on:click={() => (search = '')}>
+			Clear
+		</Button>
 	</div>
 	<Form bind:dialogOpen data={data.form} projects={data.projects} />
 </div>
@@ -326,7 +328,7 @@
 {#await data.shorteners}
 	<div class="flex flex-wrap gap-4 p-4">
 		{#each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as _}
-			<Skeleton class="rounded-lg h-[150px] w-[500px]" />
+			<Skeleton class="h-[150px] w-[500px] rounded-lg" />
 		{/each}
 	</div>
 {:then shorteners}
@@ -346,11 +348,11 @@
 	{:else}
 		<div class="flex flex-grow p-4">
 			<div
-				class="flex flex-1 justify-center items-center rounded-lg border border-dashed shadow-sm">
+				class="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm">
 				<div
-					class="flex flex-grow justify-center items-center w-full">
-					<div class="flex flex-col gap-8 items-center">
-						<div class="flex flex-col gap-2 items-center">
+					class="flex w-full flex-grow items-center justify-center">
+					<div class="flex flex-col items-center gap-8">
+						<div class="flex flex-col items-center gap-2">
 							<div class="text-4xl font-bold">No Shortener Found</div>
 							<p class="text-muted-foreground">Add a new shortener</p>
 						</div>
@@ -358,7 +360,9 @@
 							on:click={() => {
 								dialogOpen = true
 							}}
-							class="w-fit">Add Shortener</Button>
+							class="w-fit">
+							Add Shortener
+						</Button>
 					</div>
 				</div>
 			</div>
@@ -367,107 +371,11 @@
 {/await}
 
 {#await data.pagination then pagination}
-	<div class="flex justify-between items-center p-4 border-t">
-		<Select.Root
-			selected={{ label: data.perPage, value: data.perPage }}>
-			<Select.Trigger class="w-[180px]">
-				<Select.Value placeholder="Page Size" />
-			</Select.Trigger>
-			<Select.Content>
-				<Select.Group>
-					<Select.Label>Page Size</Select.Label>
-					{#each [12, 24, 48, 96] as pageSize}
-						<a
-							href={updateSearchParam([
-								{
-									name: 'perPage',
-									value: pageSize,
-								},
-								{
-									name: 'page',
-									value: 1,
-								},
-							])}>
-							<Select.Item
-								value={pageSize}
-								label={pageSize.toString()}>{pageSize}</Select.Item>
-						</a>
-					{/each}
-				</Select.Group>
-			</Select.Content>
-			<Select.Input name="favoriteFruit" />
-		</Select.Root>
-		{#if pagination[0].total > 0}
-			<Pagination.Root
-				class="items-end"
-				count={pagination[0].total}
-				page={data.page}
-				perPage={data.perPage}
-				let:pages
-				let:currentPage>
-				<Pagination.Content>
-					{#if data.page <= 1}
-						<Pagination.Item>
-							<Pagination.PrevButton />
-						</Pagination.Item>
-					{:else}
-						<a
-							href={updateSearchParam([
-								{
-									name: 'page',
-									value: data.page - 1,
-								},
-							])}>
-							<Pagination.Item>
-								<Pagination.PrevButton />
-							</Pagination.Item>
-						</a>
-					{/if}
-					{#each pages as page (page.key)}
-						{#if page.type === 'ellipsis'}
-							<Pagination.Item>
-								<Pagination.Ellipsis />
-							</Pagination.Item>
-						{:else}
-							<a
-								href={updateSearchParam([
-									{
-										name: 'page',
-										value: page.value,
-									},
-								])}>
-								<Pagination.Item
-									isVisible={currentPage == page.value}>
-									<Pagination.Link
-										{page}
-										isActive={currentPage == page.value}>
-										{page.value}
-									</Pagination.Link>
-								</Pagination.Item>
-							</a>
-						{/if}
-					{/each}
-					{#if data.page >= pagination[0].total / data.perPage}
-						<Pagination.Item>
-							<Pagination.NextButton />
-						</Pagination.Item>
-					{:else}
-						<a
-							href={updateSearchParam([
-								{
-									name: 'page',
-									value: data.page + 1,
-								},
-							])}>
-							<Pagination.Item>
-								<Pagination.NextButton />
-							</Pagination.Item>
-						</a>
-					{/if}
-				</Pagination.Content>
-			</Pagination.Root>
-		{/if}
-	</div>
+	<CustomPaginationBar
+		perPage={data.perPage}
+		page={data.page}
+		total={pagination[0].total}
+		path={'/links'} />
 {/await}
 
 <Dialog.Root
