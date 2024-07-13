@@ -11,27 +11,29 @@
 	}
 </script>
 
-<div class="flex flex-col items-center w-screen h-screen">
-	<div class="flex justify-between py-4 px-8 w-full max-w-6xl">
-		<div class="flex gap-4 items-center">
+<div class="flex h-screen w-screen flex-col items-center">
+	<div class="flex w-full max-w-6xl justify-between px-8 py-4">
+		<div class="flex items-center gap-4">
 			<img src="/logo.png" alt="" class="h-8" />
 			<div>kon.sh</div>
 		</div>
-		<div class="flex gap-8 items-center">
+		<div class="flex items-center gap-8">
 			<a href="/landing/docs">Docs</a>
-			<a href="#pricing" on:click|preventDefault={scrollIntoView}
-				>Pricing</a>
+			<a href="#pricing" on:click|preventDefault={scrollIntoView}>
+				Pricing
+			</a>
 		</div>
-		<div class="flex gap-4 items-center">
+		<div class="flex items-center gap-4">
 			<a
 				href="/login"
-				class="transition-all text-primary/80 hover:text-primary">
+				class="text-primary/80 transition-all hover:text-primary">
 				Login
 			</a>
 			<Button
 				href="/signup"
-				class="bg-orange-400 hover:bg-orange-300 w-fit"
-				>Get Started</Button>
+				class="w-fit bg-orange-400 hover:bg-orange-300">
+				Get Started
+			</Button>
 			<ThemeToggle />
 		</div>
 	</div>
