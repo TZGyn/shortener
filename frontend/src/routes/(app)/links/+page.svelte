@@ -93,7 +93,7 @@
 			<Drawer.Footer class="gap-6">
 				<Select.Root
 					selected={{ label: data.sortBy, value: data.sortBy }}>
-					<Select.Trigger customIcon={SortDescIcon}>
+					<Select.Trigger>
 						<Select.Value placeholder="Sort By" />
 					</Select.Trigger>
 					<Select.Content>
@@ -283,7 +283,7 @@
 		</Popover.Root>
 		<Select.Root
 			selected={{ label: data.sortBy, value: data.sortBy }}>
-			<Select.Trigger class="w-[180px]" customIcon={SortDescIcon}>
+			<Select.Trigger class="w-[180px]">
 				<Select.Value placeholder="Sort By" />
 			</Select.Trigger>
 			<Select.Content>
