@@ -10,5 +10,3 @@ export const formSchema = z.object({
 		.min(1, { message: 'Foreground color is required' })
 		.max(7),
 })
-
-export type FormSchema = typeof formSchema
