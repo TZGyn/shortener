@@ -1,11 +1,16 @@
 import { db } from '$lib/db'
 import type { PageServerLoad, Actions } from './$types'
-import { fail } from '@sveltejs/kit'
-import { setError, superValidate } from 'sveltekit-superforms'
-import { formSchema } from './schema'
+import { error, fail } from '@sveltejs/kit'
+import {
+	message,
+	setError,
+	superValidate,
+} from 'sveltekit-superforms'
+import { formSchema, verifyEmailSchema } from './schema'
 import { zod } from 'sveltekit-superforms/adapters'
-import { user, type User } from '$lib/db/schema'
+import { user } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
+import { sendEmailVerification } from '$lib/server/email'
 
 export const load = (async (event) => {
 	const { username, email } = event.locals.user
@@ -15,11 +20,12 @@ export const load = (async (event) => {
 			{ username: username || '', email },
 			zod(formSchema),
 		),
+		verify_email_form: await superValidate(zod(verifyEmailSchema)),
 	}
 }) satisfies PageServerLoad
 
 export const actions: Actions = {
-	default: async (event) => {
+	update: async (event) => {
 		const form = await superValidate(event, zod(formSchema))
 		if (!form.valid) {
 			return fail(400, {
@@ -33,9 +39,13 @@ export const actions: Actions = {
 			if (!form.data.old_password) {
 				return setError(form, 'old_password', 'Old Password Required')
 			}
-			const userData = (await db.query.user.findFirst({
+			const userData = await db.query.user.findFirst({
 				where: (user, { eq }) => eq(user.id, userId),
-			})) as User
+			})
+
+			if (!userData) {
+				return setError(form, 'email', 'Email Not Found')
+			}
 
 			const passwordMatch = await Bun.password.verify(
 				form.data.old_password,
@@ -70,15 +80,38 @@ export const actions: Actions = {
 				.where(eq(user.id, userId))
 		}
 
-		await db
-			.update(user)
-			.set({
-				username: form.data.username,
-			})
-			.where(eq(user.id, userId))
+		if (form.data.username) {
+			await db
+				.update(user)
+				.set({
+					username: form.data.username,
+				})
+				.where(eq(user.id, userId))
+		}
 
 		return {
 			form,
 		}
+	},
+	verify_email: async (event) => {
+		const form = await superValidate(event, zod(verifyEmailSchema))
+		if (!form.valid) {
+			return fail(400, {
+				form,
+			})
+		}
+
+		try {
+			await sendEmailVerification({
+				userId: event.locals.user.id,
+				email: event.locals.user.email,
+			})
+		} catch (e) {
+			return message(form, 'Error sending email verification', {
+				status: 500,
+			})
+		}
+
+		return message(form, 'Email verification sent')
 	},
 }

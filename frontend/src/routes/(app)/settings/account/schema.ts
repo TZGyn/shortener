@@ -18,4 +18,6 @@ export const formSchema = z.object({
 		.optional(),
 })
 
+export const verifyEmailSchema = z.object({})
+
 export type FormSchema = typeof formSchema

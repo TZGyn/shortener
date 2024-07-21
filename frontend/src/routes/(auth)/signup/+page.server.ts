@@ -8,6 +8,7 @@ import { user as userSchema } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { lucia } from '$lib/server/auth'
 import { env } from '$env/dynamic/private'
+import { sendEmailVerification } from '$lib/server/email'
 
 export const load = (async (event) => {
 	return {
@@ -55,6 +56,11 @@ export const actions: Actions = {
 			...sessionCookie.attributes,
 			path: '/',
 			secure: env.APP_ENV === 'prod',
+		})
+
+		await sendEmailVerification({
+			userId: returnUsers[0].id,
+			email: form.data.email,
 		})
 
 		return {

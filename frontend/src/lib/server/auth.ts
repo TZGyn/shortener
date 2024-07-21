@@ -1,6 +1,7 @@
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle'
 import { db } from '$lib/db'
-import { session, user, type User } from '$lib/db/schema'
+import { session, user } from '$lib/db/schema'
+import { type User } from '$lib/db/types'
 import { Lucia } from 'lucia'
 
 declare module 'lucia' {

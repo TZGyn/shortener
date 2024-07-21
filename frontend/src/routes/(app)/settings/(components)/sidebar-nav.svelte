@@ -28,7 +28,7 @@
 			variant={$page.url.pathname == item.href
 				? 'secondary'
 				: 'ghost'}
-			class="hover:bg-secondary/50 justify-start">
+			class="justify-start hover:bg-secondary/50">
 			{item.title}
 		</Button>
 	{/each}

@@ -9,6 +9,18 @@ import {
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
+export const user = pgTable('user', {
+	id: serial('id').primaryKey().notNull(),
+	uuid: uuid('uuid').defaultRandom(),
+	email_verified: boolean('email_verified').notNull().default(false),
+	email: varchar('email', { length: 255 }).notNull().unique(),
+	username: varchar('username', { length: 255 }),
+	password: varchar('password', { length: 255 }).notNull(),
+	createdAt: timestamp('created_at', { mode: 'string' })
+		.defaultNow()
+		.notNull(),
+})
+
 export const shortener = pgTable('shortener', {
 	id: serial('id').primaryKey().notNull(),
 	link: varchar('link', { length: 255 }).notNull(),
@@ -50,17 +62,6 @@ export const project = pgTable('project', {
 	custom_domain: varchar('custom_domain', { length: 255 }),
 })
 
-export const user = pgTable('user', {
-	id: serial('id').primaryKey().notNull(),
-	uuid: uuid('uuid').defaultRandom(),
-	email: varchar('email', { length: 255 }).notNull().unique(),
-	username: varchar('username', { length: 255 }),
-	password: varchar('password', { length: 255 }).notNull(),
-	createdAt: timestamp('created_at', { mode: 'string' })
-		.defaultNow()
-		.notNull(),
-})
-
 export const visitor = pgTable('visitor', {
 	id: serial('id').primaryKey().notNull(),
 	shortenerId: integer('shortener_id').notNull(),
@@ -93,6 +94,20 @@ export const setting = pgTable('setting', {
 	qr_foreground: varchar('qr_foreground', { length: 7 }),
 })
 
+export const emailVerificationToken = pgTable(
+	'email_verification_token',
+	{
+		id: varchar('id', { length: 255 }).primaryKey().notNull(),
+		userId: integer('user_id').notNull(),
+		email: varchar('email', { length: 255 }).notNull(),
+		expiresAt: timestamp('expires_at', {
+			withTimezone: true,
+			mode: 'date',
+		}).notNull(),
+	},
+)
+
+// relations
 export const shortenerRelations = relations(
 	shortener,
 	({ one, many }) => ({
