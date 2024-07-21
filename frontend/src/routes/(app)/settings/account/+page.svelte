@@ -91,7 +91,10 @@
 						use:enhanceVerifyEmail
 						class="flex flex-col gap-6"
 						action="?/verify_email">
-						<Form.Button class="w-fit">
+						<Form.Button
+							class="w-fit"
+							disabled={$submittingVerifyEmail ||
+								data.user.email_verified}>
 							{#if $submittingVerifyEmail}
 								<LoaderCircle class="animate-spin" />
 							{/if}
