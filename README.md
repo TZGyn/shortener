@@ -46,6 +46,17 @@ bun run src/index.ts
 
 ## Breaking Changes
 
+### 23 July 2024 (For builds before this date)
+
+Transition from using ipbase to using geoipupdate for geolocation.
+
+Please add the following environment variables to your .env file
+
+```bash
+GEOIPUPDATE_ACCOUNT_ID=
+GEOIPUPDATE_LICENSE_KEY=
+```
+
 ### 16 June 2024 (For builds before this date)
 
 (WARNING) Please backup your database before attempting

@@ -5,6 +5,8 @@ import { UAParser } from 'ua-parser-js'
 
 const fallback_url = Bun.env.FALLBACK_URL ?? 'https://app.kon.sh'
 const app_url = Bun.env.APP_URL ?? 'kon.sh'
+const geoipupdate_account_id = Bun.env.GEOIPUPDATE_ACCOUNT_ID
+const geoipupdate_license_key = Bun.env.GEOIPUPDATE_LICENSE_KEY
 
 const app = new Elysia().use(cors())
 
@@ -20,9 +22,16 @@ app.get(
 
 			const ip = request.headers.get('x-forwarded-for')
 
-			const geolocation = await (
-				await fetch(`https://api.ipbase.com/v2/info?ip=${ip}`)
-			).json()
+			const WebServiceClient =
+				require('@maxmind/geoip2-node').WebServiceClient
+
+			const client = new WebServiceClient(
+				geoipupdate_account_id,
+				geoipupdate_license_key,
+				{ host: 'geolite.info' }
+			)
+
+			const geolocation = await client.city(ip)
 
 			const user_agent = request.headers.get('User-Agent')
 
@@ -30,18 +39,22 @@ app.get(
 
 			const query = db
 				.selectFrom('shortener')
-				.leftJoin('project', 'project.id', 'shortener.project_id')
 				.selectAll('shortener')
-				.select(['project.custom_domain as domain'])
 				.where('shortener.code', '=', shortenerCode)
-				.where('project.custom_domain', '=', domain)
-				.orderBy('created_at', 'desc')
 
 			if (domain) {
-				query.where('project.enable_custom_domain', '=', true)
+				query
+					.leftJoin('project', 'project.id', 'shortener.project_id')
+					.select(['project.custom_domain as domain'])
+					.where('project.custom_domain', '=', domain)
+					.where('project.enable_custom_domain', '=', true)
 			}
 
+			query.orderBy('created_at', 'desc')
+
 			const shortener = await query.execute()
+
+			console.log('shortener', shortener)
 
 			if (!shortener.length || !shortener[0].active) {
 				set.redirect = '/invalid'
@@ -50,10 +63,9 @@ app.get(
 
 			const visitor_data = {
 				shortener_id: shortener[0].id,
-				country: geolocation.data.location.country.name as string,
-				country_code: geolocation.data.location.country
-					.alpha2 as string,
-				city: geolocation.data.location.city.name as string,
+				country: geolocation.country.names.en as string,
+				country_code: geolocation.country.isoCode as string,
+				city: geolocation.city.names.en as string,
 				device_type: ua_parser.getDevice().type || 'desktop',
 				device_vendor: ua_parser.getDevice().vendor,
 				browser: ua_parser.getBrowser().name,
