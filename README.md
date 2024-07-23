@@ -5,7 +5,9 @@ Link Shortener is a site to manage your short urls while providing analytics to 
 
 ## Preview
 
-![preview image](preview.png)
+![links_preview](screenshot_links.png)
+![qr_preview](screenshot_qr.png)
+![analytics_preview](screenshot_analytics.png)
 
 ### One Click Deploy on Railway
 
@@ -24,7 +26,7 @@ bun --bun run dev
 
 ```bash
 bun install
-bun --hot run src/index.ts
+bun --bun run dev
 ```
 
 ## Deployment
