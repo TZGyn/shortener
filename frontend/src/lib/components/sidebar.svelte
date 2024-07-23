@@ -50,20 +50,22 @@
 
 <div
 	class={cn(
-		'flex h-full min-w-[300px] flex-col justify-between border-r bg-muted/40',
+		'flex h-full flex-col justify-between lg:min-w-[300px]',
 		className,
 	)}>
 	<div>
-		<div class="flex flex-col gap-4 p-4">
+		<div class="flex flex-col gap-4 p-2 lg:p-4">
 			{#each routes as route}
 				<Button
 					variant={route.regex.test($page.url.pathname)
 						? 'secondary'
 						: 'ghost'}
 					href={route.href}
-					class="flex gap-4 justify-start items-center text-base hover:bg-secondary/50">
-					<svelte:component this={route.icon} class="w-4 h-4" />
-					{route.name}
+					class="flex items-center justify-start gap-4 text-base hover:bg-secondary/50">
+					<svelte:component this={route.icon} class="h-4 w-4" />
+					<div class="hidden lg:flex">
+						{route.name}
+					</div>
 				</Button>
 			{/each}
 		</div>
