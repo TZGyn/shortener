@@ -50,7 +50,7 @@
 
 		<Sidebar />
 		<div
-			class="flex items-center justify-center border-t px-2 py-2 lg:justify-end lg:px-4">
+			class="flex items-center justify-center border-t px-2 py-4 lg:justify-end lg:px-4">
 			<ThemeToggle />
 		</div>
 	</div>
