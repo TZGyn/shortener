@@ -5,13 +5,18 @@
 
 	export let data: PageData
 	export let shallowRouting = false
+
+	const url =
+		data.project.enable_custom_domain && data.project.custom_domain
+			? data.project.custom_domain
+			: data.shortener_url
 </script>
 
 {#if !shallowRouting}
 	<ScrollArea>
-		<div class="py-4 px-10 max-w-2xl">
+		<div class="max-w-2xl px-10 py-4">
 			<QR
-				value={data.shortener_url + '/' + data.shortener.code}
+				value={url + '/' + data.shortener.code}
 				code={data.shortener.code}
 				background={data.project.qr_background}
 				color={data.project.qr_foreground} />
@@ -19,7 +24,7 @@
 	</ScrollArea>
 {:else}
 	<QR
-		value={data.shortener_url + '/' + data.shortener.code}
+		value={url + '/' + data.shortener.code}
 		code={data.shortener.code}
 		background={data.project.qr_background}
 		color={data.project.qr_foreground} />

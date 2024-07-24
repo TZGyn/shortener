@@ -90,7 +90,7 @@
 										{ name: 'page', value: 1 },
 									])}>
 									<Select.Item value={sortBy} label={sortBy}>
-										{sortBy}
+										{sortBy.removeUnderscores().capitalize()}
 									</Select.Item>
 								</a>
 							{/each}
@@ -137,7 +137,7 @@
 								{ name: 'page', value: 1 },
 							])}>
 							<Select.Item value={sortBy} label={sortBy}>
-								{sortBy}
+								{sortBy.removeUnderscores().capitalize()}
 							</Select.Item>
 						</a>
 					{/each}
