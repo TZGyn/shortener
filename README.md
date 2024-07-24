@@ -1,7 +1,19 @@
-# Link Shortener
+<p align="center">
+	<img width="100" src="./docs/logo.png" alt="logo">
+</p>
+<h1 align="center">
+	Kon.sh
+</h1>
 
-Link Shortener is a site to manage your short urls while providing analytics to the url traffics.
-[Demo Here](https://app.kon.sh)
+[Kon.sh](https://app.kon.sh) is an open source URL shortener with analytics.
+Made with [SvelteKit](https://kit.svelte.dev/) and [shadcn-svelte](https://www.shadcn-svelte.com/).
+
+> **Note**
+> <br>
+> Please read the breaking changes section for self-hosted builds before 23 July 2024
+> <br>
+> Feel free to contribute by creating pull requests, issues and discussions.
+
 
 ## Preview
 
@@ -46,9 +58,9 @@ bun install
 bun run src/index.ts
 ```
 
-## Breaking Changes
+## Breaking Changes (For builds before this date)
 
-### 23 July 2024 (For builds before this date)
+### 23 July 2024
 
 Transition from using ipbase to using geoipupdate for geolocation.
 
@@ -59,7 +71,7 @@ GEOIPUPDATE_ACCOUNT_ID=
 GEOIPUPDATE_LICENSE_KEY=
 ```
 
-### 16 June 2024 (For builds before this date)
+### 16 June 2024
 
 (WARNING) Please backup your database before attempting
 
