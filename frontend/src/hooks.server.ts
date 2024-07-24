@@ -24,6 +24,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 		return response
 	}
 
+	if (pathname.startsWith('/api')) {
+		const response = await resolve(event)
+
+		return response
+	}
+
 	if (!sessionId) {
 		redirect(303, '/login')
 	}
