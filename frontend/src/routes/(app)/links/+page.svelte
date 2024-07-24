@@ -339,9 +339,7 @@
 				{#each shorteners as shortener}
 					<ShortenerCard
 						{shortener}
-						projects={data.projects}
-						shortener_url={data.shortener_url}
-						settings={data.settings} />
+						shortener_url={data.shortener_url} />
 				{/each}
 			</div>
 		</ScrollArea>

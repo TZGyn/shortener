@@ -65,11 +65,13 @@ export const load = (async (event) => {
 	}
 
 	const shortenerColumns = getTableColumns(shortener)
+	const projectColumns = getTableColumns(project)
 	const shorteners = db
 		.select({
 			...shortenerColumns,
 			projectName: project.name,
 			projectUuid: project.uuid,
+			project: { ...projectColumns },
 			visitorCount: sql<number>`count(${visitor.id})`,
 		})
 		.from(shortener)

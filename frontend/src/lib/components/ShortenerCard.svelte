@@ -8,7 +8,7 @@
 	import { Badge } from '$lib/components/ui/badge'
 	import { ScrollArea } from '$lib/components/ui/scroll-area'
 	import { Separator } from '$lib/components/ui/separator'
-	import type { Shortener } from '$lib/db/types'
+	import type { Project, Shortener } from '$lib/db/types'
 	import {
 		BarChart,
 		EditIcon,
@@ -28,6 +28,7 @@
 		projectName: string | null
 		projectUuid: string | null
 		visitorCount: number
+		project: Project | null
 	}
 	export let shortener_url: string
 
@@ -80,11 +81,15 @@
 	}
 
 	const hostDomain = 'https://' + shortener.link.split('/')[2]
+
+	const shortenerUrl = shortener.project?.enable_custom_domain
+		? shortener.project.custom_domain || shortener_url
+		: shortener_url
 </script>
 
 <Card.Root>
 	<Card.Header>
-		<Card.Title class="flex gap-4 justify-between items-center">
+		<Card.Title class="flex items-center justify-between gap-4">
 			<Avatar.Root class="overflow-visible">
 				<Avatar.Image
 					src={hostDomain + '/favicon.ico'}
@@ -94,11 +99,11 @@
 				</Avatar.Fallback>
 			</Avatar.Root>
 
-			<div class="flex flex-col flex-grow gap-2 items-start">
+			<div class="flex flex-grow flex-col items-start gap-2">
 				<Tooltip.Root>
 					<Tooltip.Trigger>
 						<div
-							class="whitespace-nowrap max-w-[250px] overflow-x-clip overflow-ellipsis">
+							class="max-w-[250px] overflow-x-clip overflow-ellipsis whitespace-nowrap">
 							{shortener.link}
 						</div>
 					</Tooltip.Trigger>
@@ -108,12 +113,12 @@
 				</Tooltip.Root>
 
 				<div
-					class="flex gap-2 items-center text-sm text-muted-foreground">
+					class="flex items-center gap-2 text-sm text-muted-foreground">
 					<a
-						href={'https://' + shortener_url + '/' + shortener.code}
+						href={'https://' + shortenerUrl + '/' + shortener.code}
 						target="_blank"
 						class="hover:underline">
-						{shortener_url + '/' + shortener.code}
+						{shortenerUrl + '/' + shortener.code}
 					</a>
 					<ExternalLink size={16} />
 				</div>
@@ -129,13 +134,13 @@
 							href={`/links/${shortener.code}/edit`}
 							on:click|preventDefault={() =>
 								showEditModal(shortener.code)}>
-							<DropdownMenu.Item class="flex gap-2 items-center">
+							<DropdownMenu.Item class="flex items-center gap-2">
 								<EditIcon size={16} />Edit
 							</DropdownMenu.Item>
 						</a>
 						<DropdownMenu.Item
 							on:click={() => openDeleteDialog(shortener.code)}
-							class="flex gap-2 items-center text-destructive data-[highlighted]:bg-destructive">
+							class="flex items-center gap-2 text-destructive data-[highlighted]:bg-destructive">
 							<TrashIcon size={16} />
 							Delete
 						</DropdownMenu.Item>
@@ -145,11 +150,11 @@
 		</Card.Title>
 	</Card.Header>
 	<Card.Content>
-		<div class="flex justify-between items-center">
+		<div class="flex items-center justify-between">
 			<div class="flex gap-2">
 				<Button
 					href={`/links/${shortener.code}`}
-					class="flex gap-1 justify-center items-center h-8 text-sm rounded bg-secondary">
+					class="flex h-8 items-center justify-center gap-1 rounded bg-secondary text-sm">
 					<BarChart size={20} />
 					<div>
 						{shortener.visitorCount} visits
@@ -178,8 +183,9 @@
 				{#if shortener.android}
 					<Tooltip.Root>
 						<Tooltip.Trigger>
-							<Badge variant="outline" class="flex gap-2"
-								>Android</Badge>
+							<Badge variant="outline" class="flex gap-2">
+								Android
+							</Badge>
 						</Tooltip.Trigger>
 						<Tooltip.Content>
 							<p>{shortener.android_link}</p>
@@ -194,13 +200,13 @@
 				<Badge variant="outline" class="flex gap-2">
 					{#if shortener.active}
 						<span
-							class="inline-flex relative w-2 h-2 bg-green-400 rounded-full"
-						></span>
+							class="relative inline-flex h-2 w-2 rounded-full bg-green-400">
+						</span>
 						Active
 					{:else}
 						<span
-							class="inline-flex relative w-2 h-2 bg-gray-600 rounded-full"
-						></span>
+							class="relative inline-flex h-2 w-2 rounded-full bg-gray-600">
+						</span>
 						Inactive
 					{/if}
 				</Badge>
