@@ -5,9 +5,9 @@ Link Shortener is a site to manage your short urls while providing analytics to 
 
 ## Preview
 
-![links_preview](screenshot_links.png)
-![qr_preview](screenshot_qr.png)
-![analytics_preview](screenshot_analytics.png)
+![links_preview](./docs/screenshot_links.png)
+![qr_preview](./docs/screenshot_qr.png)
+![analytics_preview](./docs/screenshot_analytics.png)
 
 ### One Click Deploy on Railway
 
