@@ -69,3 +69,12 @@ export const flyAndScale = (
 		easing: cubicOut,
 	}
 }
+
+// this works because its imported in the root layout by other components
+String.prototype.removeUnderscores = function () {
+	return this.replace(/_/g, ' ')
+}
+
+String.prototype.capitalize = function () {
+	return this.charAt(0).toUpperCase() + this.slice(1)
+}

@@ -109,6 +109,10 @@ declare global {
 			}
 		}
 	}
+	interface String {
+		removeUnderscores(): string
+		capitalize(): string
+	}
 }
 
 export {}
