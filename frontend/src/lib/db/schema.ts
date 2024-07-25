@@ -108,6 +108,11 @@ export const emailVerificationToken = pgTable(
 )
 
 // relations
+export const userRelations = relations(user, ({ one, many }) => ({
+	shortener: many(shortener),
+	setting: one(setting),
+}))
+
 export const shortenerRelations = relations(
 	shortener,
 	({ one, many }) => ({
