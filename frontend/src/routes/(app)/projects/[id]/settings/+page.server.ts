@@ -19,9 +19,26 @@ import {
 	createCustomDomain,
 	deleteCustomDomain,
 } from '$lib/server/domain'
+import { env } from '$env/dynamic/private'
+import { PUBLIC_SHORTENER_IP } from '$env/static/public'
 
 export const load = (async (event) => {
 	const { project } = await event.parent()
+
+	let cnameRecord = ''
+	let aRecord = ''
+	let aaaaRecord = ''
+
+	const provider = env.PRIVATE_HOSTING_PROVIDER
+
+	if (provider === 'fly.io') {
+		cnameRecord = env.PRIVATE_FLYIO_CNAME
+		aRecord = env.PRIVATE_FLYIO_IPV4
+		aaaaRecord = env.PRIVATE_FLYIO_IPV6
+	} else if (provider === 'railway') {
+	} else {
+		aRecord = PUBLIC_SHORTENER_IP
+	}
 
 	return {
 		form: await superValidate(
@@ -43,6 +60,9 @@ export const load = (async (event) => {
 				id: 'deleteProject',
 			},
 		),
+		cnameRecord,
+		aRecord,
+		aaaaRecord,
 	}
 }) satisfies PageServerLoad
 
@@ -201,6 +221,12 @@ export const actions: Actions = {
 			return setError(form, 'domain', 'Domain is not available')
 		}
 
+		const customDomain = await createCustomDomain(form.data.domain)
+
+		if (!customDomain.success) {
+			return setError(form, 'domain', 'Cannot create custom domain')
+		}
+
 		const deleteOldCustomDomain = await deleteCustomDomain(
 			existingProject.custom_domain_id,
 		)
@@ -211,12 +237,6 @@ export const actions: Actions = {
 				'domain',
 				'Cannot delete old custom domain',
 			)
-		}
-
-		const customDomain = await createCustomDomain(form.data.domain)
-
-		if (!customDomain.success) {
-			return setError(form, 'domain', 'Cannot create custom domain')
 		}
 
 		await db

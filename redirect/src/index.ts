@@ -7,6 +7,7 @@ const fallback_url = Bun.env.FALLBACK_URL ?? 'https://app.kon.sh'
 const app_url = Bun.env.APP_URL ?? 'kon.sh'
 const geoipupdate_account_id = Bun.env.GEOIPUPDATE_ACCOUNT_ID
 const geoipupdate_license_key = Bun.env.GEOIPUPDATE_LICENSE_KEY
+const hosting_provider = Bun.env.HOSTING_PROVIDER
 
 const app = new Elysia().use(cors())
 
@@ -20,7 +21,11 @@ app.get(
 			const request_domain = request.headers.get('host')
 			const domain = request_domain !== app_url ? request_domain : null
 
-			const ip = request.headers.get('x-forwarded-for')
+			const ip = request.headers.get(
+				hosting_provider === 'fly.io'
+					? 'Fly-Client-IP'
+					: 'x-forwarded-for'
+			)
 
 			const WebServiceClient =
 				require('@maxmind/geoip2-node').WebServiceClient

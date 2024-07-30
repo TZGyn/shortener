@@ -27,6 +27,20 @@ export const createCustomDomain = async (domain: string) => {
 			id: response.domain.id,
 			ip: response.domain.record,
 		} as const
+	} else if (env.PRIVATE_HOSTING_PROVIDER == 'fly.io') {
+		const { flyioClient } = await import('./flyio')
+
+		const response = await flyioClient.createCustomDomain(domain)
+
+		if (!response.success) {
+			return { success: false, id: undefined, ip: undefined } as const
+		}
+
+		return {
+			success: true,
+			id: domain,
+			ip: undefined,
+		} as const
 	} else {
 		return { id: undefined, ip: undefined } as const
 	}
@@ -40,6 +54,18 @@ export const deleteCustomDomain = async (domain: string | null) => {
 		const { railwayClient } = await import('./railway')
 
 		const response = await railwayClient.deleteCustomDomain(domain)
+
+		if (!response.success) {
+			return { success: false } as const
+		}
+
+		return {
+			success: true,
+		} as const
+	} else if (env.PRIVATE_HOSTING_PROVIDER === 'fly.io') {
+		const { flyioClient } = await import('./flyio')
+
+		const response = await flyioClient.deleteCustomDomain(domain)
 
 		if (!response.success) {
 			return { success: false } as const

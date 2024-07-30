@@ -23,6 +23,8 @@
 	} from 'lucide-svelte'
 	import { env } from '$env/dynamic/public'
 	import { invalidateAll } from '$app/navigation'
+	import DnsInfo from './(components)/dns-info.svelte'
+	import DnsTooltip from './(components)/dns-tooltip.svelte'
 
 	export let data
 
@@ -68,7 +70,7 @@
 	<div class="max-w-2xl space-y-6 px-10 py-4">
 		<div>
 			<h3 class="text-lg font-medium">Custom Domain</h3>
-			<p class="text-sm text-muted-foreground">
+			<p class="text-muted-foreground text-sm">
 				Update project domain.
 			</p>
 		</div>
@@ -79,11 +81,11 @@
 				<div class="flex items-center gap-4">
 					<div class="">
 						{#if data.project.domain_status === 'pending'}
-							<CircleDashedIcon class="h-8 w-8 text-warning" />
+							<CircleDashedIcon class="text-warning h-8 w-8" />
 						{:else if data.project.domain_status === 'verified'}
-							<CircleCheckBigIcon class="h-8 w-8 text-success" />
+							<CircleCheckBigIcon class="text-success h-8 w-8" />
 						{:else if data.project.domain_status === 'disabled'}
-							<CircleXIcon class="h-8 w-8 text-destructive" />
+							<CircleXIcon class="text-destructive h-8 w-8" />
 						{/if}
 					</div>
 					<div class="flex-grow">
@@ -95,33 +97,12 @@
 							<Card.Description>custom domain</Card.Description>
 
 							<Card.Description>
-								<Tooltip.Root>
-									<Tooltip.Trigger class="flex items-center gap-1">
-										<InfoIcon class="h-4 w-4" />
-										{#if data.project.custom_ip}
-											{data.project.custom_ip}
-										{:else if env.PUBLIC_SHORTENER_IP}
-											{env.PUBLIC_SHORTENER_IP}
-										{:else}
-											{'Public IP not found'}
-										{/if}
-									</Tooltip.Trigger>
-									<Tooltip.Content>
-										{#if data.project.custom_ip}
-											{'Create a CNAME record for ' +
-												data.project.custom_domain +
-												' to ' +
-												data.project.custom_ip}
-										{:else if env.PUBLIC_SHORTENER_IP}
-											{'Create a A record for ' +
-												data.project.custom_domain +
-												' to ' +
-												env.PUBLIC_SHORTENER_IP}
-										{:else}
-											{'Public IP not found'}
-										{/if}
-									</Tooltip.Content>
-								</Tooltip.Root>
+								<DnsTooltip
+									domain={data.project.custom_domain}
+									custom_ip={data.project.custom_ip}
+									a_record={data.aRecord}
+									aaaa_record={data.aaaaRecord}
+									cname_record={data.cnameRecord} />
 							</Card.Description>
 						{:else}
 							<Card.Title>
@@ -144,16 +125,16 @@
 										<AlertDialog.Title>
 											Are you absolutely sure?
 										</AlertDialog.Title>
-										<Alert.Root variant="destructive">
-											<TriangleAlertIcon class="h-4 w-4" />
-											<Alert.Description>
-												Disabling custom domain is not available yet.
-											</Alert.Description>
-										</Alert.Root>
 										<AlertDialog.Description>
 											Enabling a custom domain will allow you to use
 											your project with a custom domain.
 										</AlertDialog.Description>
+										{#if data.cnameRecord || data.aRecord || data.aaaaRecord}
+											<DnsInfo
+												cname_record={data.cnameRecord}
+												a_record={data.aRecord}
+												aaaa_record={data.aaaaRecord} />
+										{/if}
 									</AlertDialog.Header>
 									<AlertDialog.Footer>
 										<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
@@ -255,7 +236,7 @@
 
 		<div>
 			<h3 class="text-lg font-medium">Settings</h3>
-			<p class="text-sm text-muted-foreground">
+			<p class="text-muted-foreground text-sm">
 				Update project settings.
 			</p>
 		</div>
@@ -268,11 +249,11 @@
 		<div>
 			<h3 class="text-lg font-medium">Danger Zone</h3>
 		</div>
-		<div class="rounded-lg border border-destructive">
+		<div class="border-destructive rounded-lg border">
 			<div class="flex items-center justify-between p-4">
 				<div class="flex flex-col gap-1">
 					<span class="text-sm">Delete Project</span>
-					<span class="text-xs text-muted-foreground">
+					<span class="text-muted-foreground text-xs">
 						Permanently delete your project
 					</span>
 				</div>
