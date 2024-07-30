@@ -20,7 +20,6 @@ import {
 	deleteCustomDomain,
 } from '$lib/server/domain'
 import { env } from '$env/dynamic/private'
-import { PUBLIC_SHORTENER_IP } from '$env/static/public'
 
 export const load = (async (event) => {
 	const { project } = await event.parent()
@@ -37,7 +36,7 @@ export const load = (async (event) => {
 		aaaaRecord = env.PRIVATE_FLYIO_IPV6
 	} else if (provider === 'railway') {
 	} else {
-		aRecord = PUBLIC_SHORTENER_IP
+		aRecord = env.PUBLIC_SHORTENER_IP || ''
 	}
 
 	return {
