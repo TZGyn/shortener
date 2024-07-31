@@ -13,6 +13,7 @@ const app = new Elysia().use(cors())
 
 app.get('/', ({ set }) => (set.redirect = fallback_url + '/landing'))
 app.get('/invalid', () => 'Invalid Shortener')
+app.get('/robots.txt', () => Bun.file('public/robots.txt'))
 
 app.get(
 	'/:shortenerCode',

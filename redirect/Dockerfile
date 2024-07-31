@@ -7,6 +7,7 @@ COPY bun.lockb .
 
 RUN bun install --production
 
+COPY public public
 COPY src src
 COPY tsconfig.json .
 
