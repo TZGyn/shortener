@@ -121,7 +121,11 @@ export const actions: Actions = {
 
 		const userId = event.locals.user.id
 
-		if (!event.locals.user.email_verified) {
+		if (
+			!event.locals.user.email_verified &&
+			env.PRIVATE_MAIL_PROVIDER &&
+			env.PRIVATE_MAIL_PROVIDER !== ''
+		) {
 			return setError(
 				form,
 				'enableDomain',
