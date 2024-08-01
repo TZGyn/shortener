@@ -131,8 +131,9 @@
 								bind:value={$formData.custom_code}
 								placeholder="abcde" />
 						</Form.Control>
-						<Form.Description
-							>Custom Code For The Shortener</Form.Description>
+						<Form.Description>
+							Custom Code For The Shortener
+						</Form.Description>
 						<Form.FieldErrors />
 					</Form.Field>
 				{/if}
@@ -156,8 +157,9 @@
 								bind:value={$formData.ios_link}
 								placeholder="https://example.com" />
 						</Form.Control>
-						<Form.Description
-							>Shortener link for iOS</Form.Description>
+						<Form.Description>
+							Shortener link for iOS
+						</Form.Description>
 						<Form.FieldErrors />
 					</Form.Field>
 				{/if}
@@ -181,8 +183,9 @@
 								bind:value={$formData.android_link}
 								placeholder="https://example.com" />
 						</Form.Control>
-						<Form.Description
-							>Shortener link for Android</Form.Description>
+						<Form.Description>
+							Shortener link for Android
+						</Form.Description>
 						<Form.FieldErrors />
 					</Form.Field>
 				{/if}
