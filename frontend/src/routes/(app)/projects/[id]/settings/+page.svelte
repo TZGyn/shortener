@@ -64,6 +64,24 @@
 		enhance: customDomainEnhance,
 		submitting: customDomainSubmitting,
 	} = customDomainForm
+
+	const enableCustomDomainForm = superForm(
+		data.enableCustomDomainForm,
+		{
+			onUpdated: ({ form }) => {
+				if (form.valid) {
+					toast.success(form.message)
+				}
+			},
+		},
+	)
+
+	const {
+		form: enableCustomDomainFormData,
+		enhance: enableCustomDomainEnchance,
+		submit: enableCustomDomainSubmit,
+		submitting: enableCustomDomainSubmitting,
+	} = enableCustomDomainForm
 </script>
 
 <ScrollArea>
@@ -114,45 +132,94 @@
 					</div>
 					<div>
 						{#if !data.project.enable_custom_domain}
-							<AlertDialog.Root>
-								<AlertDialog.Trigger asChild let:builder>
+							<Dialog.Root>
+								<Dialog.Trigger asChild let:builder>
 									<Button builders={[builder]}>
 										Enable Custom Domain
 									</Button>
-								</AlertDialog.Trigger>
-								<AlertDialog.Content>
-									<AlertDialog.Header>
-										<AlertDialog.Title>
+								</Dialog.Trigger>
+
+								<Dialog.Content>
+									<Dialog.Header>
+										<Dialog.Title>
 											Are you absolutely sure?
-										</AlertDialog.Title>
-										<AlertDialog.Description>
+										</Dialog.Title>
+										<Dialog.Description>
 											Enabling a custom domain will allow you to use
 											your project with a custom domain.
-										</AlertDialog.Description>
-										{#if data.cnameRecord || data.aRecord || data.aaaaRecord}
-											<DnsInfo
-												cname_record={data.cnameRecord}
-												a_record={data.aRecord}
-												aaaa_record={data.aaaaRecord} />
-										{/if}
-									</AlertDialog.Header>
-									<AlertDialog.Footer>
-										<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-										<AlertDialog.Action
-											on:click={async () => {
-												await fetch('?/enable_custom_domain', {
-													method: 'POST',
-													headers: {
-														'Content-Type': 'multipart/form-data',
-													},
-												})
-												await invalidateAll()
-											}}>
-											Continue
-										</AlertDialog.Action>
-									</AlertDialog.Footer>
-								</AlertDialog.Content>
-							</AlertDialog.Root>
+										</Dialog.Description>
+									</Dialog.Header>
+									<form
+										method="POST"
+										action="?/enable_custom_domain"
+										class="flex flex-col gap-6"
+										use:enableCustomDomainEnchance>
+										<Form.Field
+											form={enableCustomDomainForm}
+											name="enableDomain"
+											class="flex flex-col gap-2">
+											<Form.Control let:attrs>
+												<Form.Label>Add Custom Domain</Form.Label>
+												<div class="flex items-center space-x-2">
+													<Input
+														{...attrs}
+														bind:value={$enableCustomDomainFormData.enableDomain}
+														placeholder="your-custom-domain.com" />
+												</div>
+											</Form.Control>
+											<Form.Description
+												class="flex items-center justify-between gap-2">
+												<Tooltip.Root>
+													<Tooltip.Trigger
+														class="flex items-center gap-2">
+														<InfoIcon class="h-4 w-4" />
+														Update Project Domain (leave blank to use default)
+													</Tooltip.Trigger>
+													<Tooltip.Content>
+														<p>
+															Only include the domain name, not the
+															protocol.
+														</p>
+														<p>
+															Make sure the domain is pointing to our
+															server.
+														</p>
+														<p>
+															Please contact us if you need a custom
+															domain.
+														</p>
+													</Tooltip.Content>
+												</Tooltip.Root>
+											</Form.Description>
+											<Form.FieldErrors />
+										</Form.Field>
+									</form>
+
+									{#if data.cnameRecord || data.aRecord || data.aaaaRecord}
+										<DnsInfo
+											host={$enableCustomDomainFormData.enableDomain}
+											cname_record={data.cnameRecord}
+											a_record={data.aRecord}
+											aaaa_record={data.aaaaRecord} />
+									{/if}
+
+									<Dialog.Footer>
+										<Dialog.Close asChild let:builder>
+											<Button
+												builders={[builder]}
+												variant={'outline'}>
+												Cancel
+											</Button>
+										</Dialog.Close>
+										<Button on:click={enableCustomDomainSubmit}>
+											{#if $enableCustomDomainSubmitting}
+												<LoaderCircle class="animate-spin" />
+											{/if}
+											Enable
+										</Button>
+									</Dialog.Footer>
+								</Dialog.Content>
+							</Dialog.Root>
 						{:else}
 							<AlertDialog.Root>
 								<AlertDialog.Trigger asChild let:builder>

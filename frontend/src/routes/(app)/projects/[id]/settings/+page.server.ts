@@ -1,11 +1,17 @@
 import { db } from '$lib/db'
 import type { PageServerLoad, Actions } from './$types'
-import { fail } from '@sveltejs/kit'
-import { setError, superValidate } from 'sveltekit-superforms'
+import {
+	message,
+	setError,
+	setMessage,
+	superValidate,
+	fail,
+} from 'sveltekit-superforms'
 import {
 	formSchema,
 	deleteSchema,
 	customDomainFormSchema,
+	enableCustomDomainFormSchema,
 } from './schema'
 import { zod } from 'sveltekit-superforms/adapters'
 import {
@@ -47,6 +53,10 @@ export const load = (async (event) => {
 				qr_foreground: project.qr_foreground,
 			},
 			zod(formSchema),
+		),
+		enableCustomDomainForm: await superValidate(
+			{ enableDomain: project.custom_domain || '' },
+			zod(enableCustomDomainFormSchema),
 		),
 		customDomainForm: await superValidate(
 			{ domain: project.custom_domain || '' },
@@ -95,7 +105,29 @@ export const actions: Actions = {
 		}
 	},
 	enable_custom_domain: async (event) => {
+		const form = await superValidate(
+			event,
+			zod(enableCustomDomainFormSchema),
+		)
+		if (!form.valid) {
+			return fail(400, {
+				form,
+			})
+		}
+
+		if (form.data.enableDomain === '') {
+			return setError(form, 'enableDomain', 'domain cannot be empty')
+		}
+
 		const userId = event.locals.user.id
+
+		if (!event.locals.user.email_verified) {
+			return setError(
+				form,
+				'enableDomain',
+				'Please verify your email account',
+			)
+		}
 
 		const existingProject = await db.query.project.findFirst({
 			where: (projectTable, { eq, and }) =>
@@ -109,9 +141,43 @@ export const actions: Actions = {
 			return fail(400, { message: 'Project not found' })
 		}
 
+		const sameDomainDifferentProject =
+			await db.query.project.findFirst({
+				where: (projectTable, { eq, and, ne }) =>
+					and(
+						ne(projectTable.uuid, event.params.id),
+						eq(projectTable.custom_domain, form.data.enableDomain),
+					),
+			})
+
+		if (sameDomainDifferentProject) {
+			return setError(form, 'enableDomain', 'Domain already taken')
+		}
+
+		const domainAvailable = await checkDomainAvailable(
+			form.data.enableDomain,
+		)
+
+		if (!domainAvailable) {
+			return setError(form, 'enableDomain', 'Domain is not available')
+		}
+
+		const customDomain = await createCustomDomain(
+			form.data.enableDomain,
+		)
+
+		if (!customDomain.success) {
+			return setError(
+				form,
+				'enableDomain',
+				'Cannot create custom domain',
+			)
+		}
+
 		await db
 			.update(projectTable)
 			.set({
+				custom_domain: form.data.enableDomain,
 				enable_custom_domain: true,
 			})
 			.where(
@@ -121,7 +187,7 @@ export const actions: Actions = {
 				),
 			)
 
-		return { message: 'Custom domain enabled' }
+		return { form }
 	},
 	disable_custom_domain: async (event) => {
 		const userId = event.locals.user.id
