@@ -55,24 +55,6 @@ export const actions: Actions = {
 			})
 		}
 
-		if (form.data.link.startsWith('http://')) {
-			return setError(form, 'link', 'Link must be HTTPS')
-		}
-
-		if (
-			form.data.ios_link &&
-			form.data.ios_link.startsWith('http://')
-		) {
-			return setError(form, 'ios_link', 'Link must be HTTPS')
-		}
-
-		if (
-			form.data.android_link &&
-			form.data.android_link.startsWith('http://')
-		) {
-			return setError(form, 'android_link', 'Link must be HTTPS')
-		}
-
 		if (form.data.custom_code_enable) {
 			if (!form.data.custom_code) {
 				return setError(
@@ -107,41 +89,19 @@ export const actions: Actions = {
 			})
 		}
 
-		let ios_link = ''
-
-		if (form.data.ios_link) {
-			if (form.data.ios_link.startsWith('https://')) {
-				ios_link = form.data.ios_link
-			} else {
-				ios_link = `https://${form.data.ios_link}`
-			}
-		}
-
-		let android_link = ''
-
-		if (form.data.android_link) {
-			if (form.data.android_link.startsWith('https://')) {
-				android_link = form.data.android_link
-			} else {
-				android_link = `https://${form.data.android_link}`
-			}
-		}
-
 		await db
 			.update(shortener)
 			.set({
-				link: form.data.link.startsWith('https://')
-					? form.data.link
-					: `https://${form.data.link}`,
+				link: form.data.link,
 				projectId: project.id,
 				userId: user.id,
 				code: form.data.custom_code_enable
 					? form.data.custom_code
 					: undefined,
 				ios: form.data.ios,
-				ios_link: ios_link,
+				ios_link: form.data.ios_link,
 				android: form.data.android,
-				android_link: android_link,
+				android_link: form.data.android_link,
 			})
 			.where(eq(shortener.code, event.params.linkid))
 
