@@ -17,11 +17,30 @@ export const GET: RequestHandler = async (event) => {
 	}
 	// taken from https://github.com/dubinc/dub/blob/main/apps/web/app/api/edge/metatags/utils.ts
 	try {
-		const response = await fetch(url, {
-			headers: {
-				'User-Agent': 'shortener-bot',
+		const response = await new Promise<Response>(
+			(resolve, reject) => {
+				const controller = new AbortController()
+				const timeoutId = setTimeout(() => {
+					controller.abort()
+					reject(new Error('Request timed out'))
+				}, 5000)
+				fetch(url, {
+					headers: {
+						'User-Agent': 'Kon.sh-bot',
+					},
+					signal: controller.signal,
+				})
+					.then((response) => {
+						clearTimeout(timeoutId)
+						resolve(response)
+					})
+					.catch((error) => {
+						clearTimeout(timeoutId)
+						reject(error)
+					})
 			},
-		})
+		)
+
 		if (!response) {
 			return new Response(
 				JSON.stringify({
