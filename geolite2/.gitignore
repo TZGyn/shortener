@@ -1,0 +1,4 @@
+/data/*
+!/data/README.txt
+/dist/*
+!/dist/README.txt

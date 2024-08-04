@@ -12,12 +12,6 @@ const fallback_url = Bun.env.FALLBACK_URL ?? 'https://app.kon.sh'
 const app_url = Bun.env.APP_URL ?? 'kon.sh'
 const hosting_provider = Bun.env.HOSTING_PROVIDER
 
-const client = new WebServiceClient(
-	Bun.env.GEOIPUPDATE_ACCOUNT_ID || '',
-	Bun.env.GEOIPUPDATE_LICENSE_KEY || '',
-	{ host: 'geolite.info' }
-)
-
 const clickLimiter = new LRUCache({
 	ttl: 60 * 60 * 60 * 1000, // 1 hr
 	ttlAutopurge: true,
@@ -91,20 +85,45 @@ app.get(
 
 			clickLimiter.set(clickKey, 1)
 
-			const geolocation = await client.city(ip || '')
+			const geo = {
+				country: '',
+				country_code: '',
+				city: '',
+			}
+			if (Bun.env.GEOIPAPI) {
+				const response = await fetch(Bun.env.GEOIPAPI + '/' + ip)
+				const data = await response.json()
+
+				if (data.success && data.success == false) {
+					return
+				}
+				geo.country = data.Country.Names?.en || ''
+				geo.country_code = data.Country.IsoCode
+				geo.city = data.City.Names?.en || ''
+			} else {
+				const client = new WebServiceClient(
+					Bun.env.GEOIPUPDATE_ACCOUNT_ID || '',
+					Bun.env.GEOIPUPDATE_LICENSE_KEY || '',
+					{ host: 'geolite.info' }
+				)
+				const geolocation = await client.city(ip || '')
+				geo.country = geolocation.country?.names?.en || ''
+				geo.country_code = geolocation.country?.isoCode || ''
+				geo.city = geolocation.city?.names?.en || ''
+			}
 
 			const visitor_data = {
 				shortener_id: shortener[0].id,
-				country: geolocation.country!.names.en,
-				country_code: geolocation.country!.isoCode,
-				city: geolocation.city!.names.en,
 				device_type: ua_parser.getDevice().type || 'desktop',
 				device_vendor: ua_parser.getDevice().vendor,
 				browser: ua_parser.getBrowser().name,
 				os: ua_parser.getOS().name,
 			}
 
-			await db.insertInto('visitor').values(visitor_data).execute()
+			await db
+				.insertInto('visitor')
+				.values({ ...visitor_data, ...geo })
+				.execute()
 		} catch (error) {
 			console.error(error)
 			set.redirect = fallback_url
