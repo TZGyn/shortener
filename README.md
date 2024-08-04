@@ -8,12 +8,10 @@
 [Kon.sh](https://app.kon.sh) is an open source URL shortener with analytics.
 Made with [SvelteKit](https://kit.svelte.dev/) and [shadcn-svelte](https://www.shadcn-svelte.com/).
 
-> **Note**
-> <br>
+> **Note** > <br>
 > Please read the breaking changes section for self-hosted builds before 23 July 2024
 > <br>
 > Feel free to contribute by creating pull requests, issues and discussions.
-
 
 ## Preview
 
@@ -56,6 +54,13 @@ bun --bun run build
 ```bash
 bun install
 bun run src/index.ts
+```
+
+### Geolite2 Server
+
+```bash
+go build main.go
+ACCOUNT_ID={} LICENSE_KEY={} ./main
 ```
 
 ## Breaking Changes (For builds before this date)
