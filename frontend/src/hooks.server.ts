@@ -6,58 +6,52 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	const pathname = event.url.pathname
 
-	if (pathname.startsWith('/landing')) {
+	if (pathname.startsWith('/dashboard')) {
+		if (!sessionId) {
+			redirect(303, '/login')
+		}
+		const { session, user } = await lucia.validateSession(sessionId)
+
+		if (!user) {
+			redirect(303, '/login')
+		}
+
+		if (session && session.fresh) {
+			const sessionCookie = lucia.createSessionCookie(session.id)
+			// sveltekit types deviates from the de-facto standard
+			// you can use 'as any' too
+			event.cookies.set(sessionCookie.name, sessionCookie.value, {
+				path: '.',
+				...sessionCookie.attributes,
+			})
+		}
+		if (!session) {
+			const sessionCookie = lucia.createBlankSessionCookie()
+			event.cookies.set(sessionCookie.name, sessionCookie.value, {
+				path: '/',
+				...sessionCookie.attributes,
+			})
+		}
+
+		event.locals.user = user
+		event.locals.session = session
+
 		const response = await resolve(event)
 
 		return response
 	}
 
-	const allowedPath = ['/login', '/signup']
+	const authPaths = ['/login', '/signup']
 
-	if (allowedPath.includes(pathname)) {
+	if (authPaths.includes(pathname)) {
 		if (sessionId) {
-			redirect(303, '/')
+			redirect(303, '/dashboard')
 		}
 		event.locals.session = null
 		const response = await resolve(event)
 
 		return response
 	}
-
-	if (pathname.startsWith('/api')) {
-		const response = await resolve(event)
-
-		return response
-	}
-
-	if (!sessionId) {
-		redirect(303, '/login')
-	}
-	const { session, user } = await lucia.validateSession(sessionId)
-
-	if (!user) {
-		redirect(303, '/login')
-	}
-
-	if (session && session.fresh) {
-		const sessionCookie = lucia.createSessionCookie(session.id)
-		// sveltekit types deviates from the de-facto standard
-		// you can use 'as any' too
-		event.cookies.set(sessionCookie.name, sessionCookie.value, {
-			path: '.',
-			...sessionCookie.attributes,
-		})
-	}
-	if (!session) {
-		const sessionCookie = lucia.createBlankSessionCookie()
-		event.cookies.set(sessionCookie.name, sessionCookie.value, {
-			path: '/',
-			...sessionCookie.attributes,
-		})
-	}
-
-	event.locals.user = user
-	event.locals.session = session
 
 	const response = await resolve(event)
 

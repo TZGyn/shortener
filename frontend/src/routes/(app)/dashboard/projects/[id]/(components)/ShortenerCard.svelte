@@ -1,14 +1,13 @@
 <script lang="ts">
 	import { Button, buttonVariants } from '$lib/components/ui/button'
 	import * as Card from '$lib/components/ui/card'
-	import * as Tooltip from '$lib/components/ui/tooltip'
 	import * as Dialog from '$lib/components/ui/dialog'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+	import * as Tooltip from '$lib/components/ui/tooltip'
 	import * as Avatar from '$lib/components/ui/avatar'
 	import { Badge } from '$lib/components/ui/badge'
 	import { ScrollArea } from '$lib/components/ui/scroll-area'
-	import { Separator } from '$lib/components/ui/separator'
-	import type { Project, Shortener } from '$lib/db/types'
+	import type { Shortener, Project, Setting } from '$lib/db/types'
 	import {
 		BarChart,
 		EditIcon,
@@ -18,19 +17,17 @@
 		TrashIcon,
 	} from 'lucide-svelte'
 	import DeleteShortenerDialog from './DeleteShortenerDialog.svelte'
-	import EditLinkPage from '$lib/../routes/(app)/dashboard/links/[id]/edit/+page.svelte'
-
+	import EditProjectLinkPage from '../links/[linkid]/edit/+page.svelte'
 	import { goto, preloadData, pushState } from '$app/navigation'
 	import { cn } from '$lib/utils'
 	import type { page } from '$app/stores'
 
 	export let shortener: Shortener & {
-		projectName: string | null
-		projectUuid: string | null
 		visitorCount: number
-		project: Project | null
 	}
 	export let shortener_url: string
+	export let settings: Setting | undefined
+	export let selected_project: Project
 
 	let deleteDialogOpen = false
 	let deleteShortenerCode = ''
@@ -39,22 +36,15 @@
 		deleteDialogOpen = true
 	}
 
-	const getUrl = () => {
-		if (shortener.projectUuid) {
-			return `/dashboard/projects/${shortener.projectUuid}`
-		}
-		return '/dashboard'
-	}
-
 	let editProjectLinkOpen = false
-	let editData: typeof $page.state.editLink
+	let editData: typeof $page.state.editProjectLink
 
-	const showEditModal = async (code: string) => {
-		const href = `/dashboard/links/${code}/edit`
+	const showEditModal = async (projectUuid: string, code: string) => {
+		const href = `/dashboard/projects/${projectUuid}/links/${code}/edit`
 		const result = await preloadData(href)
 
 		if (result.type === 'loaded' && result.status === 200) {
-			editData = result.data as typeof $page.state.editLink
+			editData = result.data as typeof $page.state.editProjectLink
 			editProjectLinkOpen = true
 		} else {
 			// something bad happened! try navigating
@@ -70,11 +60,7 @@
 		const result = await preloadData(href)
 
 		if (result.type === 'loaded' && result.status === 200) {
-			if (getUrl().startsWith('/dashboard/projects')) {
-				pushState(href, { projectLinkQR: result.data })
-			} else {
-				pushState(href, { linkQR: result.data })
-			}
+			pushState(href, { projectLinkQR: result.data })
 		} else {
 			goto(href)
 		}
@@ -82,8 +68,8 @@
 
 	const hostDomain = 'https://' + shortener.link.split('/')[2]
 
-	const shortenerUrl = shortener.project?.enable_custom_domain
-		? shortener.project.custom_domain || shortener_url
+	const shortenerUrl = selected_project.enable_custom_domain
+		? selected_project.custom_domain || shortener_url
 		: shortener_url
 </script>
 
@@ -98,7 +84,6 @@
 					<img src="/favicon.png" alt="favicon" />
 				</Avatar.Fallback>
 			</Avatar.Root>
-
 			<div class="flex flex-grow flex-col items-start gap-2">
 				<Tooltip.Root>
 					<Tooltip.Trigger>
@@ -131,9 +116,12 @@
 				<DropdownMenu.Content>
 					<DropdownMenu.Group>
 						<a
-							href={`/dashboard/links/${shortener.code}/edit`}
+							href={`/dashboard/projects/${selected_project.uuid}/links/${shortener.code}/edit`}
 							on:click|preventDefault={() =>
-								showEditModal(shortener.code)}>
+								showEditModal(
+									selected_project.uuid || '',
+									shortener.code,
+								)}>
 							<DropdownMenu.Item class="flex items-center gap-2">
 								<EditIcon size={16} />Edit
 							</DropdownMenu.Item>
@@ -165,11 +153,10 @@
 						buttonVariants({ variant: 'default' }),
 						'bg-secondary flex h-8 items-center justify-center gap-1 rounded text-sm',
 					)}
-					href={`${getUrl()}/links/${shortener.code}/qr`}
+					href={`/dashboard/projects/${selected_project.uuid}/links/${shortener.code}/qr`}
 					on:click|preventDefault={showQRModal}>
 					<QrCode size={20} />
 				</a>
-				<Separator orientation="vertical" />
 				{#if shortener.ios}
 					<Tooltip.Root>
 						<Tooltip.Trigger>
@@ -226,7 +213,7 @@
 			</Dialog.Description>
 		</Dialog.Header>
 		<ScrollArea class="max-h-[calc(100vh-200px)]">
-			<EditLinkPage data={editData} shallowRouting />
+			<EditProjectLinkPage data={editData} shallowRouting />
 		</ScrollArea>
 	</Dialog.Content>
 </Dialog.Root>

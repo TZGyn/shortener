@@ -38,7 +38,7 @@
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item
 				on:click={() => {
-					goto('/settings')
+					goto('/dashboard/settings')
 					onClick()
 				}}>
 				Settings
@@ -61,8 +61,9 @@
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel disabled={isLoading}
-				>Cancel</AlertDialog.Cancel>
+			<AlertDialog.Cancel disabled={isLoading}>
+				Cancel
+			</AlertDialog.Cancel>
 			<Button
 				on:click={logout}
 				class="flex gap-2"

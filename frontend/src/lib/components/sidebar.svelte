@@ -10,38 +10,42 @@
 
 	const routes = [
 		{
-			href: '/',
+			href: '/dashboard',
 			name: 'Home',
-			regex: createRegExp(exactly('/').notBefore(word)),
+			regex: createRegExp(exactly('/dashboard/').notBefore(word)),
 			icon: Home,
 		},
 		{
-			href: '/links',
+			href: '/dashboard/links',
 			name: 'Links',
 			regex: createRegExp(
-				exactly('/links')
+				exactly('/dashboard/links')
 					.at.lineStart()
-					.or(exactly('/links/').notBefore(word).and(word)),
+					.or(exactly('/dashboard/links/').notBefore(word).and(word)),
 			),
 			icon: Link,
 		},
 		{
-			href: '/projects',
+			href: '/dashboard/projects',
 			name: 'Projects',
 			regex: createRegExp(
-				exactly('/projects')
+				exactly('/dashboard/projects')
 					.at.lineStart()
-					.or(exactly('/projects/').notBefore(word).and(word)),
+					.or(
+						exactly('/dashboard/projects/').notBefore(word).and(word),
+					),
 			),
 			icon: Blocks,
 		},
 		{
-			href: '/settings/account',
+			href: '/dashboard/settings/account',
 			name: 'Settings',
 			regex: createRegExp(
-				exactly('/settings')
+				exactly('/dashboard/settings')
 					.at.lineStart()
-					.or(exactly('/settings/').notBefore(word).and(word)),
+					.or(
+						exactly('/dashboard/settings/').notBefore(word).and(word),
+					),
 			),
 			icon: Settings,
 		},
@@ -61,7 +65,7 @@
 						? 'secondary'
 						: 'ghost'}
 					href={route.href}
-					class="flex items-center justify-start gap-4 text-base hover:bg-secondary/50">
+					class="hover:bg-secondary/50 flex items-center justify-start gap-4 text-base">
 					<svelte:component this={route.icon} class="h-4 w-4" />
 					<div class="hidden lg:flex">
 						{route.name}

@@ -19,7 +19,7 @@ const clickLimiter = new LRUCache({
 
 const app = new Elysia().use(cors()).use(rateLimit({ duration: 1000 }))
 
-app.get('/', ({ set }) => (set.redirect = fallback_url + '/landing'))
+app.get('/', ({ set }) => (set.redirect = fallback_url))
 app.get('/invalid', () => 'Invalid Shortener')
 app.get('/robots.txt', () => Bun.file('public/robots.txt'))
 
