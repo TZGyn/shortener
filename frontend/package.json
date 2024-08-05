@@ -51,7 +51,6 @@
     "formsnap": "^1.0.0",
     "he": "^1.2.0",
     "lucide-svelte": "^0.418.0",
-    "magic-regexp": "^0.8.0",
     "mode-watcher": "^0.1.2",
     "nanoid": "^5.0.3",
     "node-html-parser": "^6.1.12",

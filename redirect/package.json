@@ -13,7 +13,6 @@
     "elysia": "^1.1.5",
     "elysia-rate-limit": "^4.1.0",
     "kysely": "^0.26.3",
-    "magic-regexp": "^0.7.0",
     "nanoid": "^5.0.1",
     "pg": "^8.11.3",
     "ua-parser-js": "^1.0.37",
