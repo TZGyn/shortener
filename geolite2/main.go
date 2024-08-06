@@ -37,25 +37,29 @@ func main() {
 		return c.SendString("Hello, World!")
 	})
 
+	app.Get("/me", func(c *fiber.Ctx) error {
+		ip := c.IPs()[0]
+
+		record, err := getCity(ip)
+		if err != nil {
+			c.JSON(fiber.Map{
+				"success": false,
+				"message": err.Error(),
+			})
+		}
+
+		return c.JSON(record)
+	})
+
 	app.Get("/:ip", func(c *fiber.Ctx) error {
 		queryIp := c.Params("ip")
 
-		db, err := geoip2.Open("./data/GeoLite2-City.mmdb")
+		record, err := getCity(queryIp)
 		if err != nil {
-			log.Fatal(err)
-		}
-		defer db.Close()
-
-		// If you are using strings that may be invalid, check that ip is not nil
-		ip := net.ParseIP(queryIp)
-		if ip == nil {
-			return c.JSON(fiber.Map{
-				"success": false, "message": "Please provide a valid ip",
+			c.JSON(fiber.Map{
+				"success": false,
+				"message": err.Error(),
 			})
-		}
-		record, err := db.City(ip)
-		if err != nil {
-			log.Fatal(err)
 		}
 
 		return c.JSON(record)
@@ -89,6 +93,26 @@ func main() {
 	fmt.Println("Running cleanup tasks...")
 	fmt.Println("Stopping cronjobs...")
 	c.Stop()
+}
+
+func getCity(queryIp string) (*geoip2.City, error) {
+	db, err := geoip2.Open("./data/GeoLite2-City.mmdb")
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	// If you are using strings that may be invalid, check that ip is not nil
+	ip := net.ParseIP(queryIp)
+	if ip == nil {
+		return nil, errors.New("invalid ip")
+	}
+
+	record, err := db.City(ip)
+	if err != nil {
+		return nil, errors.New("no data")
+	}
+	return record, nil
 }
 
 func downloadAndExtractDB() error {
