@@ -6,7 +6,13 @@
 	import type { ApexOptions } from 'apexcharts'
 	import { mode } from 'mode-watcher'
 	import { onMount } from 'svelte'
-	import { Smartphone, Tablet, TabletSmartphone } from 'lucide-svelte'
+	import {
+		Smartphone,
+		Tablet,
+		TabletSmartphone,
+		GlobeIcon,
+	} from 'lucide-svelte'
+	import { Progress } from '$lib/components/ui/progress'
 
 	export let data: PageData
 
@@ -98,7 +104,7 @@
 	})
 </script>
 
-<div class="flex justify-between items-center p-4 min-h-[80px]">
+<div class="flex min-h-[80px] items-center justify-between p-4">
 	<div class="text-2xl font-bold">{data.shortener.link}</div>
 </div>
 <Separator />
@@ -108,8 +114,9 @@
 	<Card.Root>
 		<Card.Header>
 			<Card.Title>Clicks</Card.Title>
-			<Card.Description
-				>Number of visit(s) over this year</Card.Description>
+			<Card.Description>
+				Number of visit(s) over this year
+			</Card.Description>
 		</Card.Header>
 		<Card.Content>
 			<div bind:this={container}></div>
@@ -119,11 +126,12 @@
 	<Card.Root class="min-h-[500px]">
 		<Tabs.Root value="country">
 			<Card.Header
-				class="flex flex-row justify-between items-center space-y-0 w-full">
+				class="flex w-full flex-row items-center justify-between space-y-0">
 				<div>
 					<Card.Title>Visitors</Card.Title>
-					<Card.Description
-						>Visitors by Country/City</Card.Description>
+					<Card.Description>
+						Visitors by Country/City
+					</Card.Description>
 				</div>
 				<Tabs.List>
 					<Tabs.Trigger value="country">Country</Tabs.Trigger>
@@ -133,27 +141,39 @@
 			<Card.Content>
 				<Tabs.Content value="country">
 					{#each data.visitorByCountry as visitorByCountry}
-						<div class="flex justify-between items-center">
-							<div class="flex gap-4 items-center">
-								<img
-									src={`https://flagsapi.com/${visitorByCountry.code}/flat/64.png`}
-									alt="" />
-								<div>{visitorByCountry.country}</div>
+						<div class="flex flex-col gap-2">
+							<div class="flex items-center justify-between">
+								<div class="flex items-center gap-4">
+									<img
+										src={`https://flagsapi.com/${visitorByCountry.code}/flat/64.png`}
+										alt="" />
+									<div>{visitorByCountry.country}</div>
+								</div>
+								<div>{visitorByCountry.count}</div>
 							</div>
-							<div>{visitorByCountry.count}</div>
+							<Progress
+								value={visitorByCountry.count}
+								max={data.visitorAllTime[0].count}
+								class={'h-2'} />
 						</div>
 					{/each}
 				</Tabs.Content>
 				<Tabs.Content value="city">
 					{#each data.visitorByCity as visitorByCity}
-						<div class="flex justify-between items-center">
-							<div class="flex gap-4 items-center">
-								<img
-									src={`https://flagsapi.com/${visitorByCity.code}/flat/64.png`}
-									alt="" />
-								<div>{visitorByCity.city}</div>
+						<div class="flex flex-col gap-2">
+							<div class="flex items-center justify-between">
+								<div class="flex items-center gap-4">
+									<img
+										src={`https://flagsapi.com/${visitorByCity.code}/flat/64.png`}
+										alt="" />
+									<div>{visitorByCity.city}</div>
+								</div>
+								<div>{visitorByCity.count}</div>
 							</div>
-							<div>{visitorByCity.count}</div>
+							<Progress
+								value={visitorByCity.count}
+								max={data.visitorAllTime[0].count}
+								class={'h-2'} />
 						</div>
 					{/each}
 				</Tabs.Content>
@@ -163,31 +183,34 @@
 	<Card.Root class="min-h-[500px]">
 		<Tabs.Root value="vendor">
 			<Card.Header
-				class="flex flex-row justify-between items-center space-y-0 w-full">
+				class="flex w-full flex-row items-center justify-between space-y-0">
 				<div>
 					<Card.Title>Devices</Card.Title>
-					<Card.Description>Devices by Country/City</Card.Description>
+					<Card.Description>Visitors by Device</Card.Description>
 				</div>
 				<Tabs.List>
 					<Tabs.Trigger value="vendor">Vendor</Tabs.Trigger>
 					<Tabs.Trigger value="type">Type</Tabs.Trigger>
-					<Tabs.Trigger value="os">OS</Tabs.Trigger>
-					<Tabs.Trigger value="browser">Browser</Tabs.Trigger>
 				</Tabs.List>
 			</Card.Header>
 			<Card.Content>
 				<Tabs.Content value="vendor">
 					<div class="flex flex-col gap-6">
 						{#each data.visitorByDeviceVendor as visitorByDeviceVendor}
-							<div class="flex justify-between items-center">
-								<div class="flex gap-4 items-center">
-									<TabletSmartphone />
-									<div>
-										{visitorByDeviceVendor.vendor ??
-											'Undefined Vendor'}
+							<div class="flex flex-col gap-2">
+								<div class="flex items-center justify-between">
+									<div class="flex items-center gap-4">
+										<TabletSmartphone />
+										<div>
+											{visitorByDeviceVendor.vendor ?? '(None)'}
+										</div>
 									</div>
+									<div>{visitorByDeviceVendor.count}</div>
 								</div>
-								<div>{visitorByDeviceVendor.count}</div>
+								<Progress
+									value={visitorByDeviceVendor.count}
+									max={data.visitorAllTime[0].count}
+									class={'h-2'} />
 							</div>
 						{/each}
 					</div>
@@ -195,34 +218,62 @@
 				<Tabs.Content value="type">
 					<div class="flex flex-col gap-6">
 						{#each data.visitorByDeviceType as visitorByDeviceType}
-							<div class="flex justify-between items-center">
-								<div class="flex gap-4 items-center">
-									{#if visitorByDeviceType.type === 'mobile'}
-										<Smartphone />
-									{:else if visitorByDeviceType.type === 'tablet'}
-										<Tablet />
-									{:else}
-										<TabletSmartphone />
-									{/if}
-									<div>
-										{visitorByDeviceType.type ??
-											'Undefined Device Type'}
+							<div class="flex flex-col gap-2">
+								<div class="flex items-center justify-between">
+									<div class="flex items-center gap-4">
+										{#if visitorByDeviceType.type === 'mobile'}
+											<Smartphone />
+										{:else if visitorByDeviceType.type === 'tablet'}
+											<Tablet />
+										{:else}
+											<TabletSmartphone />
+										{/if}
+										<div>
+											{visitorByDeviceType.type ?? '(None)'}
+										</div>
 									</div>
+									<div>{visitorByDeviceType.count}</div>
 								</div>
-								<div>{visitorByDeviceType.count}</div>
+								<Progress
+									value={visitorByDeviceType.count}
+									max={data.visitorAllTime[0].count}
+									class={'h-2'} />
 							</div>
 						{/each}
 					</div>
 				</Tabs.Content>
+			</Card.Content>
+		</Tabs.Root>
+	</Card.Root>
+	<Card.Root class="min-h-[500px]">
+		<Tabs.Root value="os">
+			<Card.Header
+				class="flex w-full flex-row items-center justify-between space-y-0">
+				<div>
+					<Card.Title>Browsers</Card.Title>
+					<Card.Description>Visitors by Browser</Card.Description>
+				</div>
+				<Tabs.List>
+					<Tabs.Trigger value="os">OS</Tabs.Trigger>
+					<Tabs.Trigger value="browser">Browser</Tabs.Trigger>
+				</Tabs.List>
+			</Card.Header>
+			<Card.Content>
 				<Tabs.Content value="os">
 					<div class="flex flex-col gap-6">
 						{#each data.visitorByOS as visitorByOS}
-							<div class="flex justify-between items-center">
-								<div class="flex gap-4 items-center">
-									<TabletSmartphone />
-									<div>{visitorByOS.os ?? 'Undefined OS'}</div>
+							<div class="flex flex-col gap-2">
+								<div class="flex items-center justify-between">
+									<div class="flex items-center gap-4">
+										<TabletSmartphone />
+										<div>{visitorByOS.os ?? '(None)'}</div>
+									</div>
+									<div>{visitorByOS.count}</div>
 								</div>
-								<div>{visitorByOS.count}</div>
+								<Progress
+									value={visitorByOS.count}
+									max={data.visitorAllTime[0].count}
+									class={'h-2'} />
 							</div>
 						{/each}
 					</div>
@@ -230,14 +281,20 @@
 				<Tabs.Content value="browser">
 					<div class="flex flex-col gap-6">
 						{#each data.visitorByBrowser as visitorByBrowser}
-							<div class="flex justify-between items-center">
-								<div class="flex gap-4 items-center">
-									<TabletSmartphone />
-									<div>
-										{visitorByBrowser.browser ?? 'Undefined Browser'}
+							<div class="flex flex-col gap-2">
+								<div class="flex items-center justify-between">
+									<div class="flex items-center gap-4">
+										<GlobeIcon />
+										<div>
+											{visitorByBrowser.browser ?? '(None)'}
+										</div>
 									</div>
+									<div>{visitorByBrowser.count}</div>
 								</div>
-								<div>{visitorByBrowser.count}</div>
+								<Progress
+									value={visitorByBrowser.count}
+									max={data.visitorAllTime[0].count}
+									class={'h-2'} />
 							</div>
 						{/each}
 					</div>

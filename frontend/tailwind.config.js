@@ -45,6 +45,10 @@ const config = {
 					foreground:
 						'hsl(var(--warning-foreground) / <alpha-value>)',
 				},
+				brand: {
+					DEFAULT: 'hsl(var(--brand) / <alpha-value>)',
+					foreground: 'hsl(var(--brand-foreground) / <alpha-value>)',
+				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted) / <alpha-value>)',
 					foreground: 'hsl(var(--muted-foreground) / <alpha-value>)',

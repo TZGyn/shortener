@@ -1,7 +1,7 @@
 import { db } from '$lib/db'
 import { redirect } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
-import { and, eq, sql } from 'drizzle-orm'
+import { and, count, desc, eq, sql } from 'drizzle-orm'
 import { visitor as visitorSchema } from '$lib/db/schema'
 
 export const load = (async (event) => {
@@ -41,6 +41,11 @@ export const load = (async (event) => {
 		)
 		.groupBy(sql`to_char(${visitorSchema.createdAt}, 'MM')`)
 
+	const visitorAllTime = await db
+		.select({ count: count() })
+		.from(visitorSchema)
+		.where(eq(visitorSchema.shortenerId, shortener.id))
+
 	const visitorByCountry = await db
 		.select({
 			count: sql<number>`cast(count(*) as int)`,
@@ -50,6 +55,7 @@ export const load = (async (event) => {
 		.from(visitorSchema)
 		.where(eq(visitorSchema.shortenerId, shortener.id))
 		.groupBy(visitorSchema.country, visitorSchema.countryCode)
+		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
 	const visitorByCity = await db
 		.select({
@@ -65,6 +71,7 @@ export const load = (async (event) => {
 			visitorSchema.countryCode,
 			visitorSchema.city,
 		)
+		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
 	const visitorByOS = await db
 		.select({
@@ -74,6 +81,7 @@ export const load = (async (event) => {
 		.from(visitorSchema)
 		.where(eq(visitorSchema.shortenerId, shortener.id))
 		.groupBy(visitorSchema.os)
+		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
 	const visitorByBrowser = await db
 		.select({
@@ -83,6 +91,7 @@ export const load = (async (event) => {
 		.from(visitorSchema)
 		.where(eq(visitorSchema.shortenerId, shortener.id))
 		.groupBy(visitorSchema.browser)
+		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
 	const visitorByDeviceVendor = await db
 		.select({
@@ -92,6 +101,7 @@ export const load = (async (event) => {
 		.from(visitorSchema)
 		.where(eq(visitorSchema.shortenerId, shortener.id))
 		.groupBy(visitorSchema.deviceVendor)
+		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
 	const visitorByDeviceType = await db
 		.select({
@@ -101,12 +111,14 @@ export const load = (async (event) => {
 		.from(visitorSchema)
 		.where(eq(visitorSchema.shortenerId, shortener.id))
 		.groupBy(visitorSchema.deviceType)
+		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
 	const page_title = 'Shortener | ' + shortener.link
 
 	return {
 		shortener,
 		visitor,
+		visitorAllTime,
 		visitorByCountry,
 		visitorByCity,
 		visitorByOS,
