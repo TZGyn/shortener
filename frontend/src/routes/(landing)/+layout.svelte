@@ -13,20 +13,28 @@
 </script>
 
 <div class="flex h-screen w-screen flex-col items-center">
-	<header class="flex w-full max-w-6xl justify-between px-8 py-4">
-		<div class="flex items-center gap-4">
+	<header class="grid w-full max-w-6xl grid-cols-3 px-8 py-4">
+		<div class="flex items-center justify-start gap-4">
 			<img src="/logo.png" alt="" class="h-8" />
 			<div>kon.sh</div>
 		</div>
-		<div class="flex items-center gap-8">
-			<a href="#features" on:click|preventDefault={scrollIntoView}>
+		<div class="grid grid-cols-4 items-center">
+			<div></div>
+			<a
+				href="#features"
+				on:click|preventDefault={scrollIntoView}
+				class="text-center">
 				Features
 			</a>
-			<a href="#pricing" on:click|preventDefault={scrollIntoView}>
+			<a
+				href="#pricing"
+				on:click|preventDefault={scrollIntoView}
+				class="text-center">
 				Pricing
 			</a>
+			<div></div>
 		</div>
-		<div class="flex items-center gap-4">
+		<div class="flex items-center justify-end gap-4">
 			<a
 				href="/login"
 				class="text-primary/80 hover:text-primary transition-all">
@@ -34,7 +42,7 @@
 			</a>
 			<Button
 				href="/signup"
-				class="w-fit bg-orange-400 hover:bg-orange-300">
+				class="bg-brand hover:bg-brand-hover w-fit">
 				Get Started
 			</Button>
 			<ThemeToggle />

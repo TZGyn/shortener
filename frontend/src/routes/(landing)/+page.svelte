@@ -14,7 +14,7 @@
 	<div class="flex w-full max-w-6xl flex-col gap-12 p-4">
 		<div class="flex flex-col items-center gap-10 text-center">
 			<h1
-				class="bg-gradient-to-r from-orange-300 to-orange-400 bg-clip-text text-6xl font-bold text-transparent">
+				class="from-brand-hover to-brand bg-gradient-to-r bg-clip-text text-6xl font-bold text-transparent">
 				Kon.sh
 			</h1>
 			<p class="max-w-sm text-center text-xl font-semibold">
@@ -22,7 +22,7 @@
 			</p>
 			<Button
 				href="/signup"
-				class="w-fit bg-orange-400 hover:bg-orange-300">
+				class="bg-brand hover:bg-brand-hover w-fit">
 				Get Started
 			</Button>
 		</div>
@@ -46,7 +46,7 @@
 					<div class="flex gap-8 rounded-lg p-8">
 						<div class="flex w-full flex-col gap-4 text-start">
 							<div class="flex flex-col items-center justify-center">
-								<QrCodeIcon size={128} class="text-orange-400" />
+								<QrCodeIcon size={128} class="text-brand" />
 								<h2 class="text-xl font-semibold">Custom QR Codes</h2>
 							</div>
 						</div>
@@ -54,7 +54,7 @@
 					<div class="flex gap-8 rounded-lg p-8">
 						<div class="flex w-full flex-col gap-4 text-start">
 							<div class="flex flex-col items-center justify-center">
-								<ChartAreaIcon size={128} class="text-orange-400" />
+								<ChartAreaIcon size={128} class="text-brand" />
 								<h2 class="text-xl font-semibold">Analytics</h2>
 							</div>
 						</div>
@@ -62,9 +62,7 @@
 					<div class="flex gap-8 rounded-lg p-8">
 						<div class="flex w-full flex-col gap-4 text-start">
 							<div class="flex flex-col items-center justify-center">
-								<ExternalLinkIcon
-									size={128}
-									class="text-orange-400" />
+								<ExternalLinkIcon size={128} class="text-brand" />
 								<h2 class="font-semibol text-xl">Custom Domains</h2>
 							</div>
 						</div>
@@ -85,15 +83,15 @@
 							<Separator />
 							<div class="flex flex-col gap-4">
 								<div class="flex items-center gap-2">
-									<Check class="text-orange-400" />
+									<Check class="text-brand" />
 									<p>Unlimited Links</p>
 								</div>
 								<div class="flex items-center gap-2">
-									<Check class="text-orange-400" />
+									<Check class="text-brand" />
 									<p>Unlimited Projects</p>
 								</div>
 								<div class="flex items-center gap-2">
-									<XIcon class="text-orange-400" />
+									<XIcon class="text-brand" />
 									<p>Will be limited in future</p>
 								</div>
 							</div>
@@ -116,15 +114,15 @@
 							<Separator />
 							<div class="flex flex-col gap-4">
 								<div class="flex items-center gap-2">
-									<Check class="text-orange-400" />
+									<Check class="text-brand" />
 									<p>Unlimited Links</p>
 								</div>
 								<div class="flex items-center gap-2">
-									<Check class="text-orange-400" />
+									<Check class="text-brand" />
 									<p>Unlimited Projects</p>
 								</div>
 								<div class="flex items-center gap-2">
-									<Check class="text-orange-400" />
+									<Check class="text-brand" />
 									<p>Basically No Limits</p>
 								</div>
 							</div>

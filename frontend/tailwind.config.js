@@ -47,6 +47,7 @@ const config = {
 				},
 				brand: {
 					DEFAULT: 'hsl(var(--brand) / <alpha-value>)',
+					hover: 'hsl(var(--brand-hover) / <alpha-value>)',
 					foreground: 'hsl(var(--brand-foreground) / <alpha-value>)',
 				},
 				muted: {
