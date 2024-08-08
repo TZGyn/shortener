@@ -109,9 +109,13 @@ declare global {
 			}
 		}
 	}
+	// prototype functions are declared in ./lib/utils
 	interface String {
 		removeUnderscores(): string
 		capitalize(): string
+	}
+	interface Number {
+		toDecimalPoint(decimal: number): Number
 	}
 }
 

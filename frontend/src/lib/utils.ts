@@ -70,6 +70,7 @@ export const flyAndScale = (
 	}
 }
 
+// type declaration are in ../app.d.ts
 // this works because its imported in the root layout by other components
 String.prototype.removeUnderscores = function () {
 	return this.replace(/_/g, ' ')
@@ -77,4 +78,12 @@ String.prototype.removeUnderscores = function () {
 
 String.prototype.capitalize = function () {
 	return this.charAt(0).toUpperCase() + this.slice(1)
+}
+
+Number.prototype.toDecimalPoint = function (decimal: number) {
+	const decimalInInt = Math.round(decimal)
+
+	const value = 10 ** decimalInInt
+
+	return Math.round(this.valueOf() * value) / value
 }
