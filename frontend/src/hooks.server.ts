@@ -6,7 +6,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	const pathname = event.url.pathname
 
-	if (pathname.startsWith('/dashboard')) {
+	const protected_api = ['/api/logout']
+
+	if (
+		pathname.startsWith('/dashboard') ||
+		protected_api.includes(pathname)
+	) {
 		if (!sessionId) {
 			redirect(303, '/login')
 		}
