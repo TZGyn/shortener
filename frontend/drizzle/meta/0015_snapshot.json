@@ -1,6 +1,6 @@
 {
-  "id": "d7529c2b-4e26-43b1-814f-650440ec1ae5",
-  "prevId": "ea1b39a9-fb8a-4196-9698-1d26d5177e65",
+  "id": "ac377af2-68ea-4c36-a69c-4cc57a04a523",
+  "prevId": "d7529c2b-4e26-43b1-814f-650440ec1ae5",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -256,10 +256,10 @@
       "uniqueConstraints": {
         "shortener_code_unique": {
           "name": "shortener_code_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "code"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       }
     },
@@ -319,10 +319,10 @@
       "uniqueConstraints": {
         "user_email_unique": {
           "name": "user_email_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "email"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       }
     },
@@ -371,25 +371,29 @@
           "name": "device_type",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         },
         "device_vendor": {
           "name": "device_vendor",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         },
         "os": {
           "name": "os",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         },
         "browser": {
           "name": "browser",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         }
       },
       "indexes": {},
