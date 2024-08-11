@@ -56,13 +56,6 @@ bun install
 bun run src/index.ts
 ```
 
-### Geolite2 Server
-
-```bash
-go build main.go
-ACCOUNT_ID={} LICENSE_KEY={} ./main
-```
-
 ## Breaking Changes (For builds before this date)
 
 ### 23 July 2024
