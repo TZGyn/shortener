@@ -1,17 +1,22 @@
-FROM oven/bun
+ARG GO_VERSION=1
+FROM golang:${GO_VERSION}-bookworm as builder
+
+WORKDIR /usr/src/app
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+COPY . .
+RUN go build -v -o /run-app .
+
+
+FROM debian:bookworm
+
+RUN apt update
+RUN apt install -y ca-certificates
 
 WORKDIR /app
 
-COPY package.json .
-COPY bun.lockb .
+COPY public ./public
+COPY regexes.yaml .
+COPY --from=builder /run-app .
 
-RUN bun install --production
-
-COPY public public
-COPY src src
-COPY tsconfig.json .
-
-ENV NODE_ENV production
-CMD ["bun", "src/index.ts"]
-
-EXPOSE 3000
+CMD ["./run-app"]

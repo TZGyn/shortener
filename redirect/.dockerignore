@@ -1,10 +1,6 @@
-node_modules
-npm-debug.log
-Dockerfile*
-docker-compose*
-.dockerignore
-.git
-.gitignore
-README.md
-LICENSE
-.vscode
+# flyctl launch added from .gitignore
+data/*
+!data/README.txt
+dist/*
+!dist/README.txt
+fly.toml
