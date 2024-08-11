@@ -73,10 +73,14 @@ export const visitor = pgTable('visitor', {
 	}).notNull(),
 	country: varchar('country', { length: 255 }).notNull(),
 	city: varchar('city', { length: 255 }).notNull(),
-	deviceType: varchar('device_type', { length: 255 }),
-	deviceVendor: varchar('device_vendor', { length: 255 }),
-	os: varchar('os', { length: 255 }),
-	browser: varchar('browser', { length: 255 }),
+	deviceType: varchar('device_type', { length: 255 })
+		.notNull()
+		.default(''),
+	deviceVendor: varchar('device_vendor', { length: 255 })
+		.notNull()
+		.default(''),
+	os: varchar('os', { length: 255 }).notNull().default(''),
+	browser: varchar('browser', { length: 255 }).notNull().default(''),
 })
 
 export const session = pgTable('session', {

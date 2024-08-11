@@ -1,7 +1,5 @@
 {
-  "id": "ea1b39a9-fb8a-4196-9698-1d26d5177e65",
-  "prevId": "a4ffb6fc-ede8-431d-bd69-2429fbdc3ebd",
-  "version": "6",
+  "version": "7",
   "dialect": "postgresql",
   "tables": {
     "public.email_verification_token": {
@@ -256,10 +254,10 @@
       "uniqueConstraints": {
         "shortener_code_unique": {
           "name": "shortener_code_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "code"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
@@ -319,10 +317,10 @@
       "uniqueConstraints": {
         "user_email_unique": {
           "name": "user_email_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "email"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
@@ -401,8 +399,10 @@
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "ea1b39a9-fb8a-4196-9698-1d26d5177e65",
+  "prevId": "a4ffb6fc-ede8-431d-bd69-2429fbdc3ebd"
 }

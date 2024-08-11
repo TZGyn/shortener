@@ -1,7 +1,5 @@
 {
-  "id": "f5e2ea5c-7287-40ae-928a-3914f03045b5",
-  "prevId": "a6bbb8da-a08f-46a0-8536-427293c7940c",
-  "version": "6",
+  "version": "7",
   "dialect": "postgresql",
   "tables": {
     "public.project": {
@@ -196,10 +194,10 @@
       "uniqueConstraints": {
         "shortener_code_unique": {
           "name": "shortener_code_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "code"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
@@ -252,10 +250,10 @@
       "uniqueConstraints": {
         "user_email_unique": {
           "name": "user_email_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "email"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
@@ -334,8 +332,10 @@
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "f5e2ea5c-7287-40ae-928a-3914f03045b5",
+  "prevId": "a6bbb8da-a08f-46a0-8536-427293c7940c"
 }
