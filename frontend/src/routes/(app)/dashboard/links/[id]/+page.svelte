@@ -302,7 +302,7 @@
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-4">
 									<TabletSmartphone />
-									<div>{visitorByOS.os ?? '(None)'}</div>
+									<div>{visitorByOS.os || '(None)'}</div>
 								</div>
 								<div>
 									{visitorByOS.count}
@@ -330,7 +330,7 @@
 								<div class="flex items-center gap-4">
 									<GlobeIcon />
 									<div>
-										{visitorByBrowser.browser ?? '(None)'}
+										{visitorByBrowser.browser || '(None)'}
 									</div>
 								</div>
 								<div>

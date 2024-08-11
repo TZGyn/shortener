@@ -127,7 +127,7 @@ func main() {
 		} else {
 			shortener, err := queries.GetShortenerWithDomain(ctx, db.GetShortenerWithDomainParams{
 				Code:         code,
-				CustomDomain: pgtype.Text{String: domain},
+				CustomDomain: pgtype.Text{String: domain, Valid: true},
 			})
 			shortenerId = shortener.ID
 			if err != nil {
