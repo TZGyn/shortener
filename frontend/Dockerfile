@@ -12,7 +12,7 @@ RUN bun install
 
 ARG DATABASE_URL
 
-RUN bun run db:migrate
+RUN DATABASE_URL=$DATABASE_URL bun run db:migrate
 
 RUN bun run build
 

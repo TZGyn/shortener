@@ -18,6 +18,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const { session, user } = await lucia.validateSession(sessionId)
 
 		if (!user) {
+			event.locals.session = null
 			redirect(303, '/login')
 		}
 
