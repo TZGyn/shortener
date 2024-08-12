@@ -48,6 +48,8 @@ export const actions: Actions = {
 			secure: env.APP_ENV === 'prod',
 		})
 
+		await lucia.deleteExpiredSessions()
+
 		return {
 			form,
 		}
