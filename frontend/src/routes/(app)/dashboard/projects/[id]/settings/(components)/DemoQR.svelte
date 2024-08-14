@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte'
-	import QRCode from 'qrcode'
+	import QRCodeStyling from 'qr-code-styling'
 	import { browser } from '$app/environment'
 
 	export let background = '#fff'
@@ -15,15 +15,28 @@
 		}
 
 		try {
-			image = await QRCode.toDataURL(value, {
-				errorCorrectionLevel: 'L',
-				margin: 1,
-				scale: 20,
-				color: {
-					light: background,
-					dark: color,
+			const qrcodestyling = new QRCodeStyling({
+				data: value,
+				width: 300,
+				height: 300,
+				margin: 10,
+				qrOptions: {
+					errorCorrectionLevel: 'L',
+					typeNumber: 0,
+				},
+				backgroundOptions: {
+					color: background,
+				},
+				dotsOptions: {
+					color: color,
+				},
+				cornersSquareOptions: {
+					type: 'square',
 				},
 			})
+			const blob = await qrcodestyling.getRawData()
+			if (!blob) return
+			image = URL.createObjectURL(blob)
 		} catch (e) {
 			image = ''
 		}

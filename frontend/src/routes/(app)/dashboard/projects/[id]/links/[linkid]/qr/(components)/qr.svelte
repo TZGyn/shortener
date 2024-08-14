@@ -1,9 +1,9 @@
 <script lang="ts">
-	import QRCode from 'qrcode'
 	import { Button } from '$lib/components/ui/button'
 	import { toast } from 'svelte-sonner'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import { Badge } from '$lib/components/ui/badge'
+	import QRCodeStyling from 'qr-code-styling'
 
 	export let background = '#fff'
 	export let color = '#000'
@@ -34,23 +34,28 @@
 	}
 
 	async function generateQrCode() {
-		try {
-			image = await QRCode.toDataURL(value, {
+		const qrcodestyling = new QRCodeStyling({
+			data: value,
+			width: 300,
+			height: 300,
+			margin: 10,
+			qrOptions: {
 				errorCorrectionLevel: 'L',
-				margin: 1,
-				scale: 20,
-				color: {
-					light: background,
-					dark: color,
-				},
-			})
-		} catch (e) {
-			image = await QRCode.toDataURL(value, {
-				errorCorrectionLevel: 'L',
-				margin: 1,
-				scale: 20,
-			})
-		}
+				typeNumber: 0,
+			},
+			backgroundOptions: {
+				color: background,
+			},
+			dotsOptions: {
+				color: color,
+			},
+			cornersSquareOptions: {
+				type: 'square',
+			},
+		})
+		const blob = await qrcodestyling.getRawData()
+		if (!blob) return
+		image = URL.createObjectURL(blob)
 	}
 
 	$: {
@@ -60,25 +65,28 @@
 	}
 </script>
 
-<div class="flex flex-col gap-4 items-center h-full">
+<div class="flex h-full flex-col items-center gap-4">
 	<Badge variant="secondary">
 		{value}
 	</Badge>
 	<img src={image} alt={value} width={300} height={300} />
-	<div class="flex gap-4 w-full">
-		<Button class="w-full" on:click={copyImageToClipboard}
-			>Copy Image</Button>
+	<div class="flex w-full gap-4">
+		<Button class="w-full" on:click={copyImageToClipboard}>
+			Copy Image
+		</Button>
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger asChild let:builder>
 				<Button builders={[builder]} class="w-full">QR Link</Button>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content>
+				<DropdownMenu.Item href={`/url/${code}/qr`} target="_blank">
+					Standard
+				</DropdownMenu.Item>
 				<DropdownMenu.Item
-					href={`/api/shortener/${code}/qr`}
-					target="_blank">Standard</DropdownMenu.Item>
-				<DropdownMenu.Item
-					href={`/api/shortener/${code}/qr?color=true`}
-					target="_blank">With Color</DropdownMenu.Item>
+					href={`/url/${code}/qr?color=true`}
+					target="_blank">
+					With Color
+				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</div>

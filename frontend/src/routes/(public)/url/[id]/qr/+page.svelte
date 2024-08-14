@@ -1,14 +1,12 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button'
 	import { toast } from 'svelte-sonner'
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import { Badge } from '$lib/components/ui/badge'
 	import QRCodeStyling from 'qr-code-styling'
+	import { onMount } from 'svelte'
+	import * as Card from '$lib/components/ui/card'
 
-	export let background = '#fff'
-	export let color = '#000'
-	export let value = ''
-	export let code = ''
+	export let data
 
 	let image = ''
 
@@ -35,7 +33,7 @@
 
 	async function generateQrCode() {
 		const qrcodestyling = new QRCodeStyling({
-			data: value,
+			data: data.url + '/' + data.shortenerId,
 			width: 300,
 			height: 300,
 			margin: 10,
@@ -44,10 +42,10 @@
 				typeNumber: 0,
 			},
 			backgroundOptions: {
-				color: background,
+				color: data.colorSetting?.color.background || '#fff',
 			},
 			dotsOptions: {
-				color: color,
+				color: data.colorSetting?.color.foreground || '#000',
 			},
 			cornersSquareOptions: {
 				type: 'square',
@@ -58,36 +56,24 @@
 		image = URL.createObjectURL(blob)
 	}
 
-	$: {
-		if (value) {
-			generateQrCode()
-		}
-	}
+	onMount(() => {
+		generateQrCode()
+	})
 </script>
 
-<div class="flex h-full flex-col items-center gap-4">
-	<Badge variant="secondary">
-		{value}
-	</Badge>
-	<img src={image} alt={value} width={300} height={300} />
-	<div class="flex w-full gap-4">
+<Card.Root
+	class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+	<Card.Header class="flex-col items-center gap-4">
+		<Badge variant="secondary" class="w-fit">
+			{data.url + '/' + data.shortenerId}
+		</Badge>
+		<img
+			src={image}
+			alt={data.url + '/' + data.shortenerId}
+			width={300}
+			height={300} />
 		<Button class="w-full" on:click={copyImageToClipboard}>
 			Copy Image
 		</Button>
-		<DropdownMenu.Root>
-			<DropdownMenu.Trigger asChild let:builder>
-				<Button builders={[builder]} class="w-full">QR Link</Button>
-			</DropdownMenu.Trigger>
-			<DropdownMenu.Content>
-				<DropdownMenu.Item href={`/url/${code}/qr`} target="_blank">
-					Standard
-				</DropdownMenu.Item>
-				<DropdownMenu.Item
-					href={`/url/${code}/qr?color=true`}
-					target="_blank">
-					With Color
-				</DropdownMenu.Item>
-			</DropdownMenu.Content>
-		</DropdownMenu.Root>
-	</div>
-</div>
+	</Card.Header>
+</Card.Root>

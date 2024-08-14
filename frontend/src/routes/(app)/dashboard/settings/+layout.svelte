@@ -10,12 +10,14 @@
 		<p class="text-muted-foreground">Manage your account settings.</p>
 	</div>
 	<Separator class="my-4 lg:my-6" />
-	<div class="flex h-auto flex-col overflow-hidden lg:flex-row">
+	<div
+		class="flex h-auto w-full flex-col justify-center overflow-hidden lg:flex-row">
 		<aside
 			class="flex-grow border-b pb-4 lg:max-w-[200px] lg:border-none">
 			<SidebarNav />
 		</aside>
-		<div class="m-0 flex h-auto flex-grow overflow-hidden p-0">
+		<div
+			class="m-0 flex h-auto max-w-[600px] flex-grow overflow-hidden p-0">
 			<ScrollArea class="mt-0 w-full">
 				<div class="w-full max-w-xl py-6 lg:px-8 lg:py-0">
 					<slot />
