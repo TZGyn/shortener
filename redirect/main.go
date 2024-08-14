@@ -13,8 +13,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"github.com/mileusna/useragent"
 	"github.com/oschwald/geoip2-golang"
@@ -65,10 +65,11 @@ func main() {
 		log.Fatal("DATABASE_URL not found")
 	}
 
-	conn, err := pgx.Connect(ctx, dbUrl)
+	conn, err := pgxpool.New(ctx, dbUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer conn.Close()
 
 	queries := db.New(conn)
 
@@ -212,5 +213,5 @@ func main() {
 	fmt.Println("Stopping cronjobs...")
 	cron.Stop()
 	geodb.Close()
-	conn.Close(ctx)
+	conn.Close()
 }
