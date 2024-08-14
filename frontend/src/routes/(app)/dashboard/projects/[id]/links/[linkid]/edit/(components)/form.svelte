@@ -84,7 +84,7 @@
 	method="POST"
 	use:enhance
 	class="flex flex-col gap-6"
-	action={`/projects/${uuid}/links/${code}/edit`}>
+	action={`/dashboard/projects/${uuid}/links/${code}/edit`}>
 	<Form.Field {form} name="link" class="flex flex-col gap-2">
 		<Form.Control let:attrs>
 			<Form.Label>Link</Form.Label>
@@ -116,8 +116,9 @@
 					bind:value={$formData.custom_code}
 					placeholder="abcde" />
 			</Form.Control>
-			<Form.Description
-				>Custom Code For The Shortener</Form.Description>
+			<Form.Description>
+				Custom Code For The Shortener
+			</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
 	{/if}
