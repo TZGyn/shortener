@@ -19,7 +19,9 @@
 		resetForm: true,
 		onResult: ({ result }) => {
 			if (result.status === 200) {
-				toast.success('Signup success')
+				toast.success(
+					'Welcome to kon.sh, a verification email has been sent to your mailbox',
+				)
 			}
 		},
 		onError: ({ result }) => {
