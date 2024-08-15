@@ -5,14 +5,15 @@ export const formSchema = z.object({
 	project: z.string().optional(),
 	active: z.boolean(),
 	ios: z.boolean(),
-	ios_link: z.string().url().optional().nullable().or(z.literal('')),
+	ios_link: z
+		.union([z.literal(''), z.string().url()])
+		.optional()
+		.nullable(),
 	android: z.boolean(),
 	android_link: z
-		.string()
-		.url()
+		.union([z.literal(''), z.string().url()])
 		.optional()
-		.nullable()
-		.or(z.literal('')),
+		.nullable(),
 	custom_code_enable: z.boolean(),
 	custom_code: z.string(),
 })
