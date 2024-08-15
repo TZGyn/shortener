@@ -105,56 +105,82 @@ func main() {
 		code := c.Params("code")
 		domain := c.Hostname()
 
-		uastring := c.GetReqHeaders()["User-Agent"][0]
-		ua := useragent.Parse(uastring)
-		client := parser.Parse(uastring)
+		uastrings := c.GetReqHeaders()["User-Agent"]
 
 		redirecturl := ""
 		var shortenerId int32
+		iosEnabled := false
+		iosRedirectUrl := ""
+		androidEnabled := false
+		androidRedirectUrl := ""
 
 		if domain == appurl {
 			shortener, err := queries.GetShortener(ctx, code)
-			shortenerId = shortener.ID
 			if err != nil {
 				return c.Redirect(fallbackurl)
 			}
-			if ua.OS == "iOS" && shortener.Ios && len(shortener.IosLink.String) != 0 {
-				redirecturl = shortener.IosLink.String
-			} else if ua.OS == "Android" && shortener.Android && len(shortener.AndroidLink.String) != 0 {
-				redirecturl = shortener.AndroidLink.String
-			} else {
-				redirecturl = shortener.Link
-			}
+			shortenerId = shortener.ID
+
+			iosEnabled = shortener.Ios
+			iosRedirectUrl = shortener.IosLink.String
+
+			androidEnabled = shortener.Android
+			androidRedirectUrl = shortener.AndroidLink.String
+
+			redirecturl = shortener.Link
 		} else {
 			shortener, err := queries.GetShortenerWithDomain(ctx, db.GetShortenerWithDomainParams{
 				Code:         code,
 				CustomDomain: pgtype.Text{String: domain, Valid: true},
 			})
-			shortenerId = shortener.ID
 			if err != nil {
 				return c.Redirect(fallbackurl)
 			}
-			if ua.OS == "iOS" && shortener.Ios && len(shortener.IosLink.String) != 0 {
-				redirecturl = shortener.IosLink.String
-			} else if ua.OS == "Android" && shortener.Android && len(shortener.AndroidLink.String) != 0 {
-				redirecturl = shortener.AndroidLink.String
-			} else {
-				redirecturl = shortener.Link
-			}
+			shortenerId = shortener.ID
+
+			iosEnabled = shortener.Ios
+			iosRedirectUrl = shortener.IosLink.String
+
+			androidEnabled = shortener.Android
+			androidRedirectUrl = shortener.AndroidLink.String
+
+			redirecturl = shortener.Link
 		}
 
-		ip := c.IPs()[0]
+		if len(uastrings) == 0 {
+			return c.Redirect(redirecturl)
+		}
+
+		uastring := uastrings[0]
+
+		ua := useragent.Parse(uastring)
+		client := parser.Parse(uastring)
+
+		finalRedirectUrl := redirecturl
+		if ua.OS == "iOS" && iosEnabled && len(iosRedirectUrl) != 0 {
+			finalRedirectUrl = iosRedirectUrl
+		} else if ua.OS == "Android" && androidEnabled && len(androidRedirectUrl) != 0 {
+			finalRedirectUrl = androidRedirectUrl
+		}
+
+		ipList := c.IPs()
+
+		if len(ipList) == 0 {
+			return c.Redirect(finalRedirectUrl)
+		}
+
+		ip := ipList[0]
 
 		_, found := cache_client.Get(ip + "_" + string(shortenerId))
 		if found {
-			return c.Redirect(redirecturl)
+			return c.Redirect(finalRedirectUrl)
 		}
 
 		cache_client.Set(ip+"_"+string(shortenerId), true, cache.DefaultExpiration)
 
 		record, err := getCity(geodb, ip)
 		if err != nil {
-			return c.Redirect(redirecturl)
+			return c.Redirect(finalRedirectUrl)
 		}
 
 		devicetype := ""
@@ -178,10 +204,10 @@ func main() {
 		})
 
 		if err != nil {
-			return c.Redirect(redirecturl)
+			return c.Redirect(finalRedirectUrl)
 		}
 
-		return c.Redirect(redirecturl)
+		return c.Redirect(finalRedirectUrl)
 	})
 
 	cron := cron.New()
