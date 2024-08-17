@@ -48,9 +48,18 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const authPaths = ['/login', '/signup']
 
 	if (authPaths.includes(pathname)) {
-		if (sessionId) {
+		if (!sessionId) {
+			event.locals.session = null
+			const response = await resolve(event)
+
+			return response
+		}
+
+		const { session, user } = await lucia.validateSession(sessionId)
+		if (user) {
 			redirect(303, '/dashboard')
 		}
+
 		event.locals.session = null
 		const response = await resolve(event)
 
