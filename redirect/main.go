@@ -96,6 +96,7 @@ func main() {
 	if len(appurl) == 0 {
 		appurl = "kon.sh"
 	}
+	invalidUrl := fallbackurl + "/qr/invalid"
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.Redirect(fallbackurl)
@@ -117,7 +118,7 @@ func main() {
 		if domain == appurl {
 			shortener, err := queries.GetShortener(ctx, code)
 			if err != nil {
-				return c.Redirect(fallbackurl)
+				return c.Redirect(invalidUrl)
 			}
 			shortenerId = shortener.ID
 
@@ -134,7 +135,7 @@ func main() {
 				CustomDomain: pgtype.Text{String: domain, Valid: true},
 			})
 			if err != nil {
-				return c.Redirect(fallbackurl)
+				return c.Redirect(invalidUrl)
 			}
 			shortenerId = shortener.ID
 
