@@ -107,7 +107,6 @@ class FlyioAPI {
 		const response = await this.sendRequest(query, variables)
 		const data: any = await response.json()
 		if (!data.errors) {
-			console.log('Fly.io Delete Domain', data)
 			return {
 				success: true,
 			} as const

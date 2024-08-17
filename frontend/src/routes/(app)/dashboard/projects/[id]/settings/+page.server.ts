@@ -182,6 +182,8 @@ export const actions: Actions = {
 			.update(projectTable)
 			.set({
 				custom_domain: form.data.enableDomain,
+				custom_domain_id: customDomain.id,
+				custom_ip: customDomain.ip,
 				enable_custom_domain: true,
 			})
 			.where(
@@ -191,7 +193,7 @@ export const actions: Actions = {
 				),
 			)
 
-		return { form }
+		return setMessage(form, 'Custom Domain Enabled')
 	},
 	disable_custom_domain: async (event) => {
 		const userId = event.locals.user.id

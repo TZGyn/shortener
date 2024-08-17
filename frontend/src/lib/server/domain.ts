@@ -14,6 +14,7 @@ export const checkDomainAvailable = async (domain: string) => {
 
 export const createCustomDomain = async (domain: string) => {
 	if (env.PRIVATE_HOSTING_PROVIDER === 'railway') {
+		console.log('create custom domain (railway)')
 		const { railwayClient } = await import('./railway')
 
 		const response = await railwayClient.createCustomDomain(domain)
@@ -28,6 +29,7 @@ export const createCustomDomain = async (domain: string) => {
 			ip: response.domain.record,
 		} as const
 	} else if (env.PRIVATE_HOSTING_PROVIDER == 'fly.io') {
+		console.log('create custom domain (fly.io)')
 		const { flyioClient } = await import('./flyio')
 
 		const response = await flyioClient.createCustomDomain(domain)
@@ -51,6 +53,7 @@ export const deleteCustomDomain = async (domain: string | null) => {
 		return { success: true } as const
 	}
 	if (env.PRIVATE_HOSTING_PROVIDER === 'railway') {
+		console.log('delete custom domain (railway)')
 		const { railwayClient } = await import('./railway')
 
 		const response = await railwayClient.deleteCustomDomain(domain)
@@ -63,6 +66,7 @@ export const deleteCustomDomain = async (domain: string | null) => {
 			success: true,
 		} as const
 	} else if (env.PRIVATE_HOSTING_PROVIDER === 'fly.io') {
+		console.log('delete custom domain (fly.io)')
 		const { flyioClient } = await import('./flyio')
 
 		const response = await flyioClient.deleteCustomDomain(domain)
