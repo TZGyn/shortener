@@ -16,6 +16,7 @@
 		MoreVertical,
 		QrCode,
 		TrashIcon,
+		Loader2Icon,
 	} from 'lucide-svelte'
 	import DeleteShortenerDialog from './DeleteShortenerDialog.svelte'
 	import EditLinkPage from '$lib/../routes/(app)/dashboard/links/[id]/edit/+page.svelte'
@@ -62,7 +63,9 @@
 		}
 	}
 
+	let isLoadingQrModal = false
 	const showQRModal = async (e: MouseEvent) => {
+		isLoadingQrModal = true
 		const { href } = e.currentTarget as HTMLAnchorElement
 
 		if (innerWidth < 640) goto(href)
@@ -78,6 +81,7 @@
 		} else {
 			goto(href)
 		}
+		isLoadingQrModal = false
 	}
 
 	const hostDomain = 'https://' + shortener.link.split('/')[2]
@@ -167,7 +171,11 @@
 					)}
 					href={`${getUrl()}/links/${shortener.code}/qr`}
 					on:click|preventDefault={showQRModal}>
-					<QrCode size={20} />
+					{#if isLoadingQrModal}
+						<Loader2Icon size={20} class="animate-spin" />
+					{:else}
+						<QrCode size={20} />
+					{/if}
 				</a>
 				<Separator orientation="vertical" />
 				{#if shortener.ios}

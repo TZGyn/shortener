@@ -12,6 +12,7 @@
 		BarChart,
 		EditIcon,
 		ExternalLink,
+		Loader2Icon,
 		MoreVertical,
 		QrCode,
 		TrashIcon,
@@ -52,7 +53,9 @@
 		}
 	}
 
+	let isLoadingQrModal = false
 	const showQRModal = async (e: MouseEvent) => {
+		isLoadingQrModal = true
 		const { href } = e.currentTarget as HTMLAnchorElement
 
 		if (innerWidth < 640) goto(href)
@@ -64,6 +67,7 @@
 		} else {
 			goto(href)
 		}
+		isLoadingQrModal = false
 	}
 
 	const hostDomain = 'https://' + shortener.link.split('/')[2]
@@ -155,7 +159,11 @@
 					)}
 					href={`/dashboard/projects/${selected_project.uuid}/links/${shortener.code}/qr`}
 					on:click|preventDefault={showQRModal}>
-					<QrCode size={20} />
+					{#if isLoadingQrModal}
+						<Loader2Icon size={20} class="animate-spin" />
+					{:else}
+						<QrCode size={20} />
+					{/if}
 				</a>
 				{#if shortener.ios}
 					<Tooltip.Root>
