@@ -35,51 +35,6 @@ export const actions: Actions = {
 
 		const userId = event.locals.user.id
 
-		if (form.data.new_password) {
-			if (!form.data.old_password) {
-				return setError(form, 'old_password', 'Old Password Required')
-			}
-			const userData = await db.query.user.findFirst({
-				where: (user, { eq }) => eq(user.id, userId),
-			})
-
-			if (!userData) {
-				return setError(form, 'email', 'Email Not Found')
-			}
-
-			const passwordMatch = await Bun.password.verify(
-				form.data.old_password,
-				userData.password,
-			)
-
-			if (!passwordMatch) {
-				return setError(
-					form,
-					'old_password',
-					'Old Password Not Match',
-				)
-			}
-
-			if (form.data.new_password !== form.data.confirm_password) {
-				return setError(
-					form,
-					'confirm_password',
-					'Password Not Match',
-				)
-			}
-
-			const newPassword = await Bun.password.hash(
-				form.data.new_password,
-			)
-
-			await db
-				.update(user)
-				.set({
-					password: newPassword,
-				})
-				.where(eq(user.id, userId))
-		}
-
 		if (form.data.username) {
 			await db
 				.update(user)

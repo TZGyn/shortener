@@ -52,7 +52,7 @@
 <div class="flex h-auto flex-col gap-6">
 	<div>
 		<h3 class="text-lg font-medium">Account</h3>
-		<p class="text-sm text-muted-foreground">
+		<p class="text-muted-foreground text-sm">
 			Update your account settings.
 		</p>
 	</div>
@@ -76,7 +76,7 @@
 				<Form.Label class="flex items-center gap-1">
 					Email
 					<span
-						class="flex items-end gap-1 text-sm text-muted-foreground">
+						class="text-muted-foreground flex items-end gap-1 text-sm">
 						{#if data.user.email_verified}
 							(verified)<CheckIcon class="text-success" size={18} />
 						{:else}
@@ -104,40 +104,6 @@
 				</div>
 			</Form.Control>
 			<Form.Description>Change Your Email</Form.Description>
-			<Form.FieldErrors />
-		</Form.Field>
-		<Separator />
-		<Form.Field {form} name="old_password">
-			<Form.Control let:attrs>
-				<Form.Label>Old Password</Form.Label>
-				<Input
-					{...attrs}
-					bind:value={$formData.old_password}
-					type="password" />
-			</Form.Control>
-			<Form.Description>Old Password To Confirm</Form.Description>
-			<Form.FieldErrors />
-		</Form.Field>
-		<Form.Field {form} name="new_password">
-			<Form.Control let:attrs>
-				<Form.Label>New Password</Form.Label>
-				<Input
-					{...attrs}
-					bind:value={$formData.new_password}
-					type="password" />
-			</Form.Control>
-			<Form.Description>Update Password</Form.Description>
-			<Form.FieldErrors />
-		</Form.Field>
-		<Form.Field {form} name="confirm_password">
-			<Form.Control let:attrs>
-				<Form.Label>Confirm Password</Form.Label>
-				<Input
-					{...attrs}
-					bind:value={$formData.confirm_password}
-					type="password" />
-			</Form.Control>
-			<Form.Description>Confirm New Password</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
 		<Form.Button class="w-fit">

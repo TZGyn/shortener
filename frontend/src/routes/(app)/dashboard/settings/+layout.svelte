@@ -11,18 +11,18 @@
 	</div>
 	<Separator class="my-4 lg:my-6" />
 	<div
-		class="flex h-auto w-full flex-col justify-center overflow-hidden lg:flex-row">
+		class="grid h-auto w-full grid-cols-1 overflow-hidden xl:grid-cols-[1fr_minmax(auto,_700px)_1fr]">
 		<aside
-			class="flex-grow border-b pb-4 lg:max-w-[200px] lg:border-none">
+			class="flex w-full flex-grow border-b pb-4 xl:justify-end xl:border-none xl:pl-0">
 			<SidebarNav />
 		</aside>
-		<div
-			class="m-0 flex h-auto max-w-[600px] flex-grow overflow-hidden p-0">
+		<div class="m-0 flex h-auto w-full flex-grow overflow-hidden p-0">
 			<ScrollArea class="mt-0 w-full">
-				<div class="w-full max-w-xl py-6 lg:px-8 lg:py-0">
+				<div class="w-full py-6 xl:px-8 xl:py-0">
 					<slot />
 				</div>
 			</ScrollArea>
 		</div>
+		<div></div>
 	</div>
 </div>

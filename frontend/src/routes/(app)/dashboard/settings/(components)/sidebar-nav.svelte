@@ -14,12 +14,16 @@
 			title: 'QR',
 			href: '/dashboard/settings/qr',
 		},
+		{
+			title: 'Security',
+			href: '/dashboard/settings/security',
+		},
 	] as const
 </script>
 
 <nav
 	class={cn(
-		'flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1',
+		'flex w-full max-w-[200px] space-x-2 xl:flex-col xl:space-x-0 xl:space-y-1',
 		className,
 	)}>
 	{#each items as item}
@@ -28,7 +32,11 @@
 			variant={$page.url.pathname == item.href
 				? 'secondary'
 				: 'ghost'}
-			class="hover:bg-secondary/50 justify-start">
+			class={cn(
+				'hover:bg-secondary/50 text-muted-foreground justify-start',
+				$page.url.pathname == item.href &&
+					'text-secondary-foreground',
+			)}>
 			{item.title}
 		</Button>
 	{/each}
