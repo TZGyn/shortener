@@ -31,6 +31,18 @@ export const actions: Actions = {
 
 		const user = users[0]
 
+		if (user.googleId) {
+			return setError(
+				form,
+				'email',
+				'This email is detected on Google login, please login via Google',
+			)
+		}
+
+		if (!user.password) {
+			return setError(form, 'email', 'Invalid credentials')
+		}
+
 		const matchPassword =
 			user &&
 			(await Bun.password.verify(form.data.password, user.password))

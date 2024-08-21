@@ -3,6 +3,8 @@ import { db } from '$lib/db'
 import { session, user } from '$lib/db/schema'
 import { type User } from '$lib/db/types'
 import { Lucia } from 'lucia'
+import { Google } from 'arctic'
+import { env } from '$env/dynamic/private'
 
 declare module 'lucia' {
 	interface Register {
@@ -23,3 +25,10 @@ export const lucia = new Lucia(adapter, {
 		}
 	},
 })
+
+export const google = new Google(
+	env.PRIVATE_GOOGLE_CLIENT_ID,
+	env.PRIVATE_GOOGLE_CLIENT_SECRET,
+	(env.APP_ENV === 'prod' ? env.ORIGIN : 'http://localhost:5173') +
+		'/login/google/callback',
+)

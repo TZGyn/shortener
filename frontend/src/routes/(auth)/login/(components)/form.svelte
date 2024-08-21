@@ -56,6 +56,6 @@
 		{#if $submitting}
 			<LoaderCircle class="animate-spin" />
 		{/if}
-		Login
+		Login with Email
 	</Form.Button>
 </form>

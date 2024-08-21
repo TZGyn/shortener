@@ -37,6 +37,13 @@ export const actions: Actions = {
 		const user = users[0]
 
 		if (user) {
+			if (user.googleId) {
+				return setError(
+					form,
+					'email',
+					'This email is detected on Google login, please login via Google',
+				)
+			}
 			return setError(form, 'email', 'Email Already Exist')
 		}
 
