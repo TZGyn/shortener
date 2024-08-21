@@ -5,10 +5,16 @@
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb'
 	import { page } from '$app/stores'
 	import { Button } from '$lib/components/ui/button'
-	import { Blocks, Home, Link, Settings } from 'lucide-svelte'
+	import {
+		Blocks,
+		Home,
+		Link,
+		Settings,
+		UserIcon,
+	} from 'lucide-svelte'
 	import * as Avatar from '$lib/components/ui/avatar'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
-	import * as AlertDialog from '$lib/components/ui/alert-dialog'
+	import * as Dialog from '$lib/components/ui/dialog'
 
 	import { Loader2, User } from 'lucide-svelte'
 	import { goto } from '$app/navigation'
@@ -185,27 +191,42 @@
 	</div>
 </div>
 
-<AlertDialog.Root bind:open={dialogOpen}>
-	<AlertDialog.Content>
-		<AlertDialog.Header>
-			<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
-			<AlertDialog.Description>
-				You are about to log out of this account.
-			</AlertDialog.Description>
-		</AlertDialog.Header>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel disabled={isLoading}>
-				Cancel
-			</AlertDialog.Cancel>
-			<Button
-				on:click={logout}
-				class="flex gap-2"
-				disabled={isLoading}>
-				{#if isLoading}
-					<Loader2 class="animate-spin" />
-				{/if}
-				Log Out
-			</Button>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+<Dialog.Root bind:open={dialogOpen}>
+	<Dialog.Content>
+		<Dialog.Header class="space-y-12">
+			<div
+				class="flex w-full flex-col items-center justify-center gap-6 pt-12">
+				<div class="bg-destructive/30 w-fit rounded-full p-4">
+					<UserIcon class="text-destructive" size={64} />
+				</div>
+			</div>
+			<div class="space-y-2">
+				<Dialog.Title class="text-center">Log Out?</Dialog.Title>
+				<Dialog.Description class="text-center">
+					You are about to log out of this account.
+				</Dialog.Description>
+			</div>
+			<div class="flex justify-center gap-6">
+				<Button
+					variant="outline"
+					class="w-full"
+					on:click={() => {
+						dialogOpen = false
+					}}
+					disabled={isLoading}>
+					Cancel
+				</Button>
+				<Button
+					variant="destructive"
+					on:click={logout}
+					class="flex w-full gap-2"
+					disabled={isLoading}>
+					{#if isLoading}
+						<Loader2 class="animate-spin" />
+					{/if}
+					Log Out
+				</Button>
+			</div>
+		</Dialog.Header>
+	</Dialog.Content>
+</Dialog.Root>
