@@ -350,6 +350,8 @@ export const actions: Actions = {
 				)
 				.returning()
 
+			await deleteCustomDomain(deletedProject[0].custom_domain_id)
+
 			if (form.data.deleteShorteners) {
 				const deletedShorteners = await db
 					.delete(shortener)
