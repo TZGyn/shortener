@@ -3,12 +3,7 @@ import { user } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import Stripe from 'stripe'
 import { env } from '$env/dynamic/private'
-import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-
-export const GET: RequestHandler = async (event) => {
-	return json({ test: 'test' })
-}
 
 export const POST: RequestHandler = async (event) => {
 	try {
@@ -22,7 +17,7 @@ export const POST: RequestHandler = async (event) => {
 		const stripeEvent = stripe.webhooks.constructEvent(
 			body,
 			sig,
-			'whsec_mCu3SWeY06KRY2vLCIYXlqLawTU6k3Wf',
+			env.PRIVATE_STRIPE_WEBHOOK_SECRET,
 		)
 		if (
 			stripeEvent.type === 'subscription_schedule.canceled' ||
