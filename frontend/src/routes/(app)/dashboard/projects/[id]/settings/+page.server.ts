@@ -133,6 +133,33 @@ export const actions: Actions = {
 			)
 		}
 
+		if (event.locals.user.plan === 'free') {
+			return setError(
+				form,
+				'enableDomain',
+				'Please upgrade your account to pro plan to use this feature',
+			)
+		}
+
+		if (event.locals.user.plan === 'pro') {
+			const projectsWithEnabledDomains =
+				await db.query.project.findMany({
+					where: (projectTable, { eq, and }) =>
+						and(
+							eq(projectTable.userId, userId),
+							eq(projectTable.enable_custom_domain, true),
+						),
+				})
+
+			if (projectsWithEnabledDomains.length >= 5) {
+				return setError(
+					form,
+					'enableDomain',
+					'You are only allowed to use maximum 5 custom domains in pro plan',
+				)
+			}
+		}
+
 		const existingProject = await db.query.project.findFirst({
 			where: (projectTable, { eq, and }) =>
 				and(

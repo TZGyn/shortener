@@ -17,9 +17,10 @@
 				class="from-brand-hover to-brand bg-gradient-to-r bg-clip-text text-6xl font-bold text-transparent">
 				Kon.sh
 			</h1>
-			<p class="max-w-sm text-center text-xl font-semibold">
-				Open Source Self-hostable Link Shortener With Analytics
-			</p>
+			<h2 class="max-w-sm text-center text-xl font-semibold">
+				Free, Open Source URL Shortener with Analytics and Custom QR
+				Code
+			</h2>
 			<Button
 				href="/signup"
 				class="bg-brand hover:bg-brand-hover w-fit">
@@ -63,7 +64,7 @@
 						<div class="flex w-full flex-col gap-4 text-start">
 							<div class="flex flex-col items-center justify-center">
 								<ExternalLinkIcon size={128} class="text-brand" />
-								<h2 class="font-semibol text-xl">Custom Domains</h2>
+								<h2 class="text-xl font-semibold">Custom Domains</h2>
 							</div>
 						</div>
 					</div>
@@ -78,7 +79,9 @@
 					class="grid w-full grid-cols-[repeat(auto-fit,_minmax(450px,_1fr))] gap-4">
 					<div class="flex gap-8 rounded-lg border p-8">
 						<div class="flex w-full flex-col gap-4 text-start">
-							<h2 class="text-2xl font-bold">Free (demo)</h2>
+							<h2 class="text-2xl font-bold">
+								Free (beta, adding new features)
+							</h2>
 							<p>No credit card required.</p>
 							<Separator />
 							<div class="flex flex-col gap-4">
@@ -92,7 +95,7 @@
 								</div>
 								<div class="flex items-center gap-2">
 									<XIcon class="text-brand" />
-									<p>Will be limited in future</p>
+									<p>Custom Domain will be paid feature in future</p>
 								</div>
 							</div>
 						</div>

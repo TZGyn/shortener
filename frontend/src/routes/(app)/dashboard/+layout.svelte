@@ -7,6 +7,7 @@
 	import { Button } from '$lib/components/ui/button'
 	import {
 		Blocks,
+		CreditCardIcon,
 		Home,
 		Link,
 		Settings,
@@ -53,6 +54,12 @@
 			name: 'Projects',
 			match: (path: string) => path.startsWith('/dashboard/projects'),
 			icon: Blocks,
+		},
+		{
+			href: '/dashboard/billing',
+			name: 'Billing',
+			match: (path: string) => path.startsWith('/dashboard/billing'),
+			icon: CreditCardIcon,
 		},
 		{
 			href: '/dashboard/settings/account',

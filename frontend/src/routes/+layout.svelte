@@ -14,7 +14,7 @@
 	</title>
 	<meta
 		name="description"
-		content="Kon.sh URL shortener - Open source self-hostable link shortener with analytics" />
+		content="Kon.sh URL shortener - free, open source link shortener with analytics, custom qr code and custom name. Bitly/tiny url alternative" />
 	<meta property="og:image" content="/logo.png" />
 </svelte:head>
 

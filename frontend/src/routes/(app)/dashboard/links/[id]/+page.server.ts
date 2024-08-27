@@ -1,7 +1,7 @@
 import { db } from '$lib/db'
 import { redirect } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
-import { and, count, desc, eq, sql } from 'drizzle-orm'
+import { and, count, desc, eq, gt, gte, lte, sql } from 'drizzle-orm'
 import { visitor as visitorSchema } from '$lib/db/schema'
 
 export const load = (async (event) => {
@@ -25,6 +25,17 @@ export const load = (async (event) => {
 
 	const now = new Date()
 
+	let analyticsDate = new Date()
+	analyticsDate.setHours(0)
+	analyticsDate.setMinutes(0)
+	analyticsDate.setSeconds(0)
+
+	if (user.plan === 'free') {
+	} else {
+		analyticsDate.setMonth(analyticsDate.getMonth() - 23)
+	}
+	analyticsDate.setDate(1)
+
 	const visitor = await db
 		.select({
 			count: sql<number>`cast(count(*) as int)`,
@@ -37,6 +48,7 @@ export const load = (async (event) => {
 				sql`to_char(${
 					visitorSchema.createdAt
 				}, 'YYYY') = ${now.getFullYear()}`,
+				gte(visitorSchema.createdAt, analyticsDate),
 			),
 		)
 		.groupBy(sql`to_char(${visitorSchema.createdAt}, 'MM')`)
@@ -44,7 +56,12 @@ export const load = (async (event) => {
 	const visitorAllTime = await db
 		.select({ count: count() })
 		.from(visitorSchema)
-		.where(eq(visitorSchema.shortenerId, shortener.id))
+		.where(
+			and(
+				eq(visitorSchema.shortenerId, shortener.id),
+				gte(visitorSchema.createdAt, analyticsDate),
+			),
+		)
 
 	const visitorByCountry = await db
 		.select({
@@ -53,7 +70,12 @@ export const load = (async (event) => {
 			code: visitorSchema.countryCode,
 		})
 		.from(visitorSchema)
-		.where(eq(visitorSchema.shortenerId, shortener.id))
+		.where(
+			and(
+				eq(visitorSchema.shortenerId, shortener.id),
+				gte(visitorSchema.createdAt, analyticsDate),
+			),
+		)
 		.groupBy(visitorSchema.country, visitorSchema.countryCode)
 		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
@@ -65,7 +87,12 @@ export const load = (async (event) => {
 			city: visitorSchema.city,
 		})
 		.from(visitorSchema)
-		.where(eq(visitorSchema.shortenerId, shortener.id))
+		.where(
+			and(
+				eq(visitorSchema.shortenerId, shortener.id),
+				gte(visitorSchema.createdAt, analyticsDate),
+			),
+		)
 		.groupBy(
 			visitorSchema.country,
 			visitorSchema.countryCode,
@@ -79,7 +106,12 @@ export const load = (async (event) => {
 			os: visitorSchema.os,
 		})
 		.from(visitorSchema)
-		.where(eq(visitorSchema.shortenerId, shortener.id))
+		.where(
+			and(
+				eq(visitorSchema.shortenerId, shortener.id),
+				gte(visitorSchema.createdAt, analyticsDate),
+			),
+		)
 		.groupBy(visitorSchema.os)
 		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
@@ -89,7 +121,12 @@ export const load = (async (event) => {
 			browser: visitorSchema.browser,
 		})
 		.from(visitorSchema)
-		.where(eq(visitorSchema.shortenerId, shortener.id))
+		.where(
+			and(
+				eq(visitorSchema.shortenerId, shortener.id),
+				gte(visitorSchema.createdAt, analyticsDate),
+			),
+		)
 		.groupBy(visitorSchema.browser)
 		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
@@ -99,7 +136,12 @@ export const load = (async (event) => {
 			vendor: visitorSchema.deviceVendor,
 		})
 		.from(visitorSchema)
-		.where(eq(visitorSchema.shortenerId, shortener.id))
+		.where(
+			and(
+				eq(visitorSchema.shortenerId, shortener.id),
+				gte(visitorSchema.createdAt, analyticsDate),
+			),
+		)
 		.groupBy(visitorSchema.deviceVendor)
 		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
@@ -109,7 +151,12 @@ export const load = (async (event) => {
 			type: visitorSchema.deviceType,
 		})
 		.from(visitorSchema)
-		.where(eq(visitorSchema.shortenerId, shortener.id))
+		.where(
+			and(
+				eq(visitorSchema.shortenerId, shortener.id),
+				gte(visitorSchema.createdAt, analyticsDate),
+			),
+		)
 		.groupBy(visitorSchema.deviceType)
 		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 

@@ -2,6 +2,8 @@ import { lucia } from '$lib/server/auth'
 import { redirect, type Handle } from '@sveltejs/kit'
 
 export const handle: Handle = async ({ event, resolve }) => {
+	await lucia.deleteExpiredSessions()
+
 	const sessionId = event.cookies.get(lucia.sessionCookieName)
 
 	const pathname = event.url.pathname

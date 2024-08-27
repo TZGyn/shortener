@@ -20,6 +20,11 @@ export const user = pgTable('user', {
 	createdAt: timestamp('created_at', { mode: 'string' })
 		.defaultNow()
 		.notNull(),
+	plan: varchar('plan', { length: 255 })
+		.notNull()
+		.$type<'free' | 'pro' | 'owner'>()
+		.default('free'),
+	stripeSubscription: varchar('stripe_subscription', { length: 255 }),
 })
 
 export const shortener = pgTable('shortener', {
@@ -66,7 +71,7 @@ export const project = pgTable('project', {
 export const visitor = pgTable('visitor', {
 	id: serial('id').primaryKey().notNull(),
 	shortenerId: integer('shortener_id').notNull(),
-	createdAt: timestamp('created_at', { mode: 'string' })
+	createdAt: timestamp('created_at', { mode: 'date' })
 		.defaultNow()
 		.notNull(),
 	countryCode: varchar('country_code', {
@@ -111,6 +116,12 @@ export const emailVerificationToken = pgTable(
 		}).notNull(),
 	},
 )
+
+export const stripeSession = pgTable('stripe_session', {
+	session_id: varchar('session_id', { length: 255 }).notNull(),
+	userId: integer('user_id').notNull(),
+	expired: boolean('expired').notNull().default(false),
+})
 
 // relations
 export const userRelations = relations(user, ({ one, many }) => ({
@@ -164,3 +175,13 @@ export const settingRelations = relations(setting, ({ one }) => ({
 		references: [user.id],
 	}),
 }))
+
+export const stripeSessionRelations = relations(
+	stripeSession,
+	({ one }) => ({
+		user: one(user, {
+			fields: [stripeSession.userId],
+			references: [user.id],
+		}),
+	}),
+)

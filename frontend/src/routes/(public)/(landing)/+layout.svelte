@@ -55,7 +55,7 @@
 		<Separator />
 		<nav class="w-full">
 			<ul
-				class="grid w-full grid-cols-[1fr_10px_1fr_10px_1fr] justify-items-center">
+				class="grid w-full grid-cols-[1fr_10px_1fr_10px_1fr_10px_1fr] justify-items-center">
 				<li>
 					<a href="https://app.kon.sh">Kon.sh</a>
 				</li>
@@ -68,6 +68,10 @@
 					<a href="https://kon.sh/AX0LqT-v" target="_blank">
 						Report Bugs
 					</a>
+				</li>
+				<Separator orientation={'vertical'} />
+				<li>
+					<a href="https://kon.sh/github" target="_blank">GitHub</a>
 				</li>
 			</ul>
 		</nav>
