@@ -9,6 +9,7 @@ import { eq } from 'drizzle-orm'
 import { lucia } from '$lib/server/auth'
 import { env } from '$env/dynamic/private'
 import { sendEmailVerification } from '$lib/server/email'
+import * as argon2 from 'argon2'
 
 export const load = (async (event) => {
 	return {
@@ -47,7 +48,7 @@ export const actions: Actions = {
 			return setError(form, 'email', 'Email Already Exist')
 		}
 
-		const hashedPassword = await Bun.password.hash(form.data.password)
+		const hashedPassword = await argon2.hash(form.data.password)
 		const returnUsers = await db
 			.insert(userSchema)
 			.values({

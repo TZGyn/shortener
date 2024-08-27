@@ -8,6 +8,7 @@ import { user as userSchema } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { lucia } from '$lib/server/auth'
 import { env } from '$env/dynamic/private'
+import * as argon2 from 'argon2'
 
 export const load = (async (event) => {
 	return {
@@ -44,8 +45,7 @@ export const actions: Actions = {
 		}
 
 		const matchPassword =
-			user &&
-			(await Bun.password.verify(form.data.password, user.password))
+			user && (await argon2.verify(user.password, form.data.password))
 
 		if (!user || !matchPassword) {
 			return setError(form, 'email', 'Invalid credentials')

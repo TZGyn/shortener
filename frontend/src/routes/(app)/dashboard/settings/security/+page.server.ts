@@ -11,6 +11,7 @@ import { project, shortener, user, visitor } from '$lib/db/schema'
 import { eq, inArray } from 'drizzle-orm'
 import { lucia } from '$lib/server/auth'
 import { env } from '$env/dynamic/private'
+import * as argon2 from 'argon2'
 
 export const load = (async (event) => {
 	return {
@@ -41,18 +42,24 @@ export const actions: Actions = {
 			return setError(form, 'old_password', 'User Not Found')
 		}
 
-		const passwordMatch = await Bun.password.verify(
-			form.data.old_password,
+		if (!userData.password) {
+			return setError(
+				form,
+				'old_password',
+				'User is using other login method',
+			)
+		}
+
+		const passwordMatch = await argon2.verify(
 			userData.password,
+			form.data.old_password,
 		)
 
 		if (!passwordMatch) {
 			return setError(form, 'old_password', 'Old Password Not Match')
 		}
 
-		const newPassword = await Bun.password.hash(
-			form.data.new_password,
-		)
+		const newPassword = await argon2.hash(form.data.new_password)
 
 		await db
 			.update(user)
@@ -94,9 +101,37 @@ export const actions: Actions = {
 			return setError(form, 'password', 'User Not Found')
 		}
 
-		const passwordMatch = await Bun.password.verify(
-			form.data.password,
+		if (userData.googleId) {
+			await lucia.invalidateUserSessions(userId)
+
+			await db.delete(user).where(eq(user.id, userId))
+
+			const shorteners = await db
+				.delete(shortener)
+				.where(eq(shortener.userId, userId))
+				.returning()
+
+			await db.delete(project).where(eq(project.userId, userId))
+
+			await db.delete(visitor).where(
+				inArray(
+					visitor.shortenerId,
+					shorteners.map((shortener) => shortener.id),
+				),
+			)
+
+			return {
+				form,
+			}
+		}
+
+		if (!userData.password) {
+			return setError(form, 'password', 'User Not Found')
+		}
+
+		const passwordMatch = await argon2.verify(
 			userData.password,
+			form.data.password,
 		)
 
 		if (!passwordMatch) {
