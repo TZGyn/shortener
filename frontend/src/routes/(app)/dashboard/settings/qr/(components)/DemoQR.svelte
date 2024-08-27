@@ -1,6 +1,5 @@
 <script>
 	import { onMount } from 'svelte'
-	import QRCodeStyling from 'qr-code-styling'
 	import { browser } from '$app/environment'
 
 	export let background = '#fff'
@@ -15,7 +14,9 @@
 		}
 
 		try {
-			const qrcodestyling = new QRCodeStyling({
+			const qrcodestyling = new (
+				await import('qr-code-styling')
+			).default({
 				data: value,
 				width: 300,
 				height: 300,

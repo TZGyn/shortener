@@ -2,7 +2,6 @@
 	import { Button } from '$lib/components/ui/button'
 	import { toast } from 'svelte-sonner'
 	import { Badge } from '$lib/components/ui/badge'
-	import QRCodeStyling from 'qr-code-styling'
 	import { onMount } from 'svelte'
 	import * as Card from '$lib/components/ui/card'
 
@@ -32,7 +31,9 @@
 	}
 
 	async function generateQrCode() {
-		const qrcodestyling = new QRCodeStyling({
+		const qrcodestyling = new (
+			await import('qr-code-styling')
+		).default({
 			data: data.url + '/' + data.shortenerId,
 			width: 300,
 			height: 300,

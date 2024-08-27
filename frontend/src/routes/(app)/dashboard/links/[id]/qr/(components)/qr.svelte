@@ -3,7 +3,6 @@
 	import { toast } from 'svelte-sonner'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import { Badge } from '$lib/components/ui/badge'
-	import QRCodeStyling from 'qr-code-styling'
 
 	export let background = '#fff'
 	export let color = '#000'
@@ -34,7 +33,9 @@
 	}
 
 	async function generateQrCode() {
-		const qrcodestyling = new QRCodeStyling({
+		const qrcodestyling = new (
+			await import('qr-code-styling')
+		).default({
 			data: value,
 			width: 300,
 			height: 300,
