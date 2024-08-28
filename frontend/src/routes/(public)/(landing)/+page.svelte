@@ -79,10 +79,10 @@
 					class="grid w-full grid-cols-[repeat(auto-fit,_minmax(450px,_1fr))] gap-4">
 					<div class="flex gap-8 rounded-lg border p-8">
 						<div class="flex w-full flex-col gap-4 text-start">
-							<h2 class="text-2xl font-bold">
-								Free (beta, adding new features)
-							</h2>
-							<p>No credit card required.</p>
+							<h2 class="text-2xl font-bold">Free</h2>
+							<p class="text-muted-foreground">
+								No credit card required.
+							</p>
 							<Separator />
 							<div class="flex flex-col gap-4">
 								<div class="flex items-center gap-2">
@@ -94,8 +94,8 @@
 									<p>Unlimited Projects</p>
 								</div>
 								<div class="flex items-center gap-2">
-									<XIcon class="text-brand" />
-									<p>Custom Domain will be paid feature in future</p>
+									<Check class="text-brand" />
+									<p>Click history up to 1 month</p>
 								</div>
 							</div>
 						</div>
@@ -106,6 +106,51 @@
 								<span>/month</span>
 							</div>
 							<Button href="/signup" class="bg-background">
+								Get Started
+							</Button>
+						</div>
+					</div>
+					<div class="flex gap-8 rounded-lg border p-8">
+						<div class="flex w-full flex-col gap-4 text-start">
+							<h2 class="text-2xl font-bold">Pro</h2>
+							<p class="text-muted-foreground">
+								More customizations.
+							</p>
+							<Separator />
+							<div class="flex flex-col gap-4">
+								<div class="flex items-center gap-2">
+									<Check class="text-brand" />
+									<p>Everything in free</p>
+								</div>
+								<div class="flex items-center gap-2">
+									<Check class="text-brand" />
+									<p>5 custom domains</p>
+									<!-- <Tooltip.Root>
+								<Tooltip.Trigger class="flex items-center gap-1">
+									<InfoIcon class="h-4 w-4" />
+								</Tooltip.Trigger>
+								<Tooltip.Content>
+									Additional domains are $3 per domain
+								</Tooltip.Content>
+							</Tooltip.Root> -->
+								</div>
+								<div class="flex items-center gap-2">
+									<Check class="text-brand" />
+									<p>2 years click history</p>
+								</div>
+							</div>
+						</div>
+						<div
+							class="flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-gradient-to-r from-orange-300 to-orange-400 text-start">
+							<div class="flex items-end gap-2">
+								<h1 class="text-3xl font-bold">$9</h1>
+								<span>/month</span>
+							</div>
+							<Button
+								href={`/signup?redirect=${encodeURIComponent(
+									'/dashboard/billing',
+								)}`}
+								class="bg-background">
 								Get Started
 							</Button>
 						</div>

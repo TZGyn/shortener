@@ -125,19 +125,22 @@
 					Permanently delete your account and all data
 				</span>
 			</div>
-			<Dialog.Root
-				open={deleteDialogOpen}
-				onOpenChange={(open) => (deleteDialogOpen = open)}>
+			<Dialog.Root bind:open={deleteDialogOpen}>
 				<Dialog.Trigger>
 					<Button variant="destructive">Delete Account</Button>
 				</Dialog.Trigger>
-				<Dialog.Content>
-					<Dialog.Header>
-						<Dialog.Title>Are you sure absolutely sure?</Dialog.Title>
-						<Dialog.Description>
-							This action cannot be undone. This will permanently
-							delete your account and all its associated data.
-						</Dialog.Description>
+				<Dialog.Content class="max-w-xl">
+					<Dialog.Header class="flex-row items-center gap-2">
+						<div class="h-fit w-fit p-2">
+							<img src="/logo.png" alt="" class="h-8 w-8" />
+						</div>
+						<div>
+							<Dialog.Title>Delete Account</Dialog.Title>
+							<Dialog.Description>
+								This will permanently delete your account and all its
+								associated data.
+							</Dialog.Description>
+						</div>
 					</Dialog.Header>
 					<form
 						method="POST"
@@ -152,7 +155,9 @@
 									type="password"
 									placeholder="••••••••" />
 							</Form.Control>
-							<Form.Description>Password</Form.Description>
+							<Form.Description>
+								Enter your password to delete account
+							</Form.Description>
 							<Form.FieldErrors />
 						</Form.Field>
 						<div class="flex justify-end gap-2">

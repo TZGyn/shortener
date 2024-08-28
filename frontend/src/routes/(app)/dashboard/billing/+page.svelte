@@ -48,7 +48,7 @@
 	<div class="flex w-full flex-wrap-reverse justify-center gap-8">
 		<div class="flex w-[400px] gap-8 rounded-lg border p-8">
 			<div class="flex w-full flex-col gap-3 text-start">
-				<h2 class="text-2xl font-bold">Free (beta)</h2>
+				<h2 class="text-2xl font-bold">Free</h2>
 				<p class="text-muted-foreground">No credit card required.</p>
 				<Separator />
 				<div class="flex flex-col gap-2">
@@ -91,7 +91,7 @@
 				Recommended
 			</div>
 			<div class="flex w-full flex-col gap-3 text-start">
-				<h2 class="text-2xl font-bold">Pro (coming soon)</h2>
+				<h2 class="text-2xl font-bold">Pro</h2>
 				<p class="text-muted-foreground">
 					More customizations, more data.
 				</p>

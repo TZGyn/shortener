@@ -6,7 +6,6 @@
 	import { Button } from '$lib/components/ui/button'
 	import { LoaderIcon } from 'lucide-svelte'
 	import Google from '$lib/components/icons/google.svelte'
-	import { goto } from '$app/navigation'
 
 	export let data: PageData
 
@@ -27,10 +26,9 @@
 	</div>
 	<div
 		class="bg-primary-foreground relative hidden h-full flex-col p-10 text-white dark:border-r lg:flex">
-		<div
-			class="text-primary relative z-20 flex items-center text-lg font-medium">
-			Shortener
-		</div>
+		<a href="/">
+			<img src="/logo.png" alt="" class="h-12" />
+		</a>
 	</div>
 	<div class="p-8">
 		<div

@@ -1,5 +1,5 @@
 import type { PageServerLoad, Actions } from './$types'
-import { fail } from '@sveltejs/kit'
+import { fail, redirect } from '@sveltejs/kit'
 import { setError, superValidate } from 'sveltekit-superforms'
 import { formSchema } from './schema'
 import { zod } from 'sveltekit-superforms/adapters'
@@ -70,6 +70,13 @@ export const actions: Actions = {
 			userId: returnUsers[0].id,
 			email: form.data.email,
 		})
+
+		const redirectUrl = event.url.searchParams.get('redirect')
+
+		if (redirectUrl) {
+			console.log(redirectUrl)
+			redirect(301, redirectUrl)
+		}
 
 		return {
 			form,
