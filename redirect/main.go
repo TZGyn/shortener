@@ -65,13 +65,19 @@ func main() {
 		log.Fatal("DATABASE_URL not found")
 	}
 
-	conn, err := pgxpool.New(ctx, dbUrl)
+	config, err := pgxpool.ParseConfig(dbUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	config.MinConns = 4
+
+	conn, err := pgxpool.NewWithConfig(ctx, config)
+
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer conn.Close()
-
-	queries := db.New(conn)
 
 	fmt.Println("Finished initializing postgres DB and cache")
 
@@ -114,6 +120,8 @@ func main() {
 		iosRedirectUrl := ""
 		androidEnabled := false
 		androidRedirectUrl := ""
+
+		queries := db.New(conn)
 
 		if domain == appurl {
 			shortener, err := queries.GetShortener(ctx, code)
