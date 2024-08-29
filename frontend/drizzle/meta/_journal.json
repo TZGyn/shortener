@@ -127,6 +127,20 @@
       "when": 1724731642381,
       "tag": "0017_mysterious_marten_broadcloak",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1724920767007,
+      "tag": "0018_living_taskmaster",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1724923406366,
+      "tag": "0019_chief_mephisto",
+      "breakpoints": true
     }
   ]
 }

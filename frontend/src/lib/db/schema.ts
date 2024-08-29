@@ -24,7 +24,7 @@ export const user = pgTable('user', {
 		.notNull()
 		.$type<'free' | 'pro' | 'owner'>()
 		.default('free'),
-	stripeSubscription: varchar('stripe_subscription', { length: 255 }),
+	stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
 })
 
 export const shortener = pgTable('shortener', {
@@ -117,12 +117,6 @@ export const emailVerificationToken = pgTable(
 	},
 )
 
-export const stripeSession = pgTable('stripe_session', {
-	session_id: varchar('session_id', { length: 255 }).notNull(),
-	userId: integer('user_id').notNull(),
-	expired: boolean('expired').notNull().default(false),
-})
-
 // relations
 export const userRelations = relations(user, ({ one, many }) => ({
 	shortener: many(shortener),
@@ -175,13 +169,3 @@ export const settingRelations = relations(setting, ({ one }) => ({
 		references: [user.id],
 	}),
 }))
-
-export const stripeSessionRelations = relations(
-	stripeSession,
-	({ one }) => ({
-		user: one(user, {
-			fields: [stripeSession.userId],
-			references: [user.id],
-		}),
-	}),
-)

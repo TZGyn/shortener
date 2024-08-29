@@ -58,6 +58,12 @@ go build
 
 ## Breaking Changes (For builds before this date)
 
+### 29 August 2024
+
+Using stripe customer id instead of stripe subscription id
+
+Existing customer subscription id will be removed from database, so have to manually find every customer with the same email and fill in their ids
+
 ### 23 July 2024
 
 Transition from using ipbase to using geoipupdate for geolocation.

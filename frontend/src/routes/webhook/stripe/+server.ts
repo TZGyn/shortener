@@ -27,7 +27,10 @@ export const POST: RequestHandler = async (event) => {
 				.update(user)
 				.set({ plan: 'free' })
 				.where(
-					eq(user.stripeSubscription, stripeEvent.data.object.id),
+					eq(
+						user.stripeCustomerId,
+						stripeEvent.data.object.customer.toString(),
+					),
 				)
 		}
 		return new Response('Success', { status: 200 })

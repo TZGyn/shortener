@@ -28,10 +28,16 @@ export const actions = {
 
 		const user = event.locals.user
 
-		if (!user.stripeSubscription) return { form }
+		if (!user.stripeCustomerId) return { form }
 
-		const subscription = await stripe.subscriptions.update(
-			user.stripeSubscription,
+		const subscription = await stripe.subscriptions.list({
+			customer: user.stripeCustomerId,
+			price: env.PRIVATE_PRO_PLAN_PRICE_ID,
+			limit: 1,
+		})
+
+		const cancelSubscription = await stripe.subscriptions.update(
+			subscription.data[0].id,
 			{ cancel_at_period_end: true },
 		)
 

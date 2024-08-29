@@ -2,7 +2,7 @@ import { redirect } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import Stripe from 'stripe'
 import { db } from '$lib/db'
-import { user, stripeSession } from '$lib/db/schema'
+import { user } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { env } from '$env/dynamic/private'
 
@@ -17,27 +17,14 @@ export const load = (async ({ url }) => {
 		session.status === 'complete' &&
 		session.payment_status === 'paid'
 	) {
-		const stripe_session = await db.query.stripeSession.findFirst({
-			where: (stripeSession, { eq }) =>
-				eq(stripeSession.session_id, session_id),
-			with: {
-				user: true,
-			},
-		})
-		if (!stripe_session) redirect(301, '/dashboard/billing')
+		if (!session.customer) redirect(301, '/dashboard/billing')
 
 		await db
 			.update(user)
 			.set({
 				plan: 'pro',
-				stripeSubscription: session.subscription?.toString(),
 			})
-			.where(eq(user.id, stripe_session.user.id))
-
-		await db
-			.update(stripeSession)
-			.set({ expired: true })
-			.where(eq(stripeSession.session_id, session_id))
+			.where(eq(user.stripeCustomerId, session.customer?.toString()))
 
 		redirect(301, '/dashboard/billing')
 	}

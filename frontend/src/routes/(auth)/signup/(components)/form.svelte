@@ -20,6 +20,7 @@
 			if (result.status === 200) {
 				toast.success(
 					'Welcome to kon.sh, a verification email has been sent to your mailbox',
+					{ duration: 10000 },
 				)
 			}
 		},
