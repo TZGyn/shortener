@@ -29,14 +29,14 @@ Made with [SvelteKit](https://kit.svelte.dev/) and [shadcn-svelte](https://www.s
 
 ```bash
 bun install
-bun --bun run dev
+npm run dev
 ```
 
 ### Redirect
 
 ```bash
-bun install
-bun --bun run dev
+go mod download
+go run main.go # or air run main.go
 ```
 
 ## Deployment
@@ -44,16 +44,16 @@ bun --bun run dev
 ### Frontend
 
 ```bash
-bun install
-bun run build
-bun --bun run build
+npm install
+npm run build
+node build
 ```
 
 ### Redirect
 
 ```bash
-bun install
-bun run src/index.ts
+go build
+./main
 ```
 
 ## Breaking Changes (For builds before this date)
