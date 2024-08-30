@@ -34,6 +34,14 @@ export const actions: Actions = {
 
 		const userId = event.locals.user.id
 
+		if (event.locals.user.googleId) {
+			return setError(
+				form,
+				'old_password',
+				'Unable to set a password if using google login',
+			)
+		}
+
 		const userData = await db.query.user.findFirst({
 			where: (user, { eq }) => eq(user.id, userId),
 		})

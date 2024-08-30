@@ -62,7 +62,7 @@
 		method="POST"
 		use:enhance
 		class="flex flex-col gap-6"
-		action="?/update">
+		action="?/change_password">
 		<Form.Field {form} name="old_password">
 			<Form.Control let:attrs>
 				<Form.Label>Old Password</Form.Label>
