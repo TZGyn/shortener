@@ -141,6 +141,13 @@
       "when": 1724923406366,
       "tag": "0019_chief_mephisto",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1725037845646,
+      "tag": "0020_warm_santa_claus",
+      "breakpoints": true
     }
   ]
 }

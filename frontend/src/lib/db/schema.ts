@@ -25,6 +25,14 @@ export const user = pgTable('user', {
 		.$type<'free' | 'pro' | 'owner'>()
 		.default('free'),
 	stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
+	qrCornerSquareStyle: varchar('qr_corner_square_style')
+		.$type<'dot' | 'square' | 'extra-rounded'>()
+		.notNull()
+		.default('square'),
+	qrDotStyle: varchar('qr_dot_style')
+		.$type<'square' | 'rounded'>()
+		.notNull()
+		.default('square'),
 })
 
 export const shortener = pgTable('shortener', {
@@ -66,6 +74,14 @@ export const project = pgTable('project', {
 	custom_ip: varchar('custom_ip', { length: 255 }),
 	custom_domain_id: varchar('custom_domain_id', { length: 255 }),
 	custom_domain: varchar('custom_domain', { length: 255 }),
+	qrCornerSquareStyle: varchar('qr_corner_square_style')
+		.$type<'dot' | 'square' | 'extra-rounded'>()
+		.notNull()
+		.default('square'),
+	qrDotStyle: varchar('qr_dot_style')
+		.$type<'square' | 'rounded'>()
+		.notNull()
+		.default('square'),
 })
 
 export const visitor = pgTable('visitor', {

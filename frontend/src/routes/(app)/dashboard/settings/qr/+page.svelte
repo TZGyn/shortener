@@ -9,6 +9,8 @@
 	import { toast } from 'svelte-sonner'
 	import DemoQr from './(components)/DemoQR.svelte'
 	import { LoaderCircle } from 'lucide-svelte'
+	import { Button } from '$lib/components/ui/button'
+	import { cn } from '$lib/utils'
 
 	export let data: PageData
 
@@ -32,15 +34,19 @@
 <div class="space-y-6">
 	<div>
 		<h3 class="text-lg font-medium">QR</h3>
-		<p class="text-sm text-muted-foreground">
+		<p class="text-muted-foreground text-sm">
 			Update your QR settings.
 		</p>
 	</div>
 	<Separator />
 
-	<DemoQr
-		background={$formData.qr_background}
-		color={$formData.qr_foreground} />
+	<div class="flex justify-center">
+		<DemoQr
+			background={$formData.qr_background}
+			color={$formData.qr_foreground}
+			cornerSquareStyle={$formData.qrCornerSquareStyle}
+			dotStyle={$formData.qrDotStyle} />
+	</div>
 
 	<form method="POST" use:enhance class="flex flex-col gap-6">
 		<Form.Field {form} name="qr_background">
@@ -59,6 +65,96 @@
 			<Form.Description>QR Code foreground color</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
+		{#if data.user.plan !== 'free'}
+			<Form.Field {form} name="qrCornerSquareStyle">
+				<Form.Control let:attrs>
+					<Form.Label>
+						Corner Square Style <span class="text-brand">(Pro)</span>
+					</Form.Label>
+					<Input
+						{...attrs}
+						class="hidden"
+						hidden
+						aria-hidden
+						bind:value={$formData.qrCornerSquareStyle} />
+				</Form.Control>
+				<div class="flex gap-4">
+					<Button
+						on:click={() =>
+							($formData.qrCornerSquareStyle = 'square')}
+						class={cn(
+							'flex flex-col gap-3 border p-12',
+							$formData.qrCornerSquareStyle === 'square'
+								? 'bg-primary-foreground'
+								: 'bg-transparent',
+						)}>
+						<div class="border-brand border-4 p-4"></div>
+						Square
+					</Button>
+					<Button
+						on:click={() => ($formData.qrCornerSquareStyle = 'dot')}
+						class={cn(
+							'flex flex-col gap-3 border p-12',
+							$formData.qrCornerSquareStyle === 'dot'
+								? 'bg-primary-foreground'
+								: 'bg-transparent',
+						)}>
+						<div class="border-brand rounded-full border-4 p-4"></div>
+						Dot
+					</Button>
+					<Button
+						on:click={() =>
+							($formData.qrCornerSquareStyle = 'extra-rounded')}
+						class={cn(
+							'flex flex-col gap-3 border p-12',
+							$formData.qrCornerSquareStyle === 'extra-rounded'
+								? 'bg-primary-foreground'
+								: 'bg-transparent',
+						)}>
+						<div class="border-brand rounded-lg border-4 p-4"></div>
+						Rounded
+					</Button>
+				</div>
+			</Form.Field>
+			<Form.Field {form} name="qrDotStyle">
+				<Form.Control let:attrs>
+					<Form.Label>
+						Dot Style <span class="text-brand">(Pro)</span>
+					</Form.Label>
+					<Input
+						{...attrs}
+						class="hidden"
+						hidden
+						aria-hidden
+						bind:value={$formData.qrDotStyle} />
+				</Form.Control>
+				<div class="flex gap-4">
+					<Button
+						on:click={() => ($formData.qrDotStyle = 'square')}
+						class={cn(
+							'flex flex-col gap-3 border p-12',
+							$formData.qrDotStyle === 'square'
+								? 'bg-primary-foreground'
+								: 'bg-transparent',
+						)}>
+						<div class="border-brand border-4 p-4"></div>
+						Square
+					</Button>
+					<Button
+						on:click={() => ($formData.qrDotStyle = 'rounded')}
+						class={cn(
+							'flex flex-col gap-3 border p-12',
+							$formData.qrDotStyle === 'rounded'
+								? 'bg-primary-foreground'
+								: 'bg-transparent',
+						)}>
+						<div class="border-brand rounded-full border-4 p-4"></div>
+						Rounded
+					</Button>
+				</div>
+			</Form.Field>
+		{/if}
+
 		<Form.Button class="w-fit">
 			{#if $submitting}
 				<LoaderCircle class="animate-spin" />

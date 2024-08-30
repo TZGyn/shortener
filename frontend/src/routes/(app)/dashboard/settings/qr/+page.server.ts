@@ -6,8 +6,10 @@ import { formSchema } from './schema'
 import { zod } from 'sveltekit-superforms/adapters'
 import { setting } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
+import { user as userTable } from '$lib/db/schema'
 
 export const load = (async (event) => {
+	const user = event.locals.user
 	const settings = await db.query.setting.findFirst({
 		where: (setting, { eq }) =>
 			eq(setting.userId, event.locals.user.id),
@@ -19,7 +21,12 @@ export const load = (async (event) => {
 	return {
 		settings,
 		form: await superValidate(
-			{ qr_background, qr_foreground },
+			{
+				qr_background,
+				qr_foreground,
+				qrCornerSquareStyle: user.qrCornerSquareStyle,
+				qrDotStyle: user.qrDotStyle,
+			},
 			zod(formSchema),
 		),
 	}
@@ -34,6 +41,7 @@ export const actions: Actions = {
 			})
 		}
 
+		const user = event.locals.user
 		const userId = event.locals.user.id
 		const settings = await db.query.setting.findFirst({
 			where: (settingData, { eq }) => eq(settingData.userId, userId),
@@ -42,10 +50,24 @@ export const actions: Actions = {
 		if (!settings) {
 			await db.insert(setting).values({ userId })
 		}
+
+		const {
+			qr_background,
+			qr_foreground,
+			qrCornerSquareStyle,
+			qrDotStyle,
+		} = form.data
 		await db
 			.update(setting)
-			.set(form.data)
+			.set({ qr_background, qr_foreground })
 			.where(eq(setting.userId, userId))
+
+		if (user.plan !== 'free') {
+			await db
+				.update(userTable)
+				.set({ qrCornerSquareStyle, qrDotStyle })
+		}
+
 		return {
 			form,
 		}

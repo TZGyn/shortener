@@ -9,4 +9,6 @@ export const formSchema = z.object({
 		.string()
 		.min(1, { message: 'Foreground color is required' })
 		.max(7),
+	qrCornerSquareStyle: z.custom<'dot' | 'square' | 'extra-rounded'>(),
+	qrDotStyle: z.custom<'square' | 'rounded'>(),
 })

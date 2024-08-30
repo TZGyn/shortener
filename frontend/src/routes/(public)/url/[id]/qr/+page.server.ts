@@ -27,6 +27,8 @@ export const load = (async (event) => {
 
 	let colorSetting: {
 		color: { background: string | null; foreground: string | null }
+		cornerSquareType: 'square' | 'dot' | 'extra-rounded'
+		dotStyle: 'square' | 'rounded'
 	} | null = null
 	if (color === 'true') {
 		if (shortener.project) {
@@ -35,6 +37,8 @@ export const load = (async (event) => {
 					background: shortener.project.qr_background,
 					foreground: shortener.project.qr_foreground,
 				},
+				cornerSquareType: shortener.project.qrCornerSquareStyle,
+				dotStyle: shortener.project.qrDotStyle,
 			}
 		} else if (shortener.user.setting) {
 			colorSetting = {
@@ -42,6 +46,8 @@ export const load = (async (event) => {
 					background: shortener.user.setting.qr_background,
 					foreground: shortener.user.setting.qr_foreground,
 				},
+				cornerSquareType: shortener.user.qrCornerSquareStyle,
+				dotStyle: shortener.user.qrDotStyle,
 			}
 		}
 	}

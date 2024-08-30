@@ -1,10 +1,13 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte'
 	import { browser } from '$app/environment'
 
 	export let background = '#fff'
 	export let color = '#000'
 	export let value = 'example.com/abcdefgh'
+	export let cornerSquareStyle: 'dot' | 'square' | 'extra-rounded' =
+		'square'
+	export let dotStyle: 'square' | 'rounded' = 'square'
 
 	let image = ''
 
@@ -30,9 +33,10 @@
 				},
 				dotsOptions: {
 					color: color,
+					type: dotStyle,
 				},
 				cornersSquareOptions: {
-					type: 'square',
+					type: cornerSquareStyle,
 				},
 			})
 			const blob = await qrcodestyling.getRawData()
@@ -43,7 +47,12 @@
 		}
 	}
 
-	$: browser && background && color && generateQrCode()
+	$: browser &&
+		background &&
+		color &&
+		cornerSquareStyle &&
+		dotStyle &&
+		generateQrCode()
 
 	onMount(() => {
 		generateQrCode()

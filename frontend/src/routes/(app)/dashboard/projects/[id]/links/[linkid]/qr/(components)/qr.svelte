@@ -3,11 +3,15 @@
 	import { toast } from 'svelte-sonner'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import { Badge } from '$lib/components/ui/badge'
+	import { browser } from '$app/environment'
 
 	export let background = '#fff'
 	export let color = '#000'
 	export let value = ''
 	export let code = ''
+	export let cornerSquareStyle: 'dot' | 'square' | 'extra-rounded' =
+		'square'
+	export let dotStyle: 'square' | 'rounded' = 'square'
 
 	let image = ''
 
@@ -49,9 +53,10 @@
 			},
 			dotsOptions: {
 				color: color,
+				type: dotStyle,
 			},
 			cornersSquareOptions: {
-				type: 'square',
+				type: cornerSquareStyle,
 			},
 		})
 		const blob = await qrcodestyling.getRawData()
@@ -59,11 +64,7 @@
 		image = URL.createObjectURL(blob)
 	}
 
-	$: {
-		if (value) {
-			generateQrCode()
-		}
-	}
+	$: value && browser && generateQrCode()
 </script>
 
 <div class="flex h-full flex-col items-center gap-4">
@@ -86,7 +87,7 @@
 				<DropdownMenu.Item
 					href={`/url/${code}/qr?color=true`}
 					target="_blank">
-					With Color
+					With Style
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>

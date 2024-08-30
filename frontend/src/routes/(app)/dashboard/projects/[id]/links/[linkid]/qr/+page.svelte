@@ -19,7 +19,9 @@
 				value={url + '/' + data.shortener.code}
 				code={data.shortener.code}
 				background={data.project.qr_background}
-				color={data.project.qr_foreground} />
+				color={data.project.qr_foreground}
+				cornerSquareStyle={data.project.qrCornerSquareStyle}
+				dotStyle={data.project.qrDotStyle} />
 		</div>
 	</ScrollArea>
 {:else}
@@ -27,5 +29,7 @@
 		value={url + '/' + data.shortener.code}
 		code={data.shortener.code}
 		background={data.project.qr_background}
-		color={data.project.qr_foreground} />
+		color={data.project.qr_foreground}
+		cornerSquareStyle={data.project.qrCornerSquareStyle}
+		dotStyle={data.project.qrDotStyle} />
 {/if}

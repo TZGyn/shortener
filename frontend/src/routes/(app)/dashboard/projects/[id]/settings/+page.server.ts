@@ -51,6 +51,8 @@ export const load = (async (event) => {
 				name: project.name,
 				qr_background: project.qr_background,
 				qr_foreground: project.qr_foreground,
+				qrCornerSquareStyle: project.qrCornerSquareStyle,
+				qrDotStyle: project.qrDotStyle,
 			},
 			zod(formSchema),
 		),
@@ -83,8 +85,7 @@ export const actions: Actions = {
 				form,
 			})
 		}
-
-		const userId = event.locals.user.id
+		const user = event.locals.user
 
 		await db
 			.update(projectTable)
@@ -92,11 +93,17 @@ export const actions: Actions = {
 				name: form.data.name,
 				qr_background: form.data.qr_background,
 				qr_foreground: form.data.qr_foreground,
+				qrCornerSquareStyle:
+					user.plan !== 'free'
+						? form.data.qrCornerSquareStyle
+						: undefined,
+				qrDotStyle:
+					user.plan !== 'free' ? form.data.qrDotStyle : undefined,
 			})
 			.where(
 				and(
 					eq(projectTable.uuid, event.params.id),
-					eq(projectTable.userId, userId),
+					eq(projectTable.userId, user.id),
 				),
 			)
 

@@ -309,7 +309,7 @@
 		</div>
 		<Separator />
 
-		<EditForm data={data.form} />
+		<EditForm data={data.form} isPro={data.user.plan !== 'free'} />
 
 		<Separator />
 

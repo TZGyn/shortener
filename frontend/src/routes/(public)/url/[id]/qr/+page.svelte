@@ -47,9 +47,10 @@
 			},
 			dotsOptions: {
 				color: data.colorSetting?.color.foreground || '#000',
+				type: data.colorSetting?.dotStyle || 'square',
 			},
 			cornersSquareOptions: {
-				type: 'square',
+				type: data.colorSetting?.cornerSquareType || 'square',
 			},
 		})
 		const blob = await qrcodestyling.getRawData()
