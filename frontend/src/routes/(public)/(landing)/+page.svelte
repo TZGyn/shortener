@@ -138,6 +138,10 @@
 									<Check class="text-brand" />
 									<p>2 years click history</p>
 								</div>
+								<div class="flex items-center gap-2">
+									<Check class="text-brand" />
+									<p>Custom QR Code</p>
+								</div>
 							</div>
 						</div>
 						<div
