@@ -187,6 +187,10 @@ func main() {
 
 		cache_client.Set(ip+"_"+string(shortenerId), true, cache.DefaultExpiration)
 
+		if ua.Bot {
+			return c.Redirect(finalRedirectUrl)
+		}
+
 		record, err := getCity(geodb, ip)
 		if err != nil {
 			return c.Redirect(finalRedirectUrl)
