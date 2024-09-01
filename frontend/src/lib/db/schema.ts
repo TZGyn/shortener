@@ -6,6 +6,7 @@ import {
 	integer,
 	uuid,
 	boolean,
+	text,
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
@@ -25,6 +26,12 @@ export const user = pgTable('user', {
 		.$type<'free' | 'pro' | 'owner'>()
 		.default('free'),
 	stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
+	qrBackground: varchar('qr_background', { length: 7 })
+		.notNull()
+		.default('#fff'),
+	qrForeground: varchar('qr_foreground', { length: 7 })
+		.notNull()
+		.default('#000'),
 	qrCornerSquareStyle: varchar('qr_corner_square_style')
 		.$type<'dot' | 'square' | 'extra-rounded'>()
 		.notNull()
@@ -33,6 +40,7 @@ export const user = pgTable('user', {
 		.$type<'square' | 'rounded'>()
 		.notNull()
 		.default('square'),
+	qrImageBase64: text('qr_image_base64'),
 })
 
 export const shortener = pgTable('shortener', {
@@ -82,6 +90,7 @@ export const project = pgTable('project', {
 		.$type<'square' | 'rounded'>()
 		.notNull()
 		.default('square'),
+	qrImageBase64: text('qr_image_base64'),
 })
 
 export const visitor = pgTable('visitor', {
@@ -114,12 +123,6 @@ export const session = pgTable('session', {
 	}).notNull(),
 })
 
-export const setting = pgTable('setting', {
-	userId: integer('user_id').notNull(),
-	qr_background: varchar('qr_background', { length: 7 }),
-	qr_foreground: varchar('qr_foreground', { length: 7 }),
-})
-
 export const emailVerificationToken = pgTable(
 	'email_verification_token',
 	{
@@ -136,7 +139,6 @@ export const emailVerificationToken = pgTable(
 // relations
 export const userRelations = relations(user, ({ one, many }) => ({
 	shortener: many(shortener),
-	setting: one(setting),
 }))
 
 export const shortenerRelations = relations(
@@ -175,13 +177,6 @@ export const visitorRelations = relations(visitor, ({ one }) => ({
 export const sessionRelations = relations(session, ({ one }) => ({
 	user: one(user, {
 		fields: [session.userId],
-		references: [user.id],
-	}),
-}))
-
-export const settingRelations = relations(setting, ({ one }) => ({
-	user: one(user, {
-		fields: [setting.userId],
 		references: [user.id],
 	}),
 }))

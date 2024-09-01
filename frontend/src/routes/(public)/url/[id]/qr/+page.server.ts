@@ -12,11 +12,7 @@ export const load = (async (event) => {
 	const shortener = await db.query.shortener.findFirst({
 		where: (shortener, { eq }) => eq(shortener.code, id),
 		with: {
-			user: {
-				with: {
-					setting: true,
-				},
-			},
+			user: true,
 			project: true,
 		},
 	})
@@ -25,29 +21,32 @@ export const load = (async (event) => {
 		redirect(301, `/dashboard/links`)
 	}
 
-	let colorSetting: {
+	let setting: {
 		color: { background: string | null; foreground: string | null }
 		cornerSquareType: 'square' | 'dot' | 'extra-rounded'
 		dotStyle: 'square' | 'rounded'
+		image: string | null
 	} | null = null
 	if (color === 'true') {
 		if (shortener.project) {
-			colorSetting = {
+			setting = {
 				color: {
 					background: shortener.project.qr_background,
 					foreground: shortener.project.qr_foreground,
 				},
 				cornerSquareType: shortener.project.qrCornerSquareStyle,
 				dotStyle: shortener.project.qrDotStyle,
+				image: shortener.project.qrImageBase64,
 			}
-		} else if (shortener.user.setting) {
-			colorSetting = {
+		} else if (shortener.user) {
+			setting = {
 				color: {
-					background: shortener.user.setting.qr_background,
-					foreground: shortener.user.setting.qr_foreground,
+					background: shortener.user.qrBackground,
+					foreground: shortener.user.qrForeground,
 				},
 				cornerSquareType: shortener.user.qrCornerSquareStyle,
 				dotStyle: shortener.user.qrDotStyle,
+				image: shortener.user.qrImageBase64,
 			}
 		}
 	}
@@ -57,5 +56,5 @@ export const load = (async (event) => {
 			? shortener.project.custom_domain || shortenerUrl
 			: shortenerUrl
 
-	return { shortener, url, colorSetting, shortenerId: id }
+	return { shortener, url, setting, shortenerId: id }
 }) satisfies PageServerLoad

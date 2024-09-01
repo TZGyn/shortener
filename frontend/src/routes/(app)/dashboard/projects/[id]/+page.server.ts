@@ -88,14 +88,9 @@ export const load = (async (event) => {
 			),
 		)
 
-	const settings = db.query.setting.findFirst({
-		where: (settings, { eq }) => eq(settings.userId, user.id),
-	})
-
 	return {
 		selectedProject,
 		shorteners,
-		settings: await settings,
 		page,
 		perPage,
 		search,

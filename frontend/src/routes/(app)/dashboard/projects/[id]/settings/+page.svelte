@@ -309,7 +309,10 @@
 		</div>
 		<Separator />
 
-		<EditForm data={data.form} isPro={data.user.plan !== 'free'} />
+		<EditForm
+			data={data.form}
+			isPro={data.user.plan !== 'free'}
+			qrImageBase64={data.qrImageBase64} />
 
 		<Separator />
 

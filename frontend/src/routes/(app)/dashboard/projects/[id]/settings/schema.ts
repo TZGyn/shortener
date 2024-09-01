@@ -12,6 +12,17 @@ export const formSchema = z.object({
 		.max(7),
 	qrCornerSquareStyle: z.custom<'dot' | 'square' | 'extra-rounded'>(),
 	qrDotStyle: z.custom<'square' | 'rounded'>(),
+	qrImage: z
+		.instanceof(File, { message: 'Please upload a file' })
+		.refine(
+			(file) =>
+				file.type === 'image/jpeg' || file.type === 'image/png',
+			{
+				message: 'Only JPEG or PNG files are allowed',
+			},
+		)
+		.optional()
+		.nullable(),
 })
 
 export const enableCustomDomainFormSchema = z.object({

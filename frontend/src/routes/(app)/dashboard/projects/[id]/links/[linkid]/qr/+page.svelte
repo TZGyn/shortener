@@ -16,20 +16,22 @@
 	<ScrollArea>
 		<div class="max-w-2xl px-10 py-4">
 			<QR
-				value={url + '/' + data.shortener.code}
+				value={'https://' + url + '/' + data.shortener.code}
 				code={data.shortener.code}
 				background={data.project.qr_background}
 				color={data.project.qr_foreground}
 				cornerSquareStyle={data.project.qrCornerSquareStyle}
-				dotStyle={data.project.qrDotStyle} />
+				dotStyle={data.project.qrDotStyle}
+				existingQrImage={data.project.qrImageBase64} />
 		</div>
 	</ScrollArea>
 {:else}
 	<QR
-		value={url + '/' + data.shortener.code}
+		value={'https://' + url + '/' + data.shortener.code}
 		code={data.shortener.code}
 		background={data.project.qr_background}
 		color={data.project.qr_foreground}
 		cornerSquareStyle={data.project.qrCornerSquareStyle}
-		dotStyle={data.project.qrDotStyle} />
+		dotStyle={data.project.qrDotStyle}
+		existingQrImage={data.project.qrImageBase64} />
 {/if}

@@ -12,6 +12,7 @@
 	export let cornerSquareStyle: 'dot' | 'square' | 'extra-rounded' =
 		'square'
 	export let dotStyle: 'square' | 'rounded' = 'square'
+	export let existingQrImage: string | null = null
 
 	let image = ''
 
@@ -43,9 +44,9 @@
 			data: value,
 			width: 300,
 			height: 300,
-			margin: 10,
+			margin: 1,
 			qrOptions: {
-				errorCorrectionLevel: 'L',
+				errorCorrectionLevel: 'M',
 				typeNumber: 0,
 			},
 			backgroundOptions: {
@@ -57,6 +58,11 @@
 			},
 			cornersSquareOptions: {
 				type: cornerSquareStyle,
+			},
+			image: existingQrImage || undefined,
+			imageOptions: {
+				imageSize: 0.7,
+				margin: 8,
 			},
 		})
 		const blob = await qrcodestyling.getRawData()

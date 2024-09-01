@@ -6,6 +6,7 @@ import {
 	setMessage,
 	superValidate,
 	fail,
+	withFiles,
 } from 'sveltekit-superforms'
 import {
 	formSchema,
@@ -56,6 +57,7 @@ export const load = (async (event) => {
 			},
 			zod(formSchema),
 		),
+		qrImageBase64: project.qrImageBase64,
 		enableCustomDomainForm: await superValidate(
 			{ enableDomain: project.custom_domain || '' },
 			zod(enableCustomDomainFormSchema),
@@ -81,11 +83,24 @@ export const actions: Actions = {
 	update: async (event) => {
 		const form = await superValidate(event, zod(formSchema))
 		if (!form.valid) {
-			return fail(400, {
-				form,
-			})
+			return fail(
+				400,
+				withFiles({
+					form,
+				}),
+			)
 		}
 		const user = event.locals.user
+
+		const qrImage = form.data.qrImage
+
+		const qrImageType = qrImage ? qrImage.type : undefined
+		const qrImageBlob = qrImage
+			? await qrImage.arrayBuffer()
+			: undefined
+		const qrImageBase64 = qrImageBlob
+			? Buffer.from(qrImageBlob).toString('base64')
+			: undefined
 
 		await db
 			.update(projectTable)
@@ -99,6 +114,12 @@ export const actions: Actions = {
 						: undefined,
 				qrDotStyle:
 					user.plan !== 'free' ? form.data.qrDotStyle : undefined,
+				qrImageBase64:
+					user.plan !== 'free'
+						? qrImage
+							? `data:${qrImageType};base64,${qrImageBase64}`
+							: undefined
+						: undefined,
 			})
 			.where(
 				and(
@@ -107,9 +128,9 @@ export const actions: Actions = {
 				),
 			)
 
-		return {
+		return withFiles({
 			form,
-		}
+		})
 	},
 	enable_custom_domain: async (event) => {
 		const form = await superValidate(

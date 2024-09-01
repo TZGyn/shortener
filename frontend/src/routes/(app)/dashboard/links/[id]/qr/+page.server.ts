@@ -18,9 +18,5 @@ export const load = (async (event) => {
 		redirect(300, `/dashboard/links`)
 	}
 
-	const settings = await db.query.setting.findFirst({
-		where: (settings, { eq }) => eq(settings.userId, user.id),
-	})
-
-	return { shortener, settings }
+	return { shortener }
 }) satisfies PageServerLoad

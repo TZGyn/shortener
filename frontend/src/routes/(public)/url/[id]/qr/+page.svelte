@@ -34,23 +34,28 @@
 		const qrcodestyling = new (
 			await import('qr-code-styling')
 		).default({
-			data: data.url + '/' + data.shortenerId,
+			data: 'https://' + data.url + '/' + data.shortenerId,
 			width: 300,
 			height: 300,
-			margin: 10,
+			margin: 1,
 			qrOptions: {
-				errorCorrectionLevel: 'L',
+				errorCorrectionLevel: 'M',
 				typeNumber: 0,
 			},
 			backgroundOptions: {
-				color: data.colorSetting?.color.background || '#fff',
+				color: data.setting?.color.background || '#fff',
 			},
 			dotsOptions: {
-				color: data.colorSetting?.color.foreground || '#000',
-				type: data.colorSetting?.dotStyle || 'square',
+				color: data.setting?.color.foreground || '#000',
+				type: data.setting?.dotStyle || 'square',
 			},
 			cornersSquareOptions: {
-				type: data.colorSetting?.cornerSquareType || 'square',
+				type: data.setting?.cornerSquareType || 'square',
+			},
+			image: data.setting?.image || undefined,
+			imageOptions: {
+				imageSize: 0.7,
+				margin: 8,
 			},
 		})
 		const blob = await qrcodestyling.getRawData()

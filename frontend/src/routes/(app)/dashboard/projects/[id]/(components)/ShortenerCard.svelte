@@ -7,7 +7,7 @@
 	import * as Avatar from '$lib/components/ui/avatar'
 	import { Badge } from '$lib/components/ui/badge'
 	import { ScrollArea } from '$lib/components/ui/scroll-area'
-	import type { Shortener, Project, Setting } from '$lib/db/types'
+	import type { Shortener, Project } from '$lib/db/types'
 	import {
 		BarChart,
 		EditIcon,
@@ -27,7 +27,6 @@
 		visitorCount: number
 	}
 	export let shortener_url: string
-	export let settings: Setting | undefined
 	export let selected_project: Project
 
 	let deleteDialogOpen = false

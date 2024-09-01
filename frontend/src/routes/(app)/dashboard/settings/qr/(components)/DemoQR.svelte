@@ -4,10 +4,12 @@
 
 	export let background = '#fff'
 	export let color = '#000'
-	export let value = 'example.com/abcdefgh'
+	export let value = 'abcdefghajskdadsj'
 	export let cornerSquareStyle: 'dot' | 'square' | 'extra-rounded' =
 		'square'
 	export let dotStyle: 'square' | 'rounded' = 'square'
+	export let existingQrImage: string | null = null
+	export let qrImage: File | null = null
 
 	let image = ''
 
@@ -17,15 +19,19 @@
 		}
 
 		try {
+			const qrImageDataUrl = qrImage
+				? URL.createObjectURL(qrImage)
+				: existingQrImage || undefined
+
 			const qrcodestyling = new (
 				await import('qr-code-styling')
 			).default({
 				data: value,
 				width: 300,
 				height: 300,
-				margin: 10,
+				margin: 1,
 				qrOptions: {
-					errorCorrectionLevel: 'L',
+					errorCorrectionLevel: 'M',
 					typeNumber: 0,
 				},
 				backgroundOptions: {
@@ -37,6 +43,11 @@
 				},
 				cornersSquareOptions: {
 					type: cornerSquareStyle,
+				},
+				image: qrImageDataUrl,
+				imageOptions: {
+					imageSize: 0.7,
+					margin: 8,
 				},
 			})
 			const blob = await qrcodestyling.getRawData()
@@ -52,6 +63,7 @@
 		color &&
 		cornerSquareStyle &&
 		dotStyle &&
+		(qrImage === null || qrImage) &&
 		generateQrCode()
 
 	onMount(() => {
