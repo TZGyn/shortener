@@ -5,10 +5,10 @@ WORKDIR /app
 COPY ./package.json ./
 COPY ./bun.lockb ./
 
+RUN npm install
+
 COPY . .
 # COPY ./.env.example ./.env
-
-RUN npm install
 
 ARG DATABASE_URL
 
