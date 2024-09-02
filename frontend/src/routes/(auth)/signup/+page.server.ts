@@ -74,8 +74,7 @@ export const actions: Actions = {
 		const redirectUrl = event.url.searchParams.get('redirect')
 
 		if (redirectUrl) {
-			console.log(redirectUrl)
-			redirect(301, redirectUrl)
+			redirect(302, redirectUrl)
 		}
 
 		return {

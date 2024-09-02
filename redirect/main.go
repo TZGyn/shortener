@@ -105,7 +105,7 @@ func main() {
 	invalidUrl := fallbackurl + "/qr/invalid"
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		return c.Redirect(fallbackurl)
+		return c.Redirect(fallbackurl, 301)
 	})
 
 	app.Get("/:code", func(c *fiber.Ctx) error {

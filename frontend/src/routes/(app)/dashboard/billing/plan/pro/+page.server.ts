@@ -8,10 +8,10 @@ import { eq } from 'drizzle-orm'
 
 export const load = (async (events) => {
 	if (events.locals.user.plan !== 'free') {
-		redirect(301, '/dashboard/billing')
+		redirect(302, '/dashboard/billing')
 	}
 	if (!events.locals.user.email_verified) {
-		redirect(301, '/dashboard/billing')
+		redirect(302, '/dashboard/billing')
 	}
 
 	const user = events.locals.user
@@ -47,8 +47,8 @@ export const load = (async (events) => {
 	})
 
 	if (!session.url) {
-		redirect(301, '/dashboard/billing')
+		redirect(302, '/dashboard/billing')
 	}
 
-	redirect(301, session.url)
+	redirect(302, session.url)
 }) satisfies PageServerLoad

@@ -10,14 +10,14 @@ export const load = (async ({ url }) => {
 	const session_id = url.searchParams.get('session_id')
 
 	const stripe = new Stripe(env.PRIVATE_STRIPE_SECRET_KEY)
-	if (!session_id) redirect(301, '/dashboard/billing')
+	if (!session_id) redirect(302, '/dashboard/billing')
 	const session = await stripe.checkout.sessions.retrieve(session_id)
 
 	if (
 		session.status === 'complete' &&
 		session.payment_status === 'paid'
 	) {
-		if (!session.customer) redirect(301, '/dashboard/billing')
+		if (!session.customer) redirect(302, '/dashboard/billing')
 
 		await db
 			.update(user)
@@ -26,6 +26,6 @@ export const load = (async ({ url }) => {
 			})
 			.where(eq(user.stripeCustomerId, session.customer?.toString()))
 
-		redirect(301, '/dashboard/billing')
+		redirect(302, '/dashboard/billing')
 	}
 }) satisfies PageServerLoad

@@ -18,7 +18,7 @@ export const load = (async (event) => {
 	})
 
 	if (!shortener) {
-		redirect(301, `/dashboard/links`)
+		redirect(302, `/dashboard/links`)
 	}
 
 	let setting: {
