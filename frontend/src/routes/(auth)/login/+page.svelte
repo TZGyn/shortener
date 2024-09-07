@@ -27,7 +27,7 @@
 	<div
 		class="bg-primary-foreground relative hidden h-full flex-col p-10 text-white dark:border-r lg:flex">
 		<a href="/">
-			<img src="/logo.png" alt="" class="h-12" />
+			<img src="/logo.png" alt="logo" class="h-12" />
 		</a>
 	</div>
 	<div class="p-8">

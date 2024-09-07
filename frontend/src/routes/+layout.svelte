@@ -15,7 +15,11 @@
 	<meta
 		name="description"
 		content="Kon.sh URL shortener - free, open source link shortener with analytics, custom qr code and custom name. Bitly/tiny url alternative" />
-	<meta property="og:image" content="/logo.png" />
+	<meta property="og:title" content="Kon.sh" />
+	<meta
+		property="og:description"
+		content="Kon.sh URL shortener - free, open source link shortener with analytics, custom qr code and custom name. Bitly/tiny url alternative" />
+	<meta property="og:image" content="/og.png" />
 </svelte:head>
 
 <ModeWatcher />

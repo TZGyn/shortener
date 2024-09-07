@@ -15,7 +15,7 @@
 <div class="flex h-screen w-screen flex-col items-center">
 	<header class="grid w-full max-w-6xl grid-cols-3 px-8 py-4">
 		<div class="flex items-center justify-start gap-4">
-			<img src="/logo.png" alt="" class="h-8" />
+			<img src="/logo.png" alt="logo" class="h-8" />
 			<div>kon.sh</div>
 		</div>
 		<div class="grid grid-cols-4 items-center">

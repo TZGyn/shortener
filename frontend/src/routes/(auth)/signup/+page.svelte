@@ -6,6 +6,10 @@
 	export let data: PageData
 </script>
 
+<svelte:head>
+	<link rel="canonical" href="https://app.kon.sh/signup" />
+</svelte:head>
+
 <div
 	class="container relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
 	<div class="absolute right-4 top-4 md:right-8 md:top-8">
@@ -14,7 +18,7 @@
 	<div
 		class="bg-primary-foreground relative hidden h-full flex-col p-10 text-white dark:border-r lg:flex">
 		<a href="/">
-			<img src="/logo.png" alt="" class="h-12" />
+			<img src="/logo.png" alt="logo" class="h-12" />
 		</a>
 	</div>
 	<div class="p-8">
