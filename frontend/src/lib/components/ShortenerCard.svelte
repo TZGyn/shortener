@@ -84,8 +84,6 @@
 		isLoadingQrModal = false
 	}
 
-	const hostDomain = 'https://' + shortener.link.split('/')[2]
-
 	const shortenerUrl = shortener.project?.enable_custom_domain
 		? shortener.project.custom_domain || shortener_url
 		: shortener_url
@@ -96,7 +94,8 @@
 		<Card.Title class="flex items-center justify-between gap-4">
 			<Avatar.Root class="overflow-visible">
 				<Avatar.Image
-					src={hostDomain + '/favicon.ico'}
+					src={'https://www.google.com/s2/favicons?sz=128&domain_url=' +
+						shortener.link}
 					alt="favicon" />
 				<Avatar.Fallback class="bg-opacity-0">
 					<img src="/favicon.png" alt="favicon" />
