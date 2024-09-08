@@ -28,7 +28,7 @@
 			</Button>
 		</div>
 		<div class="flex flex-col items-center gap-10 pt-12 text-center">
-			<h1 class="text-4xl font-bold">Why Kon.sh?</h1>
+			<h2 class="text-4xl font-bold">Why Kon.sh?</h2>
 			<p class="max-w-lg text-center text-xl font-semibold">
 				Kon.sh is completely self-hostable, open source, and free. No
 				vendor lock-in, can be hosted using docker/docker compose with
@@ -41,14 +41,14 @@
 		<section id="features" class="pt-12">
 			<div
 				class="flex w-full flex-col items-center gap-10 text-center">
-				<h1 class="text-4xl font-bold">Features</h1>
+				<h2 class="text-4xl font-bold">Features</h2>
 				<div
 					class="grid w-full grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))] gap-4">
 					<div class="flex gap-8 rounded-lg p-8">
 						<div class="flex w-full flex-col gap-4 text-start">
 							<div class="flex flex-col items-center justify-center">
 								<QrCodeIcon size={128} class="text-brand" />
-								<h2 class="text-xl font-semibold">Custom QR Codes</h2>
+								<h3 class="text-xl font-semibold">Custom QR Codes</h3>
 							</div>
 						</div>
 					</div>
@@ -56,7 +56,7 @@
 						<div class="flex w-full flex-col gap-4 text-start">
 							<div class="flex flex-col items-center justify-center">
 								<ChartAreaIcon size={128} class="text-brand" />
-								<h2 class="text-xl font-semibold">Analytics</h2>
+								<h3 class="text-xl font-semibold">Analytics</h3>
 							</div>
 						</div>
 					</div>
@@ -64,7 +64,7 @@
 						<div class="flex w-full flex-col gap-4 text-start">
 							<div class="flex flex-col items-center justify-center">
 								<ExternalLinkIcon size={128} class="text-brand" />
-								<h2 class="text-xl font-semibold">Custom Domains</h2>
+								<h3 class="text-xl font-semibold">Custom Domains</h3>
 							</div>
 						</div>
 					</div>
@@ -74,12 +74,12 @@
 		<section id="pricing" class="pt-12">
 			<div
 				class="flex w-full flex-col items-center gap-10 text-center">
-				<h1 class="text-4xl font-bold">Pricing</h1>
+				<h2 class="text-4xl font-bold">Pricing</h2>
 				<div
 					class="grid w-full grid-cols-[repeat(auto-fit,_minmax(450px,_1fr))] gap-4">
 					<div class="flex gap-8 rounded-lg border p-8">
 						<div class="flex w-full flex-col gap-4 text-start">
-							<h2 class="text-2xl font-bold">Free</h2>
+							<h3 class="text-2xl font-bold">Free</h3>
 							<p class="text-muted-foreground">
 								No credit card required.
 							</p>
@@ -102,7 +102,7 @@
 						<div
 							class="flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-gradient-to-r from-orange-300 to-orange-400 text-start">
 							<div class="flex items-end gap-2">
-								<h1 class="text-3xl font-bold">$0</h1>
+								<p class="text-3xl font-bold">$0</p>
 								<span>/month</span>
 							</div>
 							<Button href="/signup" class="bg-background">
@@ -112,7 +112,7 @@
 					</div>
 					<div class="flex gap-8 rounded-lg border p-8">
 						<div class="flex w-full flex-col gap-4 text-start">
-							<h2 class="text-2xl font-bold">Pro</h2>
+							<h3 class="text-2xl font-bold">Pro</h3>
 							<p class="text-muted-foreground">
 								More customizations.
 							</p>
@@ -147,7 +147,7 @@
 						<div
 							class="flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-gradient-to-r from-orange-300 to-orange-400 text-start">
 							<div class="flex items-end gap-2">
-								<h1 class="text-3xl font-bold">$9</h1>
+								<p class="text-3xl font-bold">$9</p>
 								<span>/month</span>
 							</div>
 							<Button
@@ -161,7 +161,7 @@
 					</div>
 					<div class="flex gap-8 rounded-lg border p-8">
 						<div class="flex w-full flex-col gap-4 text-start">
-							<h2 class="text-2xl font-bold">Free (Self Host)</h2>
+							<h3 class="text-2xl font-bold">Free (Self Host)</h3>
 							<p>No credit card required.</p>
 							<Separator />
 							<div class="flex flex-col gap-4">
@@ -182,7 +182,7 @@
 						<div
 							class="flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-gradient-to-r from-orange-300 to-orange-400 text-start">
 							<div class="flex items-end gap-2">
-								<h1 class="text-3xl font-bold">$0</h1>
+								<p class="text-3xl font-bold">$0</p>
 								<span>/month</span>
 							</div>
 							<Button href="/signup" class="bg-background">
