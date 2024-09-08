@@ -87,3 +87,7 @@ Number.prototype.toDecimalPoint = function (decimal: number) {
 
 	return Math.round(this.valueOf() * value) / value
 }
+
+export const isAlphanumeric = (str: string) => {
+	return str.match('^[A-Za-z0-9]+$')
+}

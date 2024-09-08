@@ -15,6 +15,7 @@ import { zod } from 'sveltekit-superforms/adapters'
 import { formSchema } from './schema'
 import type { Actions } from './$types'
 import { nanoid } from 'nanoid'
+import { isAlphanumeric } from '$lib/utils'
 
 export const load = (async (event) => {
 	const { project: selectedProject } = await event.parent()
@@ -119,6 +120,14 @@ export const actions: Actions = {
 					'Please Enter Custom Code',
 				)
 			}
+			if (!isAlphanumeric(form.data.custom_code)) {
+				return setError(
+					form,
+					'custom_code',
+					'Code cannot contain special characters',
+				)
+			}
+
 			const customCodeExist = await db.query.shortener.findFirst({
 				where: (shortener, { eq }) =>
 					eq(shortener.code, form.data.custom_code),

@@ -7,6 +7,7 @@ import { db } from '$lib/db'
 import { redirect } from '@sveltejs/kit'
 import { shortener } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
+import { isAlphanumeric } from '$lib/utils'
 
 export const load = (async (event) => {
 	const { project: selectedProject } = await event.parent()
@@ -63,6 +64,14 @@ export const actions: Actions = {
 					'Please Enter Custom Code',
 				)
 			}
+			if (!isAlphanumeric(form.data.custom_code)) {
+				return setError(
+					form,
+					'custom_code',
+					'Code cannot contain special characters',
+				)
+			}
+
 			const customCodeExist = await db.query.shortener.findFirst({
 				where: (shortener, { eq, and, ne }) =>
 					and(
