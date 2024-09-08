@@ -28,6 +28,7 @@
 	let searchUpdateTimeout: any
 
 	$: browser &&
+		search &&
 		goto(
 			updateSearchParam([
 				{ name: 'search', value: search },
@@ -113,7 +114,18 @@
 								search = target.value
 							}, 500)
 						}} />
-					<Button disabled={!search} on:click={() => (search = '')}>
+					<Button
+						disabled={!search}
+						on:click={() =>
+							goto(
+								updateSearchParam([
+									{ name: 'search', value: search },
+									{
+										name: 'page',
+										value: 1,
+									},
+								]),
+							)}>
 						Clear
 					</Button>
 				</div>
@@ -162,7 +174,18 @@
 					search = target.value
 				}, 500)
 			}} />
-		<Button disabled={!search} on:click={() => (search = '')}>
+		<Button
+			disabled={!search}
+			on:click={() =>
+				goto(
+					updateSearchParam([
+						{ name: 'search', value: search },
+						{
+							name: 'page',
+							value: 1,
+						},
+					]),
+				)}>
 			Clear
 		</Button>
 	</div>
