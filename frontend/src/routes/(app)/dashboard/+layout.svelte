@@ -74,7 +74,7 @@
 	class="max-w-screen flex h-screen max-h-screen w-screen overflow-hidden">
 	<div class="bg-muted/40 flex max-w-[300px] flex-col border-r">
 		<div
-			class="flex w-full items-center justify-center gap-4 border-b px-2 py-2 lg:px-4">
+			class="flex h-[60px] max-h-[60px] min-h-[60px] w-full items-center justify-center gap-4 border-b px-2 py-2 lg:px-4">
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>
 					<Avatar.Root>

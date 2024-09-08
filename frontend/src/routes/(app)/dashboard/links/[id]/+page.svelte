@@ -104,254 +104,293 @@
 	})
 </script>
 
-<div class="flex min-h-[80px] items-center justify-between p-4">
-	<div class="text-2xl font-bold">{data.shortener.link}</div>
-</div>
-<Separator />
-
 <div
-	class="grid grid-cols-[repeat(auto-fit,_minmax(600px,_1fr))] gap-4 overflow-y-scroll p-4">
-	<Card.Root>
-		<Card.Header>
-			<Card.Title>Clicks</Card.Title>
-			<Card.Description>
-				Number of visit(s) over this year
-			</Card.Description>
-		</Card.Header>
-		<Card.Content>
-			<div bind:this={container}></div>
-		</Card.Content>
-	</Card.Root>
+	class="flex max-h-[80px] items-center justify-between border-b p-4">
+	<div class="text-xl font-bold">{data.shortener.link}</div>
+</div>
 
-	<Card.Root class="min-h-[500px]">
+<div class="overflow-y-scroll">
+	<div class="flex p-4">
+		<Card.Root class="w-[400px]">
+			<Card.Header>
+				<Card.Title>Total Visitors</Card.Title>
+				<Card.Description>
+					Number of visit(s) all time
+				</Card.Description>
+			</Card.Header>
+			<Card.Content>
+				<span class="text-2xl font-bold">
+					{data.visitorAllTime[0].count}
+				</span>
+			</Card.Content>
+		</Card.Root>
+	</div>
+
+	<div
+		class="grid grid-cols-[repeat(auto-fit,_minmax(600px,_1fr))] gap-4 gap-y-8 p-4">
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>Clicks</Card.Title>
+				<Card.Description>
+					Number of visit(s) over this year
+				</Card.Description>
+			</Card.Header>
+			<Card.Content>
+				<div bind:this={container}></div>
+			</Card.Content>
+		</Card.Root>
+
 		<Tabs.Root value="country">
-			<Card.Header
-				class="flex w-full flex-row items-center justify-between space-y-0">
-				<div>
-					<Card.Title>Visitors</Card.Title>
-					<Card.Description>
-						Visitors by Country/City
-					</Card.Description>
-				</div>
-				<Tabs.List>
-					<Tabs.Trigger value="country">Country</Tabs.Trigger>
-					<Tabs.Trigger value="city">City</Tabs.Trigger>
-				</Tabs.List>
-			</Card.Header>
-			<Card.Content>
-				<Tabs.Content value="country">
-					{#each data.visitorByCountry as visitorByCountry}
-						<div
-							class="hover:bg-muted flex flex-col gap-2 border-b p-2 transition-colors">
-							<div class="flex items-center justify-between">
-								<div class="flex items-center gap-4">
-									<img
-										src={`https://flagsapi.com/${visitorByCountry.code}/flat/32.png`}
-										alt="" />
-									<div>{visitorByCountry.country}</div>
+			<Tabs.List>
+				<Tabs.Trigger value="country">Country</Tabs.Trigger>
+				<Tabs.Trigger value="city">City</Tabs.Trigger>
+			</Tabs.List>
+			<Tabs.Content value="country">
+				<Card.Root class="h-full min-h-[600px]">
+					<Card.Header
+						class="flex w-full flex-row items-center justify-between border-b p-4">
+						<Card.Description>Name</Card.Description>
+						<Card.Description>Count</Card.Description>
+					</Card.Header>
+					<Card.Content class="p-0">
+						{#each data.visitorByCountry as visitorByCountry}
+							<div
+								class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
+								<div class="flex items-center justify-between">
+									<div class="flex items-center gap-4">
+										<img
+											src={`https://flagsapi.com/${visitorByCountry.code}/flat/32.png`}
+											alt="" />
+										<div>{visitorByCountry.country}</div>
+									</div>
+									<div>
+										{visitorByCountry.count}
+										<span class="text-muted-foreground">
+											({(
+												(visitorByCountry.count /
+													data.visitorAllTime[0].count) *
+												100
+											).toDecimalPoint(2)} %)
+										</span>
+									</div>
 								</div>
-								<div>
-									{visitorByCountry.count}
-									<span class="text-muted-foreground">
-										({(
-											(visitorByCountry.count /
-												data.visitorAllTime[0].count) *
-											100
-										).toDecimalPoint(2)} %)
-									</span>
-								</div>
+								<Progress
+									value={visitorByCountry.count}
+									max={data.visitorAllTime[0].count}
+									class={'h-2'} />
 							</div>
-							<Progress
-								value={visitorByCountry.count}
-								max={data.visitorAllTime[0].count}
-								class={'h-2'} />
-						</div>
-					{/each}
-				</Tabs.Content>
-				<Tabs.Content value="city">
-					{#each data.visitorByCity as visitorByCity}
-						<div
-							class="hover:bg-muted flex flex-col gap-2 border-b p-2 transition-colors">
-							<div class="flex items-center justify-between">
-								<div class="flex items-center gap-4">
-									<img
-										src={`https://flagsapi.com/${visitorByCity.code}/flat/32.png`}
-										alt="" />
-									<div>{visitorByCity.city}</div>
+						{/each}
+					</Card.Content>
+				</Card.Root>
+			</Tabs.Content>
+			<Tabs.Content value="city">
+				<Card.Root class="h-full min-h-[600px]">
+					<Card.Header
+						class="flex w-full flex-row items-center justify-between border-b p-4">
+						<Card.Description>Name</Card.Description>
+						<Card.Description>Count</Card.Description>
+					</Card.Header>
+					<Card.Content class="p-0">
+						{#each data.visitorByCity as visitorByCity}
+							<div
+								class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
+								<div class="flex items-center justify-between">
+									<div class="flex items-center gap-4">
+										<img
+											src={`https://flagsapi.com/${visitorByCity.code}/flat/32.png`}
+											alt="" />
+										<div>{visitorByCity.city}</div>
+									</div>
+									<div>
+										{visitorByCity.count}
+										<span class="text-muted-foreground">
+											({(
+												(visitorByCity.count /
+													data.visitorAllTime[0].count) *
+												100
+											).toDecimalPoint(2)} %)
+										</span>
+									</div>
 								</div>
-								<div>
-									{visitorByCity.count}
-									<span class="text-muted-foreground">
-										({(
-											(visitorByCity.count /
-												data.visitorAllTime[0].count) *
-											100
-										).toDecimalPoint(2)} %)
-									</span>
-								</div>
+								<Progress
+									value={visitorByCity.count}
+									max={data.visitorAllTime[0].count}
+									class={'h-2'} />
 							</div>
-							<Progress
-								value={visitorByCity.count}
-								max={data.visitorAllTime[0].count}
-								class={'h-2'} />
-						</div>
-					{/each}
-				</Tabs.Content>
-			</Card.Content>
+						{/each}
+					</Card.Content>
+				</Card.Root>
+			</Tabs.Content>
 		</Tabs.Root>
-	</Card.Root>
-	<Card.Root class="min-h-[500px]">
+
 		<Tabs.Root value="vendor">
-			<Card.Header
-				class="flex w-full flex-row items-center justify-between space-y-0">
-				<div>
-					<Card.Title>Devices</Card.Title>
-					<Card.Description>Visitors by Device</Card.Description>
-				</div>
-				<Tabs.List>
-					<Tabs.Trigger value="vendor">Vendor</Tabs.Trigger>
-					<Tabs.Trigger value="type">Type</Tabs.Trigger>
-				</Tabs.List>
-			</Card.Header>
-			<Card.Content>
-				<Tabs.Content value="vendor">
-					{#each data.visitorByDeviceVendor as visitorByDeviceVendor}
-						<div
-							class="hover:bg-muted flex flex-col gap-2 border-b p-2 transition-colors">
-							<div class="flex items-center justify-between">
-								<div class="flex items-center gap-4">
-									<TabletSmartphone />
-									<div>
-										{visitorByDeviceVendor.vendor || '(None)'}
-									</div>
-								</div>
-								<div>
-									{visitorByDeviceVendor.count}
-									<span class="text-muted-foreground">
-										({(
-											(visitorByDeviceVendor.count /
-												data.visitorAllTime[0].count) *
-											100
-										).toDecimalPoint(2)} %)
-									</span>
-								</div>
-							</div>
-							<Progress
-								value={visitorByDeviceVendor.count}
-								max={data.visitorAllTime[0].count}
-								class={'h-2'} />
-						</div>
-					{/each}
-				</Tabs.Content>
-				<Tabs.Content value="type">
-					{#each data.visitorByDeviceType as visitorByDeviceType}
-						<div
-							class="hover:bg-muted flex flex-col gap-2 border-b p-2 transition-colors">
-							<div class="flex items-center justify-between">
-								<div class="flex items-center gap-4">
-									{#if visitorByDeviceType.type === 'mobile'}
-										<Smartphone />
-									{:else if visitorByDeviceType.type === 'tablet'}
-										<Tablet />
-									{:else}
+			<Tabs.List>
+				<Tabs.Trigger value="vendor">Vendor</Tabs.Trigger>
+				<Tabs.Trigger value="type">Type</Tabs.Trigger>
+			</Tabs.List>
+			<Tabs.Content value="vendor">
+				<Card.Root class="h-full min-h-[600px]">
+					<Card.Header
+						class="flex w-full flex-row items-center justify-between border-b p-4">
+						<Card.Description>Name</Card.Description>
+						<Card.Description>Count</Card.Description>
+					</Card.Header>
+					<Card.Content class="p-0">
+						{#each data.visitorByDeviceVendor as visitorByDeviceVendor}
+							<div
+								class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
+								<div class="flex items-center justify-between">
+									<div class="flex items-center gap-4">
 										<TabletSmartphone />
-									{/if}
+										<div>
+											{visitorByDeviceVendor.vendor || '(None)'}
+										</div>
+									</div>
 									<div>
-										{visitorByDeviceType.type ?? '(None)'}
+										{visitorByDeviceVendor.count}
+										<span class="text-muted-foreground">
+											({(
+												(visitorByDeviceVendor.count /
+													data.visitorAllTime[0].count) *
+												100
+											).toDecimalPoint(2)} %)
+										</span>
 									</div>
 								</div>
-								<div>
-									{visitorByDeviceType.count}
-									<span class="text-muted-foreground">
-										({(
-											(visitorByDeviceType.count /
-												data.visitorAllTime[0].count) *
-											100
-										).toDecimalPoint(2)} %)
-									</span>
-								</div>
+								<Progress
+									value={visitorByDeviceVendor.count}
+									max={data.visitorAllTime[0].count}
+									class={'h-2'} />
 							</div>
-							<Progress
-								value={visitorByDeviceType.count}
-								max={data.visitorAllTime[0].count}
-								class={'h-2'} />
-						</div>
-					{/each}
-				</Tabs.Content>
-			</Card.Content>
-		</Tabs.Root>
-	</Card.Root>
-	<Card.Root class="min-h-[500px]">
-		<Tabs.Root value="os">
-			<Card.Header
-				class="flex w-full flex-row items-center justify-between space-y-0">
-				<div>
-					<Card.Title>Browsers</Card.Title>
-					<Card.Description>Visitors by Browser</Card.Description>
-				</div>
-				<Tabs.List>
-					<Tabs.Trigger value="os">OS</Tabs.Trigger>
-					<Tabs.Trigger value="browser">Browser</Tabs.Trigger>
-				</Tabs.List>
-			</Card.Header>
-			<Card.Content>
-				<Tabs.Content value="os">
-					{#each data.visitorByOS as visitorByOS}
-						<div
-							class="hover:bg-muted flex flex-col gap-2 border-b p-2 transition-colors">
-							<div class="flex items-center justify-between">
-								<div class="flex items-center gap-4">
-									<TabletSmartphone />
-									<div>{visitorByOS.os || '(None)'}</div>
-								</div>
-								<div>
-									{visitorByOS.count}
-									<span class="text-muted-foreground">
-										({(
-											(visitorByOS.count /
-												data.visitorAllTime[0].count) *
-											100
-										).toDecimalPoint(2)} %)
-									</span>
-								</div>
-							</div>
-							<Progress
-								value={visitorByOS.count}
-								max={data.visitorAllTime[0].count}
-								class={'h-2'} />
-						</div>
-					{/each}
-				</Tabs.Content>
-				<Tabs.Content value="browser">
-					{#each data.visitorByBrowser as visitorByBrowser}
-						<div
-							class="hover:bg-muted flex flex-col gap-2 border-b p-2 transition-colors">
-							<div class="flex items-center justify-between">
-								<div class="flex items-center gap-4">
-									<GlobeIcon />
+						{/each}
+					</Card.Content>
+				</Card.Root>
+			</Tabs.Content>
+			<Tabs.Content value="type">
+				<Card.Root class="h-full min-h-[600px]">
+					<Card.Header
+						class="flex w-full flex-row items-center justify-between border-b p-4">
+						<Card.Description>Name</Card.Description>
+						<Card.Description>Count</Card.Description>
+					</Card.Header>
+					<Card.Content class="p-0">
+						{#each data.visitorByDeviceType as visitorByDeviceType}
+							<div
+								class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
+								<div class="flex items-center justify-between">
+									<div class="flex items-center gap-4">
+										{#if visitorByDeviceType.type === 'mobile'}
+											<Smartphone />
+										{:else if visitorByDeviceType.type === 'tablet'}
+											<Tablet />
+										{:else}
+											<TabletSmartphone />
+										{/if}
+										<div>
+											{visitorByDeviceType.type ?? '(None)'}
+										</div>
+									</div>
 									<div>
-										{visitorByBrowser.browser || '(None)'}
+										{visitorByDeviceType.count}
+										<span class="text-muted-foreground">
+											({(
+												(visitorByDeviceType.count /
+													data.visitorAllTime[0].count) *
+												100
+											).toDecimalPoint(2)} %)
+										</span>
 									</div>
 								</div>
-								<div>
-									{visitorByBrowser.count}
-									<span class="text-muted-foreground">
-										({(
-											(visitorByBrowser.count /
-												data.visitorAllTime[0].count) *
-											100
-										).toDecimalPoint(2)} %)
-									</span>
-								</div>
+								<Progress
+									value={visitorByDeviceType.count}
+									max={data.visitorAllTime[0].count}
+									class={'h-2'} />
 							</div>
-							<Progress
-								value={visitorByBrowser.count}
-								max={data.visitorAllTime[0].count}
-								class={'h-2'} />
-						</div>
-					{/each}
-				</Tabs.Content>
-			</Card.Content>
+						{/each}
+					</Card.Content>
+				</Card.Root>
+			</Tabs.Content>
 		</Tabs.Root>
-	</Card.Root>
+
+		<Tabs.Root value="browser">
+			<Tabs.List>
+				<Tabs.Trigger value="browser">Browser</Tabs.Trigger>
+				<Tabs.Trigger value="os">OS</Tabs.Trigger>
+			</Tabs.List>
+			<Tabs.Content value="browser">
+				<Card.Root class="h-full min-h-[600px]">
+					<Card.Header
+						class="flex w-full flex-row items-center justify-between border-b p-4">
+						<Card.Description>Name</Card.Description>
+						<Card.Description>Count</Card.Description>
+					</Card.Header>
+					<Card.Content class="p-0">
+						{#each data.visitorByBrowser as visitorByBrowser}
+							<div
+								class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
+								<div class="flex items-center justify-between">
+									<div class="flex items-center gap-4">
+										<GlobeIcon />
+										<div>
+											{visitorByBrowser.browser || '(None)'}
+										</div>
+									</div>
+									<div>
+										{visitorByBrowser.count}
+										<span class="text-muted-foreground">
+											({(
+												(visitorByBrowser.count /
+													data.visitorAllTime[0].count) *
+												100
+											).toDecimalPoint(2)} %)
+										</span>
+									</div>
+								</div>
+								<Progress
+									value={visitorByBrowser.count}
+									max={data.visitorAllTime[0].count}
+									class={'h-2'} />
+							</div>
+						{/each}
+					</Card.Content>
+				</Card.Root>
+			</Tabs.Content>
+			<Tabs.Content value="os">
+				<Card.Root class="h-full min-h-[600px]">
+					<Card.Header
+						class="flex w-full flex-row items-center justify-between border-b p-4">
+						<Card.Description>Name</Card.Description>
+						<Card.Description>Count</Card.Description>
+					</Card.Header>
+					<Card.Content class="p-0">
+						{#each data.visitorByOS as visitorByOS}
+							<div
+								class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
+								<div class="flex items-center justify-between">
+									<div class="flex items-center gap-4">
+										<TabletSmartphone />
+										<div>{visitorByOS.os || '(None)'}</div>
+									</div>
+									<div>
+										{visitorByOS.count}
+										<span class="text-muted-foreground">
+											({(
+												(visitorByOS.count /
+													data.visitorAllTime[0].count) *
+												100
+											).toDecimalPoint(2)} %)
+										</span>
+									</div>
+								</div>
+								<Progress
+									value={visitorByOS.count}
+									max={data.visitorAllTime[0].count}
+									class={'h-2'} />
+							</div>
+						{/each}
+					</Card.Content>
+				</Card.Root>
+			</Tabs.Content>
+		</Tabs.Root>
+	</div>
 </div>
