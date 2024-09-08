@@ -1,0 +1,1 @@
+ALTER TABLE "visitor" ADD COLUMN "referer" varchar(255) DEFAULT '' NOT NULL;

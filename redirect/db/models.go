@@ -16,29 +16,26 @@ type EmailVerificationToken struct {
 }
 
 type Project struct {
-	ID                 int32
-	Uuid               pgtype.UUID
-	Name               string
-	UserID             int32
-	QrBackground       string
-	QrForeground       string
-	CustomDomain       pgtype.Text
-	DomainStatus       string
-	EnableCustomDomain bool
-	CustomIp           pgtype.Text
-	CustomDomainID     pgtype.Text
+	ID                  int32
+	Uuid                pgtype.UUID
+	Name                string
+	UserID              int32
+	QrBackground        string
+	QrForeground        string
+	CustomDomain        pgtype.Text
+	DomainStatus        string
+	EnableCustomDomain  bool
+	CustomIp            pgtype.Text
+	CustomDomainID      pgtype.Text
+	QrCornerSquareStyle string
+	QrDotStyle          string
+	QrImageBase64       pgtype.Text
 }
 
 type Session struct {
 	ID        string
 	UserID    int32
 	ExpiresAt pgtype.Timestamptz
-}
-
-type Setting struct {
-	UserID       int32
-	QrBackground pgtype.Text
-	QrForeground pgtype.Text
 }
 
 type Shortener struct {
@@ -56,13 +53,21 @@ type Shortener struct {
 }
 
 type User struct {
-	ID            int32
-	Uuid          pgtype.UUID
-	Email         string
-	Username      pgtype.Text
-	Password      string
-	CreatedAt     pgtype.Timestamp
-	EmailVerified bool
+	ID                  int32
+	Uuid                pgtype.UUID
+	Email               string
+	Username            pgtype.Text
+	Password            pgtype.Text
+	CreatedAt           pgtype.Timestamp
+	EmailVerified       bool
+	GoogleID            pgtype.Text
+	Plan                string
+	StripeCustomerID    pgtype.Text
+	QrCornerSquareStyle string
+	QrDotStyle          string
+	QrBackground        string
+	QrForeground        string
+	QrImageBase64       pgtype.Text
 }
 
 type Visitor struct {
@@ -76,4 +81,5 @@ type Visitor struct {
 	DeviceVendor string
 	Os           string
 	Browser      string
+	Referer      string
 }

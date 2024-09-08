@@ -24,6 +24,7 @@ INSERT INTO visitor (
 		os,
 		country,
 		country_code,
-		city
+		city,
+		referer
 	)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);

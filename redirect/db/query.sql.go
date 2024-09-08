@@ -20,9 +20,10 @@ INSERT INTO visitor (
 		os,
 		country,
 		country_code,
-		city
+		city,
+		referer
 	)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 `
 
 type CreateVisitorParams struct {
@@ -34,6 +35,7 @@ type CreateVisitorParams struct {
 	Country      string
 	CountryCode  string
 	City         string
+	Referer      string
 }
 
 func (q *Queries) CreateVisitor(ctx context.Context, arg CreateVisitorParams) error {
@@ -46,6 +48,7 @@ func (q *Queries) CreateVisitor(ctx context.Context, arg CreateVisitorParams) er
 		arg.Country,
 		arg.CountryCode,
 		arg.City,
+		arg.Referer,
 	)
 	return err
 }

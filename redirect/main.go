@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/url"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 	"tzgyn/kon-redirect/db"
@@ -205,6 +207,15 @@ func main() {
 			devicetype = "desktop"
 		}
 
+		referers := c.GetReqHeaders()["Referer"]
+
+		referer := ""
+		if len(referers) > 0 {
+			referer = referers[0]
+		}
+
+		referer = getDomainWithoutWWW(referer)
+
 		err = queries.CreateVisitor(ctx, db.CreateVisitorParams{
 			ShortenerID:  shortenerId,
 			DeviceType:   devicetype,
@@ -214,6 +225,7 @@ func main() {
 			Country:      record.Country.Names["en"],
 			CountryCode:  record.Country.IsoCode,
 			City:         record.City.Names["en"],
+			Referer:      referer,
 		})
 
 		if err != nil {
@@ -253,4 +265,35 @@ func main() {
 	cron.Stop()
 	geodb.Close()
 	conn.Close()
+}
+
+func getDomainWithoutWWW(str string) string {
+	domain, err := url.ParseRequestURI(str)
+
+	if err == nil {
+		hostname := domain.Hostname()
+		if strings.HasPrefix(hostname, "www.") {
+			result, ok := strings.CutPrefix(hostname, "www.")
+			if ok {
+				hostname = result
+			}
+		}
+		return hostname
+	}
+
+	if strings.ContainsAny(str, ".") && !strings.ContainsAny(str, " ") {
+		domain, err = url.ParseRequestURI("https://" + str)
+		if err == nil {
+			hostname := domain.Hostname()
+			if strings.HasPrefix(hostname, "www.") {
+				result, ok := strings.CutPrefix(hostname, "www.")
+				if ok {
+					hostname = result
+				}
+			}
+			return hostname
+		}
+	}
+
+	return ""
 }

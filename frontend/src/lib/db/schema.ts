@@ -112,6 +112,7 @@ export const visitor = pgTable('visitor', {
 		.default(''),
 	os: varchar('os', { length: 255 }).notNull().default(''),
 	browser: varchar('browser', { length: 255 }).notNull().default(''),
+	referer: varchar('referer', { length: 255 }).notNull().default(''),
 })
 
 export const session = pgTable('session', {
