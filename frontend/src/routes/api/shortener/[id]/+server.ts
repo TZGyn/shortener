@@ -71,13 +71,23 @@ export const PUT: RequestHandler = async (event) => {
 
 export const DELETE: RequestHandler = async (event) => {
 	const shortenerId = event.params.id
+	const id = z.coerce.number().positive().safeParse(shortenerId)
+
+	if (!id.success) {
+		return new Response(
+			JSON.stringify({
+				success: false,
+			}),
+		)
+	}
+
 	const user = event.locals.user
 
 	await db
 		.delete(shortenerSchema)
 		.where(
 			and(
-				eq(shortenerSchema.code, shortenerId),
+				eq(shortenerSchema.id, id.data),
 				eq(shortenerSchema.userId, user.id),
 			),
 		)

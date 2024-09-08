@@ -35,7 +35,7 @@
 
 	let deleteDialogOpen = false
 	let deleteShortenerCode = ''
-	const openDeleteDialog = (code: string) => {
+	const openDeleteDialog = (code: string | number) => {
 		deleteShortenerCode = code
 		deleteDialogOpen = true
 	}
@@ -142,7 +142,7 @@
 							</DropdownMenu.Item>
 						</a>
 						<DropdownMenu.Item
-							on:click={() => openDeleteDialog(shortener.code)}
+							on:click={() => openDeleteDialog(shortener.id)}
 							class="text-destructive data-[highlighted]:bg-destructive flex items-center gap-2">
 							<TrashIcon size={16} />
 							Delete
