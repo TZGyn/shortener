@@ -63,7 +63,7 @@ export const load = (async (event) => {
 			),
 		)
 
-	const visitorByCountry = await db
+	const visitorByCountry = db
 		.select({
 			count: sql<number>`cast(count(*) as int)`,
 			country: visitorSchema.country,
@@ -79,7 +79,7 @@ export const load = (async (event) => {
 		.groupBy(visitorSchema.country, visitorSchema.countryCode)
 		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
-	const visitorByCity = await db
+	const visitorByCity = db
 		.select({
 			count: sql<number>`cast(count(*) as int)`,
 			country: visitorSchema.country,
@@ -100,7 +100,7 @@ export const load = (async (event) => {
 		)
 		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
-	const visitorByOS = await db
+	const visitorByOS = db
 		.select({
 			count: sql<number>`cast(count(*) as int)`,
 			os: visitorSchema.os,
@@ -115,7 +115,7 @@ export const load = (async (event) => {
 		.groupBy(visitorSchema.os)
 		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
-	const visitorByBrowser = await db
+	const visitorByBrowser = db
 		.select({
 			count: sql<number>`cast(count(*) as int)`,
 			browser: visitorSchema.browser,
@@ -130,7 +130,7 @@ export const load = (async (event) => {
 		.groupBy(visitorSchema.browser)
 		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
-	const visitorByDeviceVendor = await db
+	const visitorByDeviceVendor = db
 		.select({
 			count: sql<number>`cast(count(*) as int)`,
 			vendor: visitorSchema.deviceVendor,
@@ -145,7 +145,7 @@ export const load = (async (event) => {
 		.groupBy(visitorSchema.deviceVendor)
 		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
-	const visitorByDeviceType = await db
+	const visitorByDeviceType = db
 		.select({
 			count: sql<number>`cast(count(*) as int)`,
 			type: visitorSchema.deviceType,
@@ -160,6 +160,21 @@ export const load = (async (event) => {
 		.groupBy(visitorSchema.deviceType)
 		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
+	const visitorByReferer = db
+		.select({
+			count: sql<number>`cast(count(*) as int)`,
+			referer: visitorSchema.referer,
+		})
+		.from(visitorSchema)
+		.where(
+			and(
+				eq(visitorSchema.shortenerId, shortener.id),
+				gte(visitorSchema.createdAt, analyticsDate),
+			),
+		)
+		.groupBy(visitorSchema.referer)
+		.orderBy(desc(sql<number>`cast(count(*) as int)`))
+
 	const page_title = 'Shortener | ' + shortener.link
 
 	return {
@@ -172,6 +187,7 @@ export const load = (async (event) => {
 		visitorByBrowser,
 		visitorByDeviceVendor,
 		visitorByDeviceType,
+		visitorByReferer,
 		page_title,
 	}
 }) satisfies PageServerLoad

@@ -13,6 +13,7 @@
 		GlobeIcon,
 	} from 'lucide-svelte'
 	import { Progress } from '$lib/components/ui/progress'
+	import { Skeleton } from '$lib/components/ui/skeleton'
 
 	export let data: PageData
 
@@ -153,33 +154,37 @@
 						<Card.Description>Count</Card.Description>
 					</Card.Header>
 					<Card.Content class="p-0">
-						{#each data.visitorByCountry as visitorByCountry}
-							<div
-								class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
-								<div class="flex items-center justify-between">
-									<div class="flex items-center gap-4">
-										<img
-											src={`https://flagsapi.com/${visitorByCountry.code}/flat/32.png`}
-											alt="" />
-										<div>{visitorByCountry.country}</div>
+						{#await data.visitorByCountry}
+							<Skeleton class="h-32 w-full rounded-none" />
+						{:then visitorByCountries}
+							{#each visitorByCountries as visitorByCountry}
+								<div
+									class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
+									<div class="flex items-center justify-between">
+										<div class="flex items-center gap-4">
+											<img
+												src={`https://flagsapi.com/${visitorByCountry.code}/flat/32.png`}
+												alt="" />
+											<div>{visitorByCountry.country}</div>
+										</div>
+										<div>
+											{visitorByCountry.count}
+											<span class="text-muted-foreground">
+												({(
+													(visitorByCountry.count /
+														data.visitorAllTime[0].count) *
+													100
+												).toDecimalPoint(2)} %)
+											</span>
+										</div>
 									</div>
-									<div>
-										{visitorByCountry.count}
-										<span class="text-muted-foreground">
-											({(
-												(visitorByCountry.count /
-													data.visitorAllTime[0].count) *
-												100
-											).toDecimalPoint(2)} %)
-										</span>
-									</div>
+									<Progress
+										value={visitorByCountry.count}
+										max={data.visitorAllTime[0].count}
+										class={'h-2'} />
 								</div>
-								<Progress
-									value={visitorByCountry.count}
-									max={data.visitorAllTime[0].count}
-									class={'h-2'} />
-							</div>
-						{/each}
+							{/each}
+						{/await}
 					</Card.Content>
 				</Card.Root>
 			</Tabs.Content>
@@ -191,33 +196,37 @@
 						<Card.Description>Count</Card.Description>
 					</Card.Header>
 					<Card.Content class="p-0">
-						{#each data.visitorByCity as visitorByCity}
-							<div
-								class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
-								<div class="flex items-center justify-between">
-									<div class="flex items-center gap-4">
-										<img
-											src={`https://flagsapi.com/${visitorByCity.code}/flat/32.png`}
-											alt="" />
-										<div>{visitorByCity.city}</div>
+						{#await data.visitorByCity}
+							<Skeleton class="h-32 w-full rounded-none" />
+						{:then visitorByCities}
+							{#each visitorByCities as visitorByCity}
+								<div
+									class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
+									<div class="flex items-center justify-between">
+										<div class="flex items-center gap-4">
+											<img
+												src={`https://flagsapi.com/${visitorByCity.code}/flat/32.png`}
+												alt="" />
+											<div>{visitorByCity.city}</div>
+										</div>
+										<div>
+											{visitorByCity.count}
+											<span class="text-muted-foreground">
+												({(
+													(visitorByCity.count /
+														data.visitorAllTime[0].count) *
+													100
+												).toDecimalPoint(2)} %)
+											</span>
+										</div>
 									</div>
-									<div>
-										{visitorByCity.count}
-										<span class="text-muted-foreground">
-											({(
-												(visitorByCity.count /
-													data.visitorAllTime[0].count) *
-												100
-											).toDecimalPoint(2)} %)
-										</span>
-									</div>
+									<Progress
+										value={visitorByCity.count}
+										max={data.visitorAllTime[0].count}
+										class={'h-2'} />
 								</div>
-								<Progress
-									value={visitorByCity.count}
-									max={data.visitorAllTime[0].count}
-									class={'h-2'} />
-							</div>
-						{/each}
+							{/each}
+						{/await}
 					</Card.Content>
 				</Card.Root>
 			</Tabs.Content>
@@ -236,33 +245,37 @@
 						<Card.Description>Count</Card.Description>
 					</Card.Header>
 					<Card.Content class="p-0">
-						{#each data.visitorByDeviceVendor as visitorByDeviceVendor}
-							<div
-								class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
-								<div class="flex items-center justify-between">
-									<div class="flex items-center gap-4">
-										<TabletSmartphone />
+						{#await data.visitorByDeviceVendor}
+							<Skeleton class="h-32 w-full rounded-none" />
+						{:then visitorByDeviceVendors}
+							{#each visitorByDeviceVendors as visitorByDeviceVendor}
+								<div
+									class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
+									<div class="flex items-center justify-between">
+										<div class="flex items-center gap-4">
+											<TabletSmartphone />
+											<div>
+												{visitorByDeviceVendor.vendor || '(None)'}
+											</div>
+										</div>
 										<div>
-											{visitorByDeviceVendor.vendor || '(None)'}
+											{visitorByDeviceVendor.count}
+											<span class="text-muted-foreground">
+												({(
+													(visitorByDeviceVendor.count /
+														data.visitorAllTime[0].count) *
+													100
+												).toDecimalPoint(2)} %)
+											</span>
 										</div>
 									</div>
-									<div>
-										{visitorByDeviceVendor.count}
-										<span class="text-muted-foreground">
-											({(
-												(visitorByDeviceVendor.count /
-													data.visitorAllTime[0].count) *
-												100
-											).toDecimalPoint(2)} %)
-										</span>
-									</div>
+									<Progress
+										value={visitorByDeviceVendor.count}
+										max={data.visitorAllTime[0].count}
+										class={'h-2'} />
 								</div>
-								<Progress
-									value={visitorByDeviceVendor.count}
-									max={data.visitorAllTime[0].count}
-									class={'h-2'} />
-							</div>
-						{/each}
+							{/each}
+						{/await}
 					</Card.Content>
 				</Card.Root>
 			</Tabs.Content>
@@ -274,39 +287,43 @@
 						<Card.Description>Count</Card.Description>
 					</Card.Header>
 					<Card.Content class="p-0">
-						{#each data.visitorByDeviceType as visitorByDeviceType}
-							<div
-								class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
-								<div class="flex items-center justify-between">
-									<div class="flex items-center gap-4">
-										{#if visitorByDeviceType.type === 'mobile'}
-											<Smartphone />
-										{:else if visitorByDeviceType.type === 'tablet'}
-											<Tablet />
-										{:else}
-											<TabletSmartphone />
-										{/if}
+						{#await data.visitorByDeviceType}
+							<Skeleton class="h-32 w-full rounded-none" />
+						{:then visitorByDeviceTypes}
+							{#each visitorByDeviceTypes as visitorByDeviceType}
+								<div
+									class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
+									<div class="flex items-center justify-between">
+										<div class="flex items-center gap-4">
+											{#if visitorByDeviceType.type === 'mobile'}
+												<Smartphone />
+											{:else if visitorByDeviceType.type === 'tablet'}
+												<Tablet />
+											{:else}
+												<TabletSmartphone />
+											{/if}
+											<div>
+												{visitorByDeviceType.type ?? '(None)'}
+											</div>
+										</div>
 										<div>
-											{visitorByDeviceType.type ?? '(None)'}
+											{visitorByDeviceType.count}
+											<span class="text-muted-foreground">
+												({(
+													(visitorByDeviceType.count /
+														data.visitorAllTime[0].count) *
+													100
+												).toDecimalPoint(2)} %)
+											</span>
 										</div>
 									</div>
-									<div>
-										{visitorByDeviceType.count}
-										<span class="text-muted-foreground">
-											({(
-												(visitorByDeviceType.count /
-													data.visitorAllTime[0].count) *
-												100
-											).toDecimalPoint(2)} %)
-										</span>
-									</div>
+									<Progress
+										value={visitorByDeviceType.count}
+										max={data.visitorAllTime[0].count}
+										class={'h-2'} />
 								</div>
-								<Progress
-									value={visitorByDeviceType.count}
-									max={data.visitorAllTime[0].count}
-									class={'h-2'} />
-							</div>
-						{/each}
+							{/each}
+						{/await}
 					</Card.Content>
 				</Card.Root>
 			</Tabs.Content>
@@ -325,33 +342,37 @@
 						<Card.Description>Count</Card.Description>
 					</Card.Header>
 					<Card.Content class="p-0">
-						{#each data.visitorByBrowser as visitorByBrowser}
-							<div
-								class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
-								<div class="flex items-center justify-between">
-									<div class="flex items-center gap-4">
-										<GlobeIcon />
+						{#await data.visitorByBrowser}
+							<Skeleton class="h-32 w-full rounded-none" />
+						{:then visitorByBrowsers}
+							{#each visitorByBrowsers as visitorByBrowser}
+								<div
+									class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
+									<div class="flex items-center justify-between">
+										<div class="flex items-center gap-4">
+											<GlobeIcon />
+											<div>
+												{visitorByBrowser.browser || '(None)'}
+											</div>
+										</div>
 										<div>
-											{visitorByBrowser.browser || '(None)'}
+											{visitorByBrowser.count}
+											<span class="text-muted-foreground">
+												({(
+													(visitorByBrowser.count /
+														data.visitorAllTime[0].count) *
+													100
+												).toDecimalPoint(2)} %)
+											</span>
 										</div>
 									</div>
-									<div>
-										{visitorByBrowser.count}
-										<span class="text-muted-foreground">
-											({(
-												(visitorByBrowser.count /
-													data.visitorAllTime[0].count) *
-												100
-											).toDecimalPoint(2)} %)
-										</span>
-									</div>
+									<Progress
+										value={visitorByBrowser.count}
+										max={data.visitorAllTime[0].count}
+										class={'h-2'} />
 								</div>
-								<Progress
-									value={visitorByBrowser.count}
-									max={data.visitorAllTime[0].count}
-									class={'h-2'} />
-							</div>
-						{/each}
+							{/each}
+						{/await}
 					</Card.Content>
 				</Card.Root>
 			</Tabs.Content>
@@ -363,31 +384,83 @@
 						<Card.Description>Count</Card.Description>
 					</Card.Header>
 					<Card.Content class="p-0">
-						{#each data.visitorByOS as visitorByOS}
-							<div
-								class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
-								<div class="flex items-center justify-between">
-									<div class="flex items-center gap-4">
-										<TabletSmartphone />
-										<div>{visitorByOS.os || '(None)'}</div>
+						{#await data.visitorByOS}
+							<Skeleton class="h-32 w-full rounded-none" />
+						{:then visitorByOSs}
+							{#each visitorByOSs as visitorByOS}
+								<div
+									class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
+									<div class="flex items-center justify-between">
+										<div class="flex items-center gap-4">
+											<TabletSmartphone />
+											<div>{visitorByOS.os || '(None)'}</div>
+										</div>
+										<div>
+											{visitorByOS.count}
+											<span class="text-muted-foreground">
+												({(
+													(visitorByOS.count /
+														data.visitorAllTime[0].count) *
+													100
+												).toDecimalPoint(2)} %)
+											</span>
+										</div>
 									</div>
-									<div>
-										{visitorByOS.count}
-										<span class="text-muted-foreground">
-											({(
-												(visitorByOS.count /
-													data.visitorAllTime[0].count) *
-												100
-											).toDecimalPoint(2)} %)
-										</span>
-									</div>
+									<Progress
+										value={visitorByOS.count}
+										max={data.visitorAllTime[0].count}
+										class={'h-2'} />
 								</div>
-								<Progress
-									value={visitorByOS.count}
-									max={data.visitorAllTime[0].count}
-									class={'h-2'} />
-							</div>
-						{/each}
+							{/each}
+						{/await}
+					</Card.Content>
+				</Card.Root>
+			</Tabs.Content>
+		</Tabs.Root>
+
+		<Tabs.Root value="referer">
+			<Tabs.List>
+				<Tabs.Trigger value="referer">Referer</Tabs.Trigger>
+			</Tabs.List>
+			<Tabs.Content value="referer">
+				<Card.Root class="h-full min-h-[600px]">
+					<Card.Header
+						class="flex w-full flex-row items-center justify-between border-b p-4">
+						<Card.Description>Name</Card.Description>
+						<Card.Description>Count</Card.Description>
+					</Card.Header>
+					<Card.Content class="p-0">
+						{#await data.visitorByReferer}
+							<Skeleton class="h-32 w-full rounded-none" />
+						{:then visitorByReferers}
+							{#each visitorByReferers as visitorByReferer}
+								<div
+									class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
+									<div class="flex items-center justify-between">
+										<div class="flex items-center gap-4">
+											<GlobeIcon />
+											<div>
+												{visitorByReferer.referer || '(direct)'}
+											</div>
+										</div>
+										<div>
+											{visitorByReferer.count}
+											<span class="text-muted-foreground">
+												({(
+													(visitorByReferer.count /
+														data.visitorAllTime[0].count) *
+													100
+												).toDecimalPoint(2)} %)
+											</span>
+										</div>
+									</div>
+									<Progress
+										value={visitorByReferer.count}
+										max={data.visitorAllTime[0].count}
+										class={'h-2'} />
+								</div>
+							{/each}
+						{/await}
 					</Card.Content>
 				</Card.Root>
 			</Tabs.Content>
