@@ -3,7 +3,6 @@ import {
 	serial,
 	varchar,
 	timestamp,
-	integer,
 	uuid,
 	boolean,
 	text,
@@ -11,7 +10,7 @@ import {
 import { relations } from 'drizzle-orm'
 
 export const user = pgTable('user', {
-	id: serial('id').primaryKey().notNull(),
+	id: text('id').primaryKey(),
 	uuid: uuid('uuid').defaultRandom(),
 	email_verified: boolean('email_verified').notNull().default(false),
 	email: varchar('email', { length: 255 }).notNull().unique(),
@@ -44,7 +43,7 @@ export const user = pgTable('user', {
 })
 
 export const shortener = pgTable('shortener', {
-	id: serial('id').primaryKey().notNull(),
+	id: text('id').primaryKey(),
 	link: varchar('link', { length: 255 }).notNull(),
 	ios: boolean('ios').notNull().default(false),
 	ios_link: varchar('ios_link', { length: 255 }),
@@ -54,16 +53,16 @@ export const shortener = pgTable('shortener', {
 	createdAt: timestamp('created_at', { mode: 'string' })
 		.defaultNow()
 		.notNull(),
-	userId: integer('user_id').notNull(),
+	userId: text('user_id').notNull(),
 	active: boolean('active').notNull().default(true),
-	projectId: integer('project_id'),
+	projectId: text('project_id'),
 })
 
 export const project = pgTable('project', {
-	id: serial('id').primaryKey().notNull(),
+	id: text('id').primaryKey(),
 	uuid: uuid('uuid').defaultRandom(),
 	name: varchar('name', { length: 255 }).notNull(),
-	userId: integer('user_id').notNull(),
+	userId: text('user_id').notNull(),
 	qr_background: varchar('qr_background', { length: 7 })
 		.default('#ffffff')
 		.notNull(),
@@ -95,7 +94,7 @@ export const project = pgTable('project', {
 
 export const visitor = pgTable('visitor', {
 	id: serial('id').primaryKey().notNull(),
-	shortenerId: integer('shortener_id').notNull(),
+	shortenerId: text('shortener_id').notNull(),
 	createdAt: timestamp('created_at', { mode: 'date' })
 		.defaultNow()
 		.notNull(),
@@ -117,7 +116,7 @@ export const visitor = pgTable('visitor', {
 
 export const session = pgTable('session', {
 	id: varchar('id', { length: 255 }).primaryKey(),
-	userId: integer('user_id').notNull(),
+	userId: text('user_id').notNull(),
 	expiresAt: timestamp('expires_at', {
 		withTimezone: true,
 		mode: 'date',
@@ -128,7 +127,7 @@ export const emailVerificationToken = pgTable(
 	'email_verification_token',
 	{
 		id: varchar('id', { length: 255 }).primaryKey().notNull(),
-		userId: integer('user_id').notNull(),
+		userId: text('user_id').notNull(),
 		email: varchar('email', { length: 255 }).notNull(),
 		expiresAt: timestamp('expires_at', {
 			withTimezone: true,

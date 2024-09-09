@@ -3,6 +3,7 @@ import { google, lucia } from '$lib/server/auth'
 import { db } from '$lib/db'
 import { user } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
+import { generateId } from 'lucia'
 
 interface GoogleUser {
 	sub: string // Unique identifier for the user
@@ -93,6 +94,7 @@ export async function GET(event) {
 			const insertUser = await db
 				.insert(user)
 				.values({
+					id: generateId(8),
 					email: googleUser.email, // Using email as username
 					email_verified: true,
 					googleId: googleUser.sub,

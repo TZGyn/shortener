@@ -36,7 +36,7 @@ export const sendEmailVerification = async ({
 	userId,
 	email,
 }: {
-	userId: number
+	userId: string
 	email: string
 }) => {
 	await db

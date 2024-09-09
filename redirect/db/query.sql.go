@@ -27,7 +27,7 @@ VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 `
 
 type CreateVisitorParams struct {
-	ShortenerID  int32
+	ShortenerID  string
 	DeviceType   string
 	DeviceVendor string
 	Browser      string
@@ -96,12 +96,12 @@ type GetShortenerWithDomainParams struct {
 }
 
 type GetShortenerWithDomainRow struct {
-	ID          int32
+	ID          string
 	Link        string
 	Code        string
 	CreatedAt   pgtype.Timestamp
-	UserID      int32
-	ProjectID   pgtype.Int4
+	UserID      string
+	ProjectID   pgtype.Text
 	Active      bool
 	Ios         bool
 	IosLink     pgtype.Text

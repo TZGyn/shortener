@@ -16,6 +16,7 @@ import { formSchema } from './schema'
 import type { Actions } from './$types'
 import { nanoid } from 'nanoid'
 import { isAlphanumeric } from '$lib/utils'
+import { generateId } from 'lucia'
 
 export const load = (async (event) => {
 	const user = event.locals.user
@@ -44,7 +45,7 @@ export const load = (async (event) => {
 		sortBy = 'latest'
 	}
 
-	let project_id: number | undefined
+	let project_id: string | undefined
 	let selected_project: { value: null | string; label: string } = {
 		value: null,
 		label: 'All',
@@ -185,6 +186,7 @@ export const actions: Actions = {
 			? form.data.custom_code
 			: nanoid(8)
 		await db.insert(shortener).values({
+			id: generateId(8),
 			link: form.data.link,
 			projectId: project?.id,
 			userId: user.id,

@@ -16,6 +16,7 @@ import { formSchema } from './schema'
 import type { Actions } from './$types'
 import { nanoid } from 'nanoid'
 import { isAlphanumeric } from '$lib/utils'
+import { generateId } from 'lucia'
 
 export const load = (async (event) => {
 	const { project: selectedProject } = await event.parent()
@@ -155,6 +156,7 @@ export const actions: Actions = {
 			? form.data.custom_code
 			: nanoid(8)
 		await db.insert(shortener).values({
+			id: generateId(8),
 			link: form.data.link,
 			projectId: project.id,
 			userId: user.id,

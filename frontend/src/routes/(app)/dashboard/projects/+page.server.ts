@@ -5,6 +5,7 @@ import { zod } from 'sveltekit-superforms/adapters'
 import { formSchema } from './schema'
 import { fail, type Actions } from '@sveltejs/kit'
 import { project } from '$lib/db/schema'
+import { generateId } from 'lucia'
 
 export const load = (async (event) => {
 	const user = event.locals.user
@@ -31,6 +32,7 @@ export const actions: Actions = {
 		const user = event.locals.user
 
 		await db.insert(project).values({
+			id: generateId(8),
 			name: form.data.name,
 			userId: user.id,
 		})

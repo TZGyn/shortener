@@ -176,6 +176,13 @@
       "when": 1725806107053,
       "tag": "0024_fancy_dust",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1725888846230,
+      "tag": "0025_clammy_dark_beast",
+      "breakpoints": true
     }
   ]
 }

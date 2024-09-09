@@ -31,7 +31,7 @@ export const GET: RequestHandler = async (event) => {
 
 const updateShortenerSchema = z.object({
 	link: z.string().url(),
-	projectId: z.number().nullish(),
+	projectId: z.string().nullish(),
 	active: z.boolean(),
 })
 
@@ -71,7 +71,7 @@ export const PUT: RequestHandler = async (event) => {
 
 export const DELETE: RequestHandler = async (event) => {
 	const shortenerId = event.params.id
-	const id = z.coerce.number().positive().safeParse(shortenerId)
+	const id = z.string().safeParse(shortenerId)
 
 	if (!id.success) {
 		return new Response(

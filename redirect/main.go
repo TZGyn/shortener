@@ -117,7 +117,7 @@ func main() {
 		uastrings := c.GetReqHeaders()["User-Agent"]
 
 		redirecturl := ""
-		var shortenerId int32
+		var shortenerId string
 		iosEnabled := false
 		iosRedirectUrl := ""
 		androidEnabled := false

@@ -16,10 +16,10 @@ type EmailVerificationToken struct {
 }
 
 type Project struct {
-	ID                  int32
+	ID                  string
 	Uuid                pgtype.UUID
 	Name                string
-	UserID              int32
+	UserID              string
 	QrBackground        string
 	QrForeground        string
 	CustomDomain        pgtype.Text
@@ -34,17 +34,17 @@ type Project struct {
 
 type Session struct {
 	ID        string
-	UserID    int32
+	UserID    string
 	ExpiresAt pgtype.Timestamptz
 }
 
 type Shortener struct {
-	ID          int32
+	ID          string
 	Link        string
 	Code        string
 	CreatedAt   pgtype.Timestamp
-	UserID      int32
-	ProjectID   pgtype.Int4
+	UserID      string
+	ProjectID   pgtype.Text
 	Active      bool
 	Ios         bool
 	IosLink     pgtype.Text
@@ -53,7 +53,7 @@ type Shortener struct {
 }
 
 type User struct {
-	ID                  int32
+	ID                  string
 	Uuid                pgtype.UUID
 	Email               string
 	Username            pgtype.Text
@@ -72,7 +72,7 @@ type User struct {
 
 type Visitor struct {
 	ID           int32
-	ShortenerID  int32
+	ShortenerID  string
 	CreatedAt    pgtype.Timestamp
 	CountryCode  string
 	Country      string

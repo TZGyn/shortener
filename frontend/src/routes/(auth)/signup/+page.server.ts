@@ -10,6 +10,7 @@ import { lucia } from '$lib/server/auth'
 import { env } from '$env/dynamic/private'
 import { sendEmailVerification } from '$lib/server/email'
 import * as argon2 from 'argon2'
+import { generateId } from 'lucia'
 
 export const load = (async (event) => {
 	return {
@@ -52,6 +53,7 @@ export const actions: Actions = {
 		const returnUsers = await db
 			.insert(userSchema)
 			.values({
+				id: generateId(8),
 				email: form.data.email,
 				password: hashedPassword,
 			})

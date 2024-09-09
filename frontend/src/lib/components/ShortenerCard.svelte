@@ -35,7 +35,7 @@
 
 	let deleteDialogOpen = false
 	let deleteShortenerCode = ''
-	const openDeleteDialog = (code: string | number) => {
+	const openDeleteDialog = (code: string) => {
 		deleteShortenerCode = code
 		deleteDialogOpen = true
 	}

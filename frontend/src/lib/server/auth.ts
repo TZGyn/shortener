@@ -9,7 +9,7 @@ import { env } from '$env/dynamic/private'
 declare module 'lucia' {
 	interface Register {
 		Lucia: typeof lucia
-		UserId: number
+		UserId: string
 		DatabaseUserAttributes: DatabaseUserAttributes
 	}
 }
