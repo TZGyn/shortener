@@ -10,7 +10,7 @@ import (
 
 type EmailVerificationToken struct {
 	ID        string
-	UserID    int32
+	UserID    string
 	Email     string
 	ExpiresAt pgtype.Timestamptz
 }
@@ -71,7 +71,7 @@ type User struct {
 }
 
 type Visitor struct {
-	ID           int32
+	ID           string
 	ShortenerID  string
 	CreatedAt    pgtype.Timestamp
 	CountryCode  string

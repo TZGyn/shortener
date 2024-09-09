@@ -17,6 +17,7 @@ WHERE shortener.code = $1
 LIMIT 1;
 -- name: CreateVisitor :exec
 INSERT INTO visitor (
+		id,
 		shortener_id,
 		device_type,
 		device_vendor,
@@ -27,4 +28,4 @@ INSERT INTO visitor (
 		city,
 		referer
 	)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);

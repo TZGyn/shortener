@@ -93,7 +93,7 @@ export const project = pgTable('project', {
 })
 
 export const visitor = pgTable('visitor', {
-	id: serial('id').primaryKey().notNull(),
+	id: text('id').primaryKey(),
 	shortenerId: text('shortener_id').notNull(),
 	createdAt: timestamp('created_at', { mode: 'date' })
 		.defaultNow()

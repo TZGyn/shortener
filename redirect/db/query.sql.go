@@ -13,6 +13,7 @@ import (
 
 const createVisitor = `-- name: CreateVisitor :exec
 INSERT INTO visitor (
+		id,
 		shortener_id,
 		device_type,
 		device_vendor,
@@ -23,10 +24,11 @@ INSERT INTO visitor (
 		city,
 		referer
 	)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 `
 
 type CreateVisitorParams struct {
+	ID           string
 	ShortenerID  string
 	DeviceType   string
 	DeviceVendor string
@@ -40,6 +42,7 @@ type CreateVisitorParams struct {
 
 func (q *Queries) CreateVisitor(ctx context.Context, arg CreateVisitorParams) error {
 	_, err := q.db.Exec(ctx, createVisitor,
+		arg.ID,
 		arg.ShortenerID,
 		arg.DeviceType,
 		arg.DeviceVendor,

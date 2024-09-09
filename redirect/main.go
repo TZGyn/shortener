@@ -12,6 +12,8 @@ import (
 	"time"
 	"tzgyn/kon-redirect/db"
 
+	"math/rand"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -217,6 +219,7 @@ func main() {
 		referer = getDomainWithoutWWW(referer)
 
 		err = queries.CreateVisitor(ctx, db.CreateVisitorParams{
+			ID:           generateRandomString(12),
 			ShortenerID:  shortenerId,
 			DeviceType:   devicetype,
 			DeviceVendor: client.Device.Brand,
@@ -296,4 +299,16 @@ func getDomainWithoutWWW(str string) string {
 	}
 
 	return ""
+}
+
+func generateRandomString(length int) string {
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	seed := rand.NewSource(time.Now().UnixNano())
+	random := rand.New(seed)
+
+	result := make([]byte, length)
+	for i := range result {
+		result[i] = charset[random.Intn(len(charset))]
+	}
+	return string(result)
 }
