@@ -14,6 +14,7 @@
 	} from 'lucide-svelte'
 	import { Progress } from '$lib/components/ui/progress'
 	import { Skeleton } from '$lib/components/ui/skeleton'
+	import * as Avatar from '$lib/components/ui/avatar'
 
 	export let data: PageData
 
@@ -438,7 +439,14 @@
 									class="hover:bg-muted flex flex-col gap-2 border-b p-2 px-4 transition-colors">
 									<div class="flex items-center justify-between">
 										<div class="flex items-center gap-4">
-											<GlobeIcon />
+											<Avatar.Root class="h-6 w-6">
+												<Avatar.Image
+													src={`https://unavatar.io/${visitorByReferer.referer}`}
+													alt="icon" />
+												<Avatar.Fallback>
+													<GlobeIcon />
+												</Avatar.Fallback>
+											</Avatar.Root>
 											<div>
 												{visitorByReferer.referer || '(direct)'}
 											</div>
