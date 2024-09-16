@@ -15,6 +15,7 @@ import { generateId } from 'lucia'
 export const load = (async (event) => {
 	return {
 		form: await superValidate(zod(formSchema)),
+		og_url: env.ORIGIN + '/signup',
 	}
 }) satisfies PageServerLoad
 

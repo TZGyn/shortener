@@ -20,6 +20,10 @@
 		property="og:description"
 		content="Kon.sh URL shortener - free, open source link shortener with analytics, custom qr code and custom name. Bitly/tiny url alternative" />
 	<meta property="og:image" content="/og.png" />
+	<meta property="og:type" content="website" />
+	<meta
+		property="og:url"
+		content={$page.data.og_url || 'https://app.kon.sh'} />
 </svelte:head>
 
 <ModeWatcher />
