@@ -8,6 +8,7 @@
 	import { Badge } from '$lib/components/ui/badge'
 	import { ScrollArea } from '$lib/components/ui/scroll-area'
 	import { Separator } from '$lib/components/ui/separator'
+	import { Skeleton } from '$lib/components/ui/skeleton'
 	import type { Project, Shortener } from '$lib/db/types'
 	import {
 		BarChart,
@@ -47,11 +48,14 @@
 	}
 
 	let editProjectLinkOpen = false
+	let isLoadingEditProjectData = false
 	let editData:
 		| typeof $page.state.editLink
 		| typeof $page.state.editProjectLink
 
 	const showEditModal = async (code: string) => {
+		isLoadingEditProjectData = true
+		editProjectLinkOpen = true
 		const href = project
 			? `/dashboard/projects/${project.uuid}/links/${shortener.id}/edit`
 			: `/dashboard/links/${code}/edit`
@@ -61,7 +65,9 @@
 			editData = project
 				? (result.data as typeof $page.state.editProjectLink)
 				: (result.data as typeof $page.state.editLink)
-			editProjectLinkOpen = true
+			setTimeout(() => {
+				isLoadingEditProjectData = false
+			}, 5000)
 		} else {
 			// something bad happened! try navigating
 			goto(href)
@@ -181,10 +187,12 @@
 						<QrCode size={20} />
 					{/if}
 				</a>
-				<Separator orientation="vertical" />
+				{#if shortener.ios || shortener.android}
+					<Separator orientation="vertical" class="hidden sm:block" />
+				{/if}
 				{#if shortener.ios}
 					<Tooltip.Root>
-						<Tooltip.Trigger>
+						<Tooltip.Trigger class="hidden gap-2 sm:inline-flex">
 							<Badge variant="outline" class="flex gap-2">iOS</Badge>
 						</Tooltip.Trigger>
 						<Tooltip.Content>
@@ -194,7 +202,7 @@
 				{/if}
 				{#if shortener.android}
 					<Tooltip.Root>
-						<Tooltip.Trigger>
+						<Tooltip.Trigger class="hidden gap-2 sm:inline-flex">
 							<Badge variant="outline" class="flex gap-2">
 								Android
 							</Badge>
@@ -207,7 +215,9 @@
 			</div>
 			<div class="flex gap-4">
 				{#if project}
-					<Badge variant="secondary">{project.name}</Badge>
+					<Badge variant="secondary" class="hidden sm:flex">
+						{project.name}
+					</Badge>
 				{/if}
 				<Badge variant="outline" class="flex gap-2">
 					{#if shortener.active}
@@ -238,7 +248,9 @@
 			</Dialog.Description>
 		</Dialog.Header>
 		<ScrollArea class="max-h-[calc(100vh-200px)]">
-			{#if project}
+			{#if isLoadingEditProjectData}
+				<Skeleton class="h-screen" />
+			{:else if project}
 				<ProjectEditLinkPage data={editData} shallowRouting />
 			{:else}
 				<EditLinkPage data={editData} shallowRouting />
