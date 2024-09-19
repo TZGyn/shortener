@@ -25,9 +25,7 @@
 	import ShortenerCard from '$lib/components/ShortenerCard.svelte'
 	import CustomPaginationBar from '$lib/components/Custom-Pagination-Bar.svelte'
 	import Form from './(components)/form.svelte'
-	import EditProjectLinkPage from '../projects/[id]/links/[linkid]/edit/+page.svelte'
 	import ProjectLinkQRPage from '../projects/[id]/links/[linkid]/qr/+page.svelte'
-	import EditLinkQRPage from './[id]/edit/+page.svelte'
 	import LinkQRPage from './[id]/qr/+page.svelte'
 
 	export let data: PageData
@@ -362,6 +360,7 @@
 				{#each shorteners as shortener}
 					<ShortenerCard
 						{shortener}
+						project={shortener.project}
 						shortener_url={data.shortener_url} />
 				{/each}
 			</div>
@@ -398,48 +397,6 @@
 		total={pagination[0].total}
 		path={'/dashboard/links'} />
 {/await}
-
-<Dialog.Root
-	bind:open={editProjectLinkOpen}
-	onOpenChange={(open) => {
-		if (!open) {
-			history.back()
-		}
-	}}>
-	<Dialog.Content>
-		<Dialog.Header>
-			<Dialog.Title>Edit Shortener</Dialog.Title>
-			<Dialog.Description>
-				Edit Shortener Here. Click Save To Save.
-			</Dialog.Description>
-		</Dialog.Header>
-		<ScrollArea class="max-h-[calc(100vh-200px)]">
-			<EditProjectLinkPage
-				data={$page.state.editProjectLink}
-				shallowRouting />
-		</ScrollArea>
-	</Dialog.Content>
-</Dialog.Root>
-
-<Dialog.Root
-	bind:open={editLinkOpen}
-	onOpenChange={(open) => {
-		if (!open) {
-			history.back()
-		}
-	}}>
-	<Dialog.Content>
-		<Dialog.Header>
-			<Dialog.Title>Edit Shortener</Dialog.Title>
-			<Dialog.Description>
-				Edit Shortener Here. Click Save To Save.
-			</Dialog.Description>
-		</Dialog.Header>
-		<ScrollArea class="max-h-[calc(100vh-200px)]">
-			<EditLinkQRPage data={$page.state.editLink} shallowRouting />
-		</ScrollArea>
-	</Dialog.Content>
-</Dialog.Root>
 
 <Dialog.Root
 	bind:open={linkQROpen}

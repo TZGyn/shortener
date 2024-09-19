@@ -15,6 +15,7 @@ export const load = (async (event) => {
 
 	const shortener = await db.query.shortener.findFirst({
 		columns: {
+			id: true,
 			code: true,
 			projectId: true,
 			ios: true,
@@ -32,30 +33,13 @@ export const load = (async (event) => {
 		redirect(300, `/dashboard/links`)
 	}
 
-	const projects = await db.query.project.findMany({
-		where: (project, { eq }) => eq(project.userId, user.id),
-	})
-
-	let selectedCategory = undefined
-	if (shortener.projectId) {
-		const project = projects.find(
-			(project) => project.id === shortener.projectId,
-		)
-		if (project) {
-			selectedCategory = { value: project.uuid, label: project.name }
-		}
-	}
-
 	return {
-		projects,
 		shortener,
-		selectedCategory,
 		form: await superValidate(
 			{
 				...shortener,
 				custom_code_enable: true,
 				custom_code: shortener.code,
-				project: selectedCategory?.value || undefined,
 			},
 			zod(formSchema),
 			{ errors: false },
@@ -71,6 +55,8 @@ export const actions: Actions = {
 				form,
 			})
 		}
+
+		const user = event.locals.user
 
 		if (form.data.custom_code_enable) {
 			if (!form.data.custom_code) {
@@ -88,38 +74,32 @@ export const actions: Actions = {
 				)
 			}
 
-			const customCodeExist = await db.query.shortener.findFirst({
+			const customCodeExist = await db.query.shortener.findMany({
 				where: (shortener, { eq, and, ne }) =>
 					and(
 						eq(shortener.code, form.data.custom_code),
-						ne(shortener.code, event.params.id),
+						ne(shortener.id, event.params.id),
 					),
+				with: {
+					project: true,
+				},
 			})
 
-			if (customCodeExist) {
-				return setError(form, 'custom_code', 'Duplicated Custom Code')
+			for (const shortener of customCodeExist) {
+				if (!shortener.project) {
+					return setError(
+						form,
+						'custom_code',
+						'Duplicated Custom Code',
+					)
+				}
 			}
-		}
-
-		const user = event.locals.user
-
-		let project = undefined
-		const selected_project = form.data.project
-		if (selected_project) {
-			project = await db.query.project.findFirst({
-				where: (project, { eq, and }) =>
-					and(
-						eq(project.userId, user.id),
-						eq(project.uuid, selected_project),
-					),
-			})
 		}
 
 		await db
 			.update(shortener)
 			.set({
 				link: form.data.link,
-				projectId: project ? project.id : null,
 				userId: user.id,
 				code: form.data.custom_code_enable
 					? form.data.custom_code
@@ -129,7 +109,7 @@ export const actions: Actions = {
 				android: form.data.android,
 				android_link: form.data.android_link,
 			})
-			.where(eq(shortener.code, event.params.id))
+			.where(eq(shortener.id, event.params.id))
 
 		return { form }
 	},

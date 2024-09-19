@@ -9,18 +9,10 @@
 
 {#if !shallowRouting}
 	<ScrollArea>
-		<div class="py-4 px-10 max-w-2xl">
-			<Form
-				data={data.form}
-				code={data.shortener.code}
-				projects={data.projects}
-				shortenerCategory={data.selectedCategory} />
+		<div class="max-w-2xl px-10 py-4">
+			<Form data={data.form} code={data.shortener.id} />
 		</div>
 	</ScrollArea>
 {:else}
-	<Form
-		data={data.form}
-		code={data.shortener.code}
-		projects={data.projects}
-		shortenerCategory={data.selectedCategory} />
+	<Form data={data.form} code={data.shortener.id} />
 {/if}

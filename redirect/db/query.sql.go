@@ -60,6 +60,7 @@ const getShortener = `-- name: GetShortener :one
 SELECT id, link, code, created_at, user_id, project_id, active, ios, ios_link, android, android_link
 FROM shortener
 WHERE code = $1
+	AND shortener.project_id IS NULL
 LIMIT 1
 `
 

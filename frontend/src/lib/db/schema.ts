@@ -49,7 +49,7 @@ export const shortener = pgTable('shortener', {
 	ios_link: varchar('ios_link', { length: 255 }),
 	android: boolean('android').notNull().default(false),
 	android_link: varchar('android_link', { length: 255 }),
-	code: varchar('code', { length: 255 }).notNull().unique(),
+	code: varchar('code', { length: 255 }).notNull(),
 	createdAt: timestamp('created_at', { mode: 'string' })
 		.defaultNow()
 		.notNull(),

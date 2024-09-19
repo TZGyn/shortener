@@ -2,7 +2,6 @@ import { z } from 'zod'
 
 export const formSchema = z.object({
 	link: z.string().url(),
-	project: z.string().optional(),
 	active: z.boolean(),
 	ios: z.boolean(),
 	ios_link: z

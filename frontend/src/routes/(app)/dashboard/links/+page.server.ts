@@ -17,6 +17,7 @@ import type { Actions } from './$types'
 import { nanoid } from 'nanoid'
 import { isAlphanumeric } from '$lib/utils'
 import { generateId } from 'lucia'
+import type { Project } from '$lib/db/types'
 
 export const load = (async (event) => {
 	const user = event.locals.user
@@ -143,6 +144,19 @@ export const actions: Actions = {
 			})
 		}
 
+		const user = event.locals.user
+		let project: Project | undefined = undefined
+		const selected_project = form.data.project
+		if (selected_project) {
+			project = await db.query.project.findFirst({
+				where: (project, { eq, and }) =>
+					and(
+						eq(project.userId, user.id),
+						eq(project.uuid, selected_project),
+					),
+			})
+		}
+
 		if (form.data.custom_code_enable) {
 			if (!form.data.custom_code) {
 				return setError(
@@ -159,27 +173,60 @@ export const actions: Actions = {
 				)
 			}
 
-			const customCodeExist = await db.query.shortener.findFirst({
-				where: (shortener, { eq }) =>
-					eq(shortener.code, form.data.custom_code),
+			const customCodeExist = await db.query.shortener.findMany({
+				where: (shortener, { eq, and, ne }) =>
+					and(eq(shortener.code, form.data.custom_code)),
+				with: {
+					project: true,
+				},
 			})
 
-			if (customCodeExist) {
-				return setError(form, 'custom_code', 'Duplicated Custom Code')
+			for (const shortener of customCodeExist) {
+				if (!shortener.project) {
+					if (
+						!project ||
+						(project && !project.enable_custom_domain)
+					) {
+						return setError(
+							form,
+							'custom_code',
+							'Duplicated Custom Code',
+						)
+					}
+				} else {
+					if (project) {
+						if (
+							!shortener.project.enable_custom_domain &&
+							!project.enable_custom_domain
+						) {
+							return setError(
+								form,
+								'custom_code',
+								'Duplicated Custom Code',
+							)
+						}
+
+						if (
+							shortener.project.custom_domain ===
+							project.custom_domain
+						) {
+							return setError(
+								form,
+								'custom_code',
+								'Duplicated Custom Code',
+							)
+						}
+					} else {
+						if (!shortener.project.enable_custom_domain) {
+							return setError(
+								form,
+								'custom_code',
+								'Duplicated Custom Code',
+							)
+						}
+					}
+				}
 			}
-		}
-
-		const user = event.locals.user
-		let project = undefined
-		const selected_project = form.data.project
-		if (selected_project) {
-			project = await db.query.project.findFirst({
-				where: (project, { eq, and }) =>
-					and(
-						eq(project.userId, user.id),
-						eq(project.uuid, selected_project),
-					),
-			})
 		}
 
 		const code = form.data.custom_code_enable

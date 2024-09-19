@@ -15,6 +15,7 @@ export const load = (async (event) => {
 
 	const shortener = await db.query.shortener.findFirst({
 		columns: {
+			id: true,
 			code: true,
 			ios: true,
 			ios_link: true,
@@ -25,7 +26,7 @@ export const load = (async (event) => {
 		},
 		where: (shortener, { eq, and }) =>
 			and(
-				eq(shortener.code, linkid),
+				eq(shortener.id, linkid),
 				eq(shortener.projectId, selectedProject.id),
 			),
 	})
@@ -56,6 +57,19 @@ export const actions: Actions = {
 			})
 		}
 
+		const { id } = event.params
+		const user = event.locals.user
+		const project = await db.query.project.findFirst({
+			where: (project, { eq, and }) =>
+				and(eq(project.userId, user.id), eq(project.uuid, id)),
+		})
+
+		if (!project) {
+			return fail(400, {
+				form,
+			})
+		}
+
 		if (form.data.custom_code_enable) {
 			if (!form.data.custom_code) {
 				return setError(
@@ -72,30 +86,38 @@ export const actions: Actions = {
 				)
 			}
 
-			const customCodeExist = await db.query.shortener.findFirst({
+			const customCodeExist = await db.query.shortener.findMany({
 				where: (shortener, { eq, and, ne }) =>
 					and(
 						eq(shortener.code, form.data.custom_code),
-						ne(shortener.code, event.params.linkid),
+						ne(shortener.id, event.params.linkid),
 					),
+				with: {
+					project: true,
+				},
 			})
 
-			if (customCodeExist) {
-				return setError(form, 'custom_code', 'Duplicated Custom Code')
+			for (const shortener of customCodeExist) {
+				if (!shortener.project && !project.enable_custom_domain) {
+					return setError(
+						form,
+						'custom_code',
+						'Duplicated Custom Code',
+					)
+				}
+
+				if (!shortener.project) continue
+
+				if (
+					shortener.project.custom_domain === project.custom_domain
+				) {
+					return setError(
+						form,
+						'custom_code',
+						'Duplicated Custom Code',
+					)
+				}
 			}
-		}
-
-		const { id } = event.params
-		const user = event.locals.user
-		const project = await db.query.project.findFirst({
-			where: (project, { eq, and }) =>
-				and(eq(project.userId, user.id), eq(project.uuid, id)),
-		})
-
-		if (!project) {
-			return fail(400, {
-				form,
-			})
 		}
 
 		await db
@@ -112,7 +134,7 @@ export const actions: Actions = {
 				android: form.data.android,
 				android_link: form.data.android_link,
 			})
-			.where(eq(shortener.code, event.params.linkid))
+			.where(eq(shortener.id, event.params.linkid))
 
 		return { form }
 	},

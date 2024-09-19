@@ -113,6 +113,19 @@ export const actions: Actions = {
 			})
 		}
 
+		const { id } = event.params
+		const user = event.locals.user
+		const project = await db.query.project.findFirst({
+			where: (project, { eq, and }) =>
+				and(eq(project.userId, user.id), eq(project.uuid, id)),
+		})
+
+		if (!project) {
+			return fail(400, {
+				form,
+			})
+		}
+
 		if (form.data.custom_code_enable) {
 			if (!form.data.custom_code) {
 				return setError(
@@ -129,27 +142,35 @@ export const actions: Actions = {
 				)
 			}
 
-			const customCodeExist = await db.query.shortener.findFirst({
-				where: (shortener, { eq }) =>
-					eq(shortener.code, form.data.custom_code),
+			const customCodeExist = await db.query.shortener.findMany({
+				where: (shortener, { eq, and, ne }) =>
+					and(eq(shortener.code, form.data.custom_code)),
+				with: {
+					project: true,
+				},
 			})
 
-			if (customCodeExist) {
-				return setError(form, 'custom_code', 'Duplicated Custom Code')
+			for (const shortener of customCodeExist) {
+				if (!shortener.project && !project.enable_custom_domain) {
+					return setError(
+						form,
+						'custom_code',
+						'Duplicated Custom Code',
+					)
+				}
+
+				if (!shortener.project) continue
+
+				if (
+					shortener.project.custom_domain === project.custom_domain
+				) {
+					return setError(
+						form,
+						'custom_code',
+						'Duplicated Custom Code',
+					)
+				}
 			}
-		}
-
-		const { id } = event.params
-		const user = event.locals.user
-		const project = await db.query.project.findFirst({
-			where: (project, { eq, and }) =>
-				and(eq(project.userId, user.id), eq(project.uuid, id)),
-		})
-
-		if (!project) {
-			return fail(400, {
-				form,
-			})
 		}
 
 		const code = form.data.custom_code_enable

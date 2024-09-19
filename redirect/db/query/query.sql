@@ -5,6 +5,7 @@ FROM shortener;
 SELECT *
 FROM shortener
 WHERE code = $1
+	AND shortener.project_id IS NULL
 LIMIT 1;
 -- name: GetShortenerWithDomain :one
 SELECT shortener.*,

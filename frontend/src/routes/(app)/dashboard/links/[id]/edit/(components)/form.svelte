@@ -1,6 +1,5 @@
 <script lang="ts">
 	import * as Form from '$lib/components/ui/form'
-	import * as Select from '$lib/components/ui/select'
 	import { Input } from '$lib/components/ui/input'
 	import { Switch } from '$lib/components/ui/switch'
 	import { formSchema, type FormSchema } from '../schema'
@@ -14,12 +13,9 @@
 	import { Loader2, LoaderCircle } from 'lucide-svelte'
 	import { Checkbox } from '$lib/components/ui/checkbox'
 	import { onMount } from 'svelte'
-	import type { Project } from '$lib/db/types'
 
 	export let data: SuperValidated<Infer<FormSchema>>
-	export let projects: Project[]
 	export let code: string
-	export let shortenerCategory: any = undefined
 
 	const form = superForm(data, {
 		validators: zodClient(formSchema),
@@ -98,38 +94,6 @@
 				on:input={getMetadata} />
 		</Form.Control>
 		<Form.Description>Shortener link</Form.Description>
-		<Form.FieldErrors />
-	</Form.Field>
-	<Form.Field {form} name="project" class="flex flex-col gap-2">
-		<Form.Control let:attrs>
-			<Form.Label>Project</Form.Label>
-			<Select.Root
-				bind:selected={shortenerCategory}
-				onSelectedChange={(v) => {
-					v && ($formData.project = v.value)
-				}}
-				multiple={false}>
-				<Select.Trigger {...attrs} class="col-span-3">
-					<Select.Value placeholder="Select a Project" />
-				</Select.Trigger>
-				<Select.Content>
-					<Select.Item value={''}>None</Select.Item>
-					<Select.Separator />
-					<Select.Group>
-						{#each projects as project}
-							<Select.Item value={project.uuid}>
-								{project.name}
-							</Select.Item>
-						{/each}
-					</Select.Group>
-				</Select.Content>
-			</Select.Root>
-			<input
-				hidden
-				bind:value={$formData.project}
-				name={attrs.name} />
-		</Form.Control>
-		<Form.Description>Shortener Project</Form.Description>
 		<Form.FieldErrors />
 	</Form.Field>
 	<Form.Field

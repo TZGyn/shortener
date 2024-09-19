@@ -20,17 +20,16 @@
 	} from 'lucide-svelte'
 	import DeleteShortenerDialog from './DeleteShortenerDialog.svelte'
 	import EditLinkPage from '$lib/../routes/(app)/dashboard/links/[id]/edit/+page.svelte'
+	import ProjectEditLinkPage from '$lib/../routes/(app)/dashboard/projects/[id]/links/[linkid]/edit/+page.svelte'
 
 	import { goto, preloadData, pushState } from '$app/navigation'
 	import { cn } from '$lib/utils'
 	import type { page } from '$app/stores'
 
 	export let shortener: Shortener & {
-		projectName: string | null
-		projectUuid: string | null
 		visitorCount: number
-		project: Project | null
 	}
+	export let project: Project | null
 	export let shortener_url: string
 
 	let deleteDialogOpen = false
@@ -41,21 +40,27 @@
 	}
 
 	const getUrl = () => {
-		if (shortener.projectUuid) {
-			return `/dashboard/projects/${shortener.projectUuid}`
+		if (project) {
+			return `/dashboard/projects/${project.uuid}`
 		}
 		return '/dashboard'
 	}
 
 	let editProjectLinkOpen = false
-	let editData: typeof $page.state.editLink
+	let editData:
+		| typeof $page.state.editLink
+		| typeof $page.state.editProjectLink
 
 	const showEditModal = async (code: string) => {
-		const href = `/dashboard/links/${code}/edit`
+		const href = project
+			? `/dashboard/projects/${project.uuid}/links/${shortener.id}/edit`
+			: `/dashboard/links/${code}/edit`
 		const result = await preloadData(href)
 
 		if (result.type === 'loaded' && result.status === 200) {
-			editData = result.data as typeof $page.state.editLink
+			editData = project
+				? (result.data as typeof $page.state.editProjectLink)
+				: (result.data as typeof $page.state.editLink)
 			editProjectLinkOpen = true
 		} else {
 			// something bad happened! try navigating
@@ -84,8 +89,8 @@
 		isLoadingQrModal = false
 	}
 
-	const shortenerUrl = shortener.project?.enable_custom_domain
-		? shortener.project.custom_domain || shortener_url
+	const shortenerUrl = project?.enable_custom_domain
+		? project.custom_domain || shortener_url
 		: shortener_url
 </script>
 
@@ -156,7 +161,7 @@
 		<div class="flex items-center justify-between">
 			<div class="flex gap-2">
 				<Button
-					href={`/dashboard/links/${shortener.code}`}
+					href={`/dashboard/links/${shortener.id}`}
 					class="bg-secondary flex h-8 items-center justify-center gap-1 rounded text-sm">
 					<BarChart size={20} />
 					<div>
@@ -201,8 +206,8 @@
 				{/if}
 			</div>
 			<div class="flex gap-4">
-				{#if shortener.projectName}
-					<Badge variant="secondary">{shortener.projectName}</Badge>
+				{#if project}
+					<Badge variant="secondary">{project.name}</Badge>
 				{/if}
 				<Badge variant="outline" class="flex gap-2">
 					{#if shortener.active}
@@ -233,7 +238,11 @@
 			</Dialog.Description>
 		</Dialog.Header>
 		<ScrollArea class="max-h-[calc(100vh-200px)]">
-			<EditLinkPage data={editData} shallowRouting />
+			{#if project}
+				<ProjectEditLinkPage data={editData} shallowRouting />
+			{:else}
+				<EditLinkPage data={editData} shallowRouting />
+			{/if}
 		</ScrollArea>
 	</Dialog.Content>
 </Dialog.Root>

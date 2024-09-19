@@ -3,7 +3,7 @@
 	import { browser } from '$app/environment'
 	import { page } from '$app/stores'
 
-	import ShortenerCard from './(components)/ShortenerCard.svelte'
+	import ShortenerCard from '$lib/components/ShortenerCard.svelte'
 	import CustomPaginationBar from '$lib/components/Custom-Pagination-Bar.svelte'
 	import { Button } from '$lib/components/ui/button'
 	import { Skeleton } from '$lib/components/ui/skeleton'
@@ -206,7 +206,7 @@
 				{#each shorteners as shortener}
 					<ShortenerCard
 						{shortener}
-						selected_project={data.selectedProject}
+						project={data.project}
 						shortener_url={data.shortener_url} />
 				{/each}
 			</div>

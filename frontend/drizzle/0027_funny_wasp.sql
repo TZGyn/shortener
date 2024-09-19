@@ -1,0 +1,1 @@
+ALTER TABLE "shortener" DROP CONSTRAINT "shortener_code_unique";

@@ -11,7 +11,7 @@ export const load = (async (event) => {
 	const shortener = await db.query.shortener.findFirst({
 		where: (shortener, { eq, and }) =>
 			and(
-				eq(shortener.code, shortenerId),
+				eq(shortener.id, shortenerId),
 				eq(shortener.userId, user.id),
 			),
 		with: {
