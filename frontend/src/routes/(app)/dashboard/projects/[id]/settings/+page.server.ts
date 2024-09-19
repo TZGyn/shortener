@@ -251,6 +251,7 @@ export const actions: Actions = {
 		return setMessage(form, 'Custom Domain Enabled')
 	},
 	disable_custom_domain: async (event) => {
+		return { message: 'Disabling custom domain is unavailable' }
 		const userId = event.locals.user.id
 
 		const existingProject = await db.query.project.findFirst({

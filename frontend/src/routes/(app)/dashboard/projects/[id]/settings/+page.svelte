@@ -221,7 +221,7 @@
 								</Dialog.Content>
 							</Dialog.Root>
 						{:else}
-							<AlertDialog.Root>
+							<!-- <AlertDialog.Root>
 								<AlertDialog.Trigger asChild let:builder>
 									<Button builders={[builder]}>
 										Disable Custom Domain
@@ -252,7 +252,7 @@
 										</AlertDialog.Action>
 									</AlertDialog.Footer>
 								</AlertDialog.Content>
-							</AlertDialog.Root>
+							</AlertDialog.Root> -->
 						{/if}
 					</div>
 				</div>
