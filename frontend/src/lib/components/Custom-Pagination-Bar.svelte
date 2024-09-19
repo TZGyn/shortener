@@ -28,7 +28,8 @@
 </script>
 
 <div class="flex items-center justify-between border-t p-4">
-	<Select.Root selected={{ label: perPage, value: perPage }}>
+	<Select.Root
+		selected={{ label: perPage.toString(), value: perPage }}>
 		<Select.Trigger class="w-[180px]">
 			<Select.Value placeholder="Page Size" />
 		</Select.Trigger>
@@ -95,7 +96,7 @@
 									value: page.value,
 								},
 							])}>
-							<Pagination.Item isVisible={currentPage == page.value}>
+							<Pagination.Item>
 								<Pagination.Link
 									{page}
 									isActive={currentPage == page.value}>
