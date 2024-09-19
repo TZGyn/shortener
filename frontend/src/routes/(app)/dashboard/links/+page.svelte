@@ -72,9 +72,7 @@
 		}
 	}
 
-	$: editProjectLinkOpen = !!$page.state.editProjectLink
 	$: projectLinkQROpen = !!$page.state.projectLinkQR
-	$: editLinkOpen = !!$page.state.editLink
 	$: linkQROpen = !!$page.state.linkQR
 </script>
 
@@ -356,7 +354,7 @@
 	{#if shorteners.length > 0}
 		<ScrollArea class="flex-grow">
 			<div
-				class="grid grid-cols-[repeat(auto-fit,_minmax(500px,_1fr))] gap-4 p-4">
+				class="grid grid-cols-1 gap-4 p-4 md:grid-cols-[repeat(auto-fit,_minmax(500px,_1fr))]">
 				{#each shorteners as shortener}
 					<ShortenerCard
 						{shortener}

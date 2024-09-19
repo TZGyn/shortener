@@ -143,7 +143,7 @@
 							label: $page.data.project?.name || 'None',
 							value: $page.data.project?.id || 'none',
 						}}>
-						<Select.Trigger>
+						<Select.Trigger class="hidden lg:flex">
 							<Select.Value placeholder="Select a project" />
 						</Select.Trigger>
 						<Select.Content>
