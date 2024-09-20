@@ -4,8 +4,12 @@ FROM shortener;
 -- name: GetShortener :one
 SELECT *
 FROM shortener
+	LEFT JOIN project ON project.id = shortener.project_id
 WHERE code = $1
-	AND shortener.project_id IS NULL
+	AND (
+		shortener.project_id IS NULL
+		OR project.enable_custom_domain IS FALSE
+	)
 LIMIT 1;
 -- name: GetShortenerWithDomain :one
 SELECT shortener.*,

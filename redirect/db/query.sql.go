@@ -57,16 +57,48 @@ func (q *Queries) CreateVisitor(ctx context.Context, arg CreateVisitorParams) er
 }
 
 const getShortener = `-- name: GetShortener :one
-SELECT id, link, code, created_at, user_id, project_id, active, ios, ios_link, android, android_link
+SELECT shortener.id, link, code, created_at, shortener.user_id, project_id, active, ios, ios_link, android, android_link, project.id, uuid, name, project.user_id, qr_background, qr_foreground, custom_domain, domain_status, enable_custom_domain, custom_ip, custom_domain_id, qr_corner_square_style, qr_dot_style, qr_image_base64
 FROM shortener
+	LEFT JOIN project ON project.id = shortener.project_id
 WHERE code = $1
-	AND shortener.project_id IS NULL
+	AND (
+		shortener.project_id IS NULL
+		OR project.enable_custom_domain IS FALSE
+	)
 LIMIT 1
 `
 
-func (q *Queries) GetShortener(ctx context.Context, code string) (Shortener, error) {
+type GetShortenerRow struct {
+	ID                  string
+	Link                string
+	Code                string
+	CreatedAt           pgtype.Timestamp
+	UserID              string
+	ProjectID           pgtype.Text
+	Active              bool
+	Ios                 bool
+	IosLink             pgtype.Text
+	Android             bool
+	AndroidLink         pgtype.Text
+	ID_2                pgtype.Text
+	Uuid                pgtype.UUID
+	Name                pgtype.Text
+	UserID_2            pgtype.Text
+	QrBackground        pgtype.Text
+	QrForeground        pgtype.Text
+	CustomDomain        pgtype.Text
+	DomainStatus        pgtype.Text
+	EnableCustomDomain  pgtype.Bool
+	CustomIp            pgtype.Text
+	CustomDomainID      pgtype.Text
+	QrCornerSquareStyle pgtype.Text
+	QrDotStyle          pgtype.Text
+	QrImageBase64       pgtype.Text
+}
+
+func (q *Queries) GetShortener(ctx context.Context, code string) (GetShortenerRow, error) {
 	row := q.db.QueryRow(ctx, getShortener, code)
-	var i Shortener
+	var i GetShortenerRow
 	err := row.Scan(
 		&i.ID,
 		&i.Link,
@@ -79,6 +111,20 @@ func (q *Queries) GetShortener(ctx context.Context, code string) (Shortener, err
 		&i.IosLink,
 		&i.Android,
 		&i.AndroidLink,
+		&i.ID_2,
+		&i.Uuid,
+		&i.Name,
+		&i.UserID_2,
+		&i.QrBackground,
+		&i.QrForeground,
+		&i.CustomDomain,
+		&i.DomainStatus,
+		&i.EnableCustomDomain,
+		&i.CustomIp,
+		&i.CustomDomainID,
+		&i.QrCornerSquareStyle,
+		&i.QrDotStyle,
+		&i.QrImageBase64,
 	)
 	return i, err
 }
