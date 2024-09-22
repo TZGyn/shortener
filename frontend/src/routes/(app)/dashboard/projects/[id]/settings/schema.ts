@@ -14,6 +14,7 @@ export const formSchema = z.object({
 	qrDotStyle: z.custom<'square' | 'rounded'>(),
 	qrImage: z
 		.instanceof(File, { message: 'Please upload a file' })
+		.refine((file) => file.size <= 2097152, `Max image size is 2MB.`)
 		.refine(
 			(file) =>
 				file.type === 'image/jpeg' || file.type === 'image/png',

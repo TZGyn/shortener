@@ -18,6 +18,8 @@
 	export let qrImageBase64: string | null = null
 	export let isPro: boolean = false
 
+	let qrImageInput: HTMLInputElement
+
 	const form = superForm(data, {
 		validators: zodClient(formSchema),
 		invalidateAll: 'force',
@@ -79,13 +81,54 @@
 			<Form.Label>
 				Image <span class="text-brand">(Pro)</span>
 			</Form.Label>
-			<Input
+			<div>
+				{#if !$formData.qrImage && !qrImageBase64}
+					<button
+						on:click={(e) => {
+							e.preventDefault()
+							qrImageInput.click()
+						}}>
+						<div
+							class="flex h-16 w-16 items-center justify-center rounded-lg border-4 border-dashed">
+						</div>
+					</button>
+				{:else}
+					<button
+						on:click={(e) => {
+							e.preventDefault()
+							qrImageInput.click()
+						}}>
+						<div
+							class="flex h-16 w-16 items-center justify-center rounded-lg">
+							<img
+								src={$formData.qrImage
+									? URL.createObjectURL($formData.qrImage)
+									: qrImageBase64}
+								alt={'image'}
+								width={64}
+								height={64} />
+						</div>
+					</button>
+				{/if}
+			</div>
+			<Form.Description>Click to edit</Form.Description>
+			<input
 				{...attrs}
+				hidden
+				bind:this={qrImageInput}
 				accept="image/png, image/jpeg"
 				type="file"
 				disabled={!isPro}
-				on:input={(e) =>
-					($formData.qrImage = e.currentTarget.files?.item(0))} />
+				on:input={(e) => {
+					const file = e.currentTarget.files?.item(0)
+					if (!file) return
+
+					if (file.size > 2097152) {
+						toast.error('Too Big! Max file size is 2MB')
+						return
+					}
+					$formData.qrImage = file
+				}} />
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
