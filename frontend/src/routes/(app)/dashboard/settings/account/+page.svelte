@@ -106,7 +106,7 @@
 			<Form.Description>Change Your Email</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
-		<Form.Button class="w-fit">
+		<Form.Button class="w-fit self-end">
 			{#if $submitting}
 				<LoaderCircle class="animate-spin" />
 			{/if}
