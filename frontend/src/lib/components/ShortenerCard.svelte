@@ -187,10 +187,10 @@
 						<QrCode size={20} />
 					{/if}
 				</a>
-				{#if shortener.ios || shortener.android}
+				{#if (shortener.ios && shortener.ios_link) || (shortener.android && shortener.android_link)}
 					<Separator orientation="vertical" class="hidden sm:block" />
 				{/if}
-				{#if shortener.ios}
+				{#if shortener.ios && shortener.ios_link}
 					<Tooltip.Root>
 						<Tooltip.Trigger class="hidden gap-2 sm:inline-flex">
 							<Badge variant="outline" class="flex gap-2">iOS</Badge>
@@ -200,7 +200,7 @@
 						</Tooltip.Content>
 					</Tooltip.Root>
 				{/if}
-				{#if shortener.android}
+				{#if shortener.android && shortener.android_link}
 					<Tooltip.Root>
 						<Tooltip.Trigger class="hidden gap-2 sm:inline-flex">
 							<Badge variant="outline" class="flex gap-2">
