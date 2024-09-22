@@ -24,6 +24,7 @@
 	<meta
 		property="og:url"
 		content={$page.data.og_url || 'https://app.kon.sh'} />
+	<meta name="twitter:card" content="summary" />
 </svelte:head>
 
 <ModeWatcher />

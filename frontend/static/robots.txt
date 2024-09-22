@@ -3,3 +3,9 @@ Allow: /
 
 User-agent: *
 Disallow: /dashboard
+
+User-agent: *
+Disallow: /signup
+
+User-agent: *
+Disallow: /login
