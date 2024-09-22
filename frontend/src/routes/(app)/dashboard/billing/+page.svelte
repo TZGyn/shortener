@@ -45,10 +45,11 @@
 		<h2 class="text-2xl font-bold tracking-tight">Pricing</h2>
 		<p class="text-muted-foreground">Checkout our pricings here.</p>
 	</div>
-	<Separator class="my-4 lg:my-6" />
+	<Separator class="mt-4 lg:mt-6" />
 
 	<ScrollArea>
-		<div class="flex w-full flex-wrap-reverse justify-center gap-8">
+		<div
+			class="flex w-full flex-wrap-reverse justify-center gap-8 pt-6">
 			<div class="flex w-[400px] gap-8 rounded-lg border p-8">
 				<div class="flex w-full flex-col gap-3 text-start">
 					<h2 class="text-2xl font-bold">Free</h2>
