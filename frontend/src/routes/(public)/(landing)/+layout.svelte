@@ -2,6 +2,7 @@
 	import ThemeToggle from '$lib/components/theme-toggle.svelte'
 	import { Button } from '$lib/components/ui/button'
 	import { Separator } from '$lib/components/ui/separator'
+	import { GithubIcon, MailIcon } from 'lucide-svelte'
 
 	function scrollIntoView({ target }: { target: any }) {
 		const el = document.querySelector(target.getAttribute('href'))
@@ -61,17 +62,32 @@
 				</li>
 				<Separator orientation={'vertical'} />
 				<li>
-					<a href="mailto:subsonic_module981@slmails.com">Contact</a>
+					<a
+						href="mailto:subsonic_module981@slmails.com"
+						class="flex items-center gap-2">
+						<MailIcon />
+						Contact
+					</a>
 				</li>
 				<Separator orientation={'vertical'} />
 				<li>
-					<a href="https://kon.sh/AX0LqT-v" target="_blank">
+					<a
+						href="https://kon.sh/AX0LqT-v"
+						target="_blank"
+						class="flex items-center gap-2">
+						<GithubIcon />
 						Report Bugs
 					</a>
 				</li>
 				<Separator orientation={'vertical'} />
 				<li>
-					<a href="https://kon.sh/github" target="_blank">GitHub</a>
+					<a
+						href="https://kon.sh/github"
+						target="_blank"
+						class="flex items-center gap-2">
+						<GithubIcon />
+						GitHub
+					</a>
 				</li>
 			</ul>
 		</nav>
