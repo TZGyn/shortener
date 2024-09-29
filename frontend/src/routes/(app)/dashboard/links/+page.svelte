@@ -1,74 +1,74 @@
 <script lang="ts">
 	import type { PageData } from './$types'
-	import { cn } from '$lib/utils'
-	import { goto } from '$app/navigation'
-	import { browser } from '$app/environment'
 	import { page } from '$app/stores'
 
 	import { Button } from '$lib/components/ui/button'
 	import * as Select from '$lib/components/ui/select'
-	import * as Command from '$lib/components/ui/command'
-	import * as Popover from '$lib/components/ui/popover'
 	import * as Dialog from '$lib/components/ui/dialog'
 	import { Input } from '$lib/components/ui/input'
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
 	import { Skeleton } from '$lib/components/ui/skeleton'
 	import * as Drawer from '$lib/components/ui/drawer'
+	import * as Pagination from '$lib/components/ui/pagination'
 
 	import {
-		Check,
-		ChevronsUpDown,
+		ChevronLeft,
+		ChevronRight,
 		SortAscIcon,
-		SortDescIcon,
 	} from 'lucide-svelte'
 
 	import ShortenerCard from '$lib/components/ShortenerCard.svelte'
-	import CustomPaginationBar from '$lib/components/Custom-Pagination-Bar.svelte'
 	import Form from './(components)/form.svelte'
 	import ProjectLinkQRPage from '../projects/[id]/links/[linkid]/qr/+page.svelte'
 	import LinkQRPage from './[id]/qr/+page.svelte'
+	import type { Project, Shortener } from '$lib/db/types'
+	import type { Selected } from 'bits-ui'
 
 	export let data: PageData
 
 	let dialogOpen = false
 
-	let open: boolean = false
-	let drawerSelect: boolean = false
-	let selectedProject: any = data.selected_project.label
-
-	$: selectedProject = data.selected_project.label
-
-	let search: string | null = data.search
+	let search: string | null = ''
 	let searchUpdateTimeout: any
 
-	$: browser &&
-		search &&
-		goto(
-			updateSearchParam([
-				{ name: 'search', value: search },
-				{
-					name: 'page',
-					value: 1,
-				},
-			]),
+	let pageNumber = 1
+	let perPage = 12
+	let sortBy: Selected<string> = {
+		label: 'Latest',
+		value: 'latest',
+	}
+	let selectedProject: Selected<string> = {
+		label: 'All',
+		value: 'all',
+	}
+
+	const fetchShorteners = async (
+		page: number,
+		perPage: number,
+		sortBy: string,
+		project: string,
+		search: string | null,
+	) => {
+		const searchParams = new URLSearchParams()
+
+		if (page) searchParams.set('page', page.toString())
+		if (perPage) searchParams.set('perPage', perPage.toString())
+		if (sortBy) searchParams.set('sortBy', sortBy)
+		if (project) searchParams.set('project', project)
+		if (search) searchParams.set('search', search)
+
+		const response = await fetch(
+			`/api/shortener?${searchParams.toString()}`,
 		)
 
-	const updateSearchParam = (
-		params: { name: string; value: any }[],
-	) => {
-		const urlParams = new URLSearchParams(window.location.search)
-		params.map(({ name, value }) => {
-			if (value) {
-				urlParams.set(name, value)
-			} else {
-				urlParams.delete(name)
-			}
-		})
-		const searchParams = urlParams.toString()
-		if (searchParams) {
-			return '/dashboard/links?' + searchParams
-		} else {
-			return '/dashboard/links'
+		const data = await response.json()
+
+		return {
+			shorteners: data.shorteners as (Shortener & {
+				visitorCount: number
+				project: Project
+			})[],
+			pagination: data.pagination as { total: number },
 		}
 	}
 
@@ -89,100 +89,61 @@
 			</Drawer.Header>
 			<Drawer.Footer class="gap-6">
 				<Select.Root
-					selected={{ label: data.sortBy, value: data.sortBy }}>
+					selected={sortBy}
+					onSelectedChange={(selected) => {
+						if (!selected) return
+						sortBy = selected
+					}}>
 					<Select.Trigger>
 						<Select.Value placeholder="Sort By" />
 					</Select.Trigger>
 					<Select.Content>
 						<Select.Group>
 							<Select.Label>Sort By</Select.Label>
-							{#each ['latest', 'oldest', 'most_visited'] as sortBy}
-								<a
-									href={updateSearchParam([
-										{ name: 'sortBy', value: sortBy },
-										{ name: 'page', value: 1 },
-									])}>
-									<Select.Item value={sortBy} label={sortBy}>
-										{sortBy}
-									</Select.Item>
-								</a>
+							{#each [{ label: 'Latest', value: 'latest' }, { label: 'Oldest', value: 'oldest' }, { label: 'Most Visited', value: 'most_visited' }] as sortBy}
+								<Select.Item
+									value={sortBy.value}
+									label={sortBy.label}>
+									{sortBy.label}
+								</Select.Item>
 							{/each}
 						</Select.Group>
 					</Select.Content>
 					<Select.Input name="favoriteFruit" />
 				</Select.Root>
-				<Popover.Root bind:open={drawerSelect}>
-					<Popover.Trigger asChild let:builder>
-						<Button
-							builders={[builder]}
-							variant="outline"
-							role="combobox"
-							aria-expanded={open}
-							class="justify-between">
-							{selectedProject}
-							<ChevronsUpDown
-								class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-						</Button>
-					</Popover.Trigger>
-					<Popover.Content class="w-[200px] p-0">
-						<Command.Root>
-							<Command.Input placeholder="Search project..." />
-							<Command.Empty>No project found.</Command.Empty>
-							<Command.Group>
-								<a
-									href={updateSearchParam([
-										{
-											name: 'project',
-											value: undefined,
-										},
-										{
-											name: 'page',
-											value: 1,
-										},
-									])}>
-									<Command.Item
-										onSelect={() => {
-											open = false
-										}}>
-										<Check
-											class={cn(
-												'mr-2 h-4 w-4',
-												data.selected_project.value !== null &&
-													'text-transparent',
-											)} />
-										All
-									</Command.Item>
-								</a>
-								{#each data.projects as project}
-									<a
-										href={updateSearchParam([
-											{
-												name: 'project',
-												value: project.uuid,
-											},
-											{
-												name: 'page',
-												value: 1,
-											},
-										])}>
-										<Command.Item
-											onSelect={() => {
-												open = false
-											}}>
-											<Check
-												class={cn(
-													'mr-2 h-4 w-4',
-													data.selected_project.value !==
-														project.uuid && 'text-transparent',
-												)} />
-											{project.name}
-										</Command.Item>
-									</a>
+				{#await data.projects}
+					<Skeleton class="h-[40px] w-[180px]" />
+				{:then projects}
+					<Select.Root
+						selected={selectedProject}
+						onSelectedChange={(selected) => {
+							if (!selected) return
+							selectedProject = selected
+						}}>
+						<Select.Trigger>
+							<Select.Value placeholder="Sort By" />
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Group>
+								<Select.Label>Project</Select.Label>
+								<Select.Separator />
+								<Select.Item value={'all'} label={'All'}>
+									All
+								</Select.Item>
+								<Select.Separator />
+								{#each projects as project}
+									<Select.Item
+										value={project.id}
+										label={project.name}>
+										{project.name}
+									</Select.Item>
 								{/each}
-							</Command.Group>
-						</Command.Root>
-					</Popover.Content>
-				</Popover.Root>
+							</Select.Group>
+						</Select.Content>
+						<Select.Input name="favoriteFruit" />
+					</Select.Root>
+				{/await}
+
 				<div class="flex items-center gap-4">
 					<Input
 						type="text"
@@ -195,18 +156,7 @@
 								search = target.value
 							}, 500)
 						}} />
-					<Button
-						disabled={!search}
-						on:click={() =>
-							goto(
-								updateSearchParam([
-									{ name: 'search', value: '' },
-									{
-										name: 'page',
-										value: 1,
-									},
-								]),
-							)}>
+					<Button disabled={!search} on:click={() => (search = '')}>
 						Clear
 					</Button>
 				</div>
@@ -218,95 +168,50 @@
 		</Drawer.Content>
 	</Drawer.Root>
 	<div class="hidden items-center gap-4 md:flex">
-		<Popover.Root bind:open>
-			<Popover.Trigger asChild let:builder>
-				<Button
-					builders={[builder]}
-					variant="outline"
-					role="combobox"
-					aria-expanded={open}
-					class="w-[200px] justify-between">
-					{selectedProject}
-					<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-				</Button>
-			</Popover.Trigger>
-			<Popover.Content class="w-[200px] p-0">
-				<Command.Root>
-					<Command.Input placeholder="Search project..." />
-					<Command.Empty>No project found.</Command.Empty>
-					<Command.Group>
-						<a
-							href={updateSearchParam([
-								{
-									name: 'project',
-									value: undefined,
-								},
-								{
-									name: 'page',
-									value: 1,
-								},
-							])}>
-							<Command.Item
-								onSelect={() => {
-									open = false
-								}}>
-								<Check
-									class={cn(
-										'mr-2 h-4 w-4',
-										data.selected_project.value !== null &&
-											'text-transparent',
-									)} />
-								All
-							</Command.Item>
-						</a>
-						{#each data.projects as project}
-							<a
-								href={updateSearchParam([
-									{
-										name: 'project',
-										value: project.uuid,
-									},
-									{
-										name: 'page',
-										value: 1,
-									},
-								])}>
-								<Command.Item
-									onSelect={() => {
-										open = false
-									}}>
-									<Check
-										class={cn(
-											'mr-2 h-4 w-4',
-											data.selected_project.value !== project.uuid &&
-												'text-transparent',
-										)} />
-									{project.name}
-								</Command.Item>
-							</a>
+		{#await data.projects}
+			<Skeleton class="h-[40px] w-[180px]" />
+		{:then projects}
+			<Select.Root
+				selected={selectedProject}
+				onSelectedChange={(selected) => {
+					if (!selected) return
+					selectedProject = selected
+				}}>
+				<Select.Trigger class="w-[180px]">
+					<Select.Value placeholder="Sort By" />
+				</Select.Trigger>
+				<Select.Content>
+					<Select.Group>
+						<Select.Label>Project</Select.Label>
+						<Select.Separator />
+						<Select.Item value={'all'} label={'All'}>All</Select.Item>
+						<Select.Separator />
+						{#each projects as project}
+							<Select.Item value={project.id} label={project.name}>
+								{project.name}
+							</Select.Item>
 						{/each}
-					</Command.Group>
-				</Command.Root>
-			</Popover.Content>
-		</Popover.Root>
+					</Select.Group>
+				</Select.Content>
+				<Select.Input name="favoriteFruit" />
+			</Select.Root>
+		{/await}
 		<Select.Root
-			selected={{ label: data.sortBy, value: data.sortBy }}>
+			selected={sortBy}
+			onSelectedChange={(selected) => {
+				if (!selected) return
+				sortBy = selected
+			}}>
 			<Select.Trigger class="w-[180px]">
 				<Select.Value placeholder="Sort By" />
 			</Select.Trigger>
 			<Select.Content>
 				<Select.Group>
 					<Select.Label>Sort By</Select.Label>
-					{#each ['latest', 'oldest', 'most_visited'] as sortBy}
-						<a
-							href={updateSearchParam([
-								{ name: 'sortBy', value: sortBy },
-								{ name: 'page', value: 1 },
-							])}>
-							<Select.Item value={sortBy} label={sortBy}>
-								{sortBy}
-							</Select.Item>
-						</a>
+					{#each [{ label: 'Latest', value: 'latest' }, { label: 'Oldest', value: 'oldest' }, { label: 'Most Visited', value: 'most_visited' }] as sortBy}
+						<Select.Item value={sortBy.value} label={sortBy.label}>
+							{sortBy.label}
+						</Select.Item>
 					{/each}
 				</Select.Group>
 			</Select.Content>
@@ -326,36 +231,29 @@
 					search = target.value
 				}, 500)
 			}} />
-		<Button
-			disabled={!search}
-			on:click={() =>
-				goto(
-					updateSearchParam([
-						{ name: 'search', value: '' },
-						{
-							name: 'page',
-							value: 1,
-						},
-					]),
-				)}>
+		<Button disabled={!search} on:click={() => (search = '')}>
 			Clear
 		</Button>
 	</div>
-	<Form bind:dialogOpen data={data.form} projects={data.projects} />
+	{#await data.projects then projects}
+		<Form bind:dialogOpen data={data.form} {projects} />
+	{/await}
 </div>
 
-{#await data.shorteners}
-	<div class="flex flex-wrap gap-4 p-4">
-		{#each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as _}
-			<Skeleton class="h-[150px] w-[500px] rounded-lg" />
-		{/each}
+{#await fetchShorteners(pageNumber, perPage, sortBy.value, selectedProject.value, search)}
+	<div class="flex-grow">
+		<div class="flex flex-wrap gap-4 p-4">
+			{#each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as _}
+				<Skeleton class="h-[150px] w-[500px] rounded-lg" />
+			{/each}
+		</div>
 	</div>
-{:then shorteners}
-	{#if shorteners.length > 0}
+{:then result}
+	{#if result.shorteners.length > 0}
 		<ScrollArea class="flex-grow">
 			<div
 				class="grid grid-cols-1 gap-4 p-4 md:grid-cols-[repeat(auto-fit,_minmax(500px,_1fr))]">
-				{#each shorteners as shortener}
+				{#each result.shorteners as shortener}
 					<ShortenerCard
 						{shortener}
 						project={shortener.project}
@@ -363,6 +261,71 @@
 				{/each}
 			</div>
 		</ScrollArea>
+		<div class="flex items-center justify-between border-t p-4">
+			<Select.Root
+				selected={{ label: perPage.toString(), value: perPage }}
+				onSelectedChange={(value) => {
+					if (value) {
+						perPage = value.value
+					}
+				}}>
+				<Select.Trigger class="w-[180px]">
+					<Select.Value placeholder="Page Size" />
+				</Select.Trigger>
+				<Select.Content>
+					<Select.Group>
+						<Select.Label>Page Size</Select.Label>
+						{#each [12, 24, 48, 96] as pageSize}
+							<Select.Item
+								value={pageSize}
+								label={pageSize.toString()}>
+								{pageSize}
+							</Select.Item>
+						{/each}
+					</Select.Group>
+				</Select.Content>
+				<Select.Input name="favoriteFruit" />
+			</Select.Root>
+			<Pagination.Root
+				class="items-end"
+				count={result.pagination.total}
+				{perPage}
+				let:pages
+				let:currentPage
+				onPageChange={(page) => {
+					pageNumber = page
+				}}>
+				<Pagination.Content>
+					<Pagination.Item>
+						<Pagination.PrevButton>
+							<ChevronLeft class="h-4 w-4" />
+							<span class="hidden sm:block">Previous</span>
+						</Pagination.PrevButton>
+					</Pagination.Item>
+					{#each pages as page (page.key)}
+						{#if page.type === 'ellipsis'}
+							<Pagination.Item>
+								<Pagination.Ellipsis />
+							</Pagination.Item>
+						{:else}
+							<Pagination.Item>
+								<Pagination.Link
+									{page}
+									isActive={currentPage === page.value}>
+									{page.value}
+								</Pagination.Link>
+							</Pagination.Item>
+						{/if}
+					{/each}
+					<Pagination.Item>
+						<Pagination.NextButton>
+							<span class="hidden sm:block">Next</span>
+							<ChevronRight class="h-4 w-4" />
+						</Pagination.NextButton>
+					</Pagination.Item>
+				</Pagination.Content>
+			</Pagination.Root>
+		</div>
 	{:else}
 		<div class="flex flex-grow p-4">
 			<div
@@ -386,14 +349,6 @@
 			</div>
 		</div>
 	{/if}
-{/await}
-
-{#await data.pagination then pagination}
-	<CustomPaginationBar
-		perPage={data.perPage}
-		page={data.page}
-		total={pagination[0].total}
-		path={'/dashboard/links'} />
 {/await}
 
 <Dialog.Root
