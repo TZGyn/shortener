@@ -93,6 +93,7 @@
 					onSelectedChange={(selected) => {
 						if (!selected) return
 						sortBy = selected
+						pageNumber = 1
 					}}>
 					<Select.Trigger>
 						<Select.Value placeholder="Sort By" />
@@ -119,6 +120,7 @@
 						onSelectedChange={(selected) => {
 							if (!selected) return
 							selectedProject = selected
+							pageNumber = 1
 						}}>
 						<Select.Trigger>
 							<Select.Value placeholder="Sort By" />
@@ -154,6 +156,7 @@
 							clearTimeout(searchUpdateTimeout)
 							searchUpdateTimeout = setTimeout(() => {
 								search = target.value
+								pageNumber = 1
 							}, 500)
 						}} />
 					<Button disabled={!search} on:click={() => (search = '')}>
@@ -176,6 +179,7 @@
 				onSelectedChange={(selected) => {
 					if (!selected) return
 					selectedProject = selected
+					pageNumber = 1
 				}}>
 				<Select.Trigger class="w-[180px]">
 					<Select.Value placeholder="Sort By" />
@@ -201,6 +205,7 @@
 			onSelectedChange={(selected) => {
 				if (!selected) return
 				sortBy = selected
+				pageNumber = 1
 			}}>
 			<Select.Trigger class="w-[180px]">
 				<Select.Value placeholder="Sort By" />
@@ -229,6 +234,7 @@
 				clearTimeout(searchUpdateTimeout)
 				searchUpdateTimeout = setTimeout(() => {
 					search = target.value
+					pageNumber = 1
 				}, 500)
 			}} />
 		<Button disabled={!search} on:click={() => (search = '')}>
@@ -267,6 +273,7 @@
 				onSelectedChange={(value) => {
 					if (value) {
 						perPage = value.value
+						pageNumber = 1
 					}
 				}}>
 				<Select.Trigger class="w-[180px]">
