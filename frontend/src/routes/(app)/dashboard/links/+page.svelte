@@ -290,6 +290,7 @@
 				class="items-end"
 				count={result.pagination.total}
 				{perPage}
+				page={pageNumber}
 				let:pages
 				let:currentPage
 				onPageChange={(page) => {
