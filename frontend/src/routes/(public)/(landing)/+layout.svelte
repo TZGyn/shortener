@@ -15,10 +15,10 @@
 
 <div class="flex h-screen w-screen flex-col items-center">
 	<header class="grid w-full max-w-6xl grid-cols-3 px-8 py-4">
-		<div class="flex items-center justify-start gap-4">
+		<a href="/" class="flex items-center justify-start gap-4">
 			<img src="/logo.png" alt="logo" class="h-8" />
 			<div>kon.sh</div>
-		</div>
+		</a>
 		<div class="grid grid-cols-4 items-center">
 			<div></div>
 			<a
@@ -27,12 +27,7 @@
 				class="text-center">
 				Features
 			</a>
-			<a
-				href="#pricing"
-				on:click|preventDefault={scrollIntoView}
-				class="text-center">
-				Pricing
-			</a>
+			<a href="/pricing" class="text-center">Pricing</a>
 			<div></div>
 		</div>
 		<div class="flex items-center justify-end gap-4">
