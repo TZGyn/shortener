@@ -6,6 +6,43 @@
 		ChartAreaIcon,
 		ExternalLinkIcon,
 	} from 'lucide-svelte'
+
+	import {
+		Calendar,
+		TextSearch,
+		ReceiptText,
+		CodeXml,
+	} from 'lucide-svelte'
+
+	import BentoGrid from './(components)/BentoGrid.svelte'
+	import BentoCard from './(components)/BentoCard.svelte'
+
+	// Features Array
+	let features = [
+		{
+			Icon: QrCodeIcon,
+			name: 'QR Code',
+			description:
+				'Every shortener comes automatically comes with a QR Code',
+			href: '/',
+			class: 'col-span-3 lg:col-span-1',
+		},
+		{
+			Icon: ChartAreaIcon,
+			name: 'Analytics',
+			description:
+				'Latest data about your shortener to help you analyse',
+			href: '/',
+			class: 'col-span-3 lg:col-span-2',
+		},
+		{
+			Icon: ExternalLinkIcon,
+			name: 'Custom Domain',
+			description: 'Use your own domain for branding purposes',
+			href: '/',
+			class: 'col-span-3 lg:col-span-3',
+		},
+	]
 </script>
 
 <main class="flex w-full flex-col items-center pt-24">
@@ -40,32 +77,12 @@
 			<div
 				class="flex w-full flex-col items-center gap-10 text-center">
 				<h2 class="text-4xl font-bold">Features</h2>
-				<div
-					class="grid w-full grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))] gap-4">
-					<div class="flex gap-8 rounded-lg p-8">
-						<div class="flex w-full flex-col gap-4 text-start">
-							<div class="flex flex-col items-center justify-center">
-								<QrCodeIcon size={128} class="text-brand" />
-								<h3 class="text-xl font-semibold">Custom QR Codes</h3>
-							</div>
-						</div>
-					</div>
-					<div class="flex gap-8 rounded-lg p-8">
-						<div class="flex w-full flex-col gap-4 text-start">
-							<div class="flex flex-col items-center justify-center">
-								<ChartAreaIcon size={128} class="text-brand" />
-								<h3 class="text-xl font-semibold">Analytics</h3>
-							</div>
-						</div>
-					</div>
-					<div class="flex gap-8 rounded-lg p-8">
-						<div class="flex w-full flex-col gap-4 text-start">
-							<div class="flex flex-col items-center justify-center">
-								<ExternalLinkIcon size={128} class="text-brand" />
-								<h3 class="text-xl font-semibold">Custom Domains</h3>
-							</div>
-						</div>
-					</div>
+				<div class="flex items-center justify-center">
+					<BentoGrid>
+						{#each features as item}
+							<BentoCard {...item} />
+						{/each}
+					</BentoGrid>
 				</div>
 			</div>
 		</section>
