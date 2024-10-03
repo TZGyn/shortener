@@ -1,6 +1,4 @@
 <script lang="ts">
-	import type { PageData } from './$types'
-
 	import {
 		Calendar,
 		TextSearch,

@@ -24,7 +24,7 @@
 			name: 'QR Code',
 			description:
 				'Every shortener comes automatically comes with a QR Code',
-			href: '/',
+			href: '/features/qrcode',
 			class: 'col-span-3 lg:col-span-1',
 		},
 		{
@@ -32,14 +32,14 @@
 			name: 'Analytics',
 			description:
 				'Latest data about your shortener to help you analyse',
-			href: '/',
+			href: '/features/analytics',
 			class: 'col-span-3 lg:col-span-2',
 		},
 		{
 			Icon: ExternalLinkIcon,
 			name: 'Custom Domain',
 			description: 'Use your own domain for branding purposes',
-			href: '/',
+			href: '/features/custom-domain',
 			class: 'col-span-3 lg:col-span-3',
 		},
 	]
