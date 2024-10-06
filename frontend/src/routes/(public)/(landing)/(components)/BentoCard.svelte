@@ -45,7 +45,7 @@
 		)}>
 		<Button variant="brand" size="sm" class="pointer-events-auto">
 			<a {href} class="flex items-center justify-center">
-				Learn More
+				Learn More About {name}
 				<ArrowRightIcon class="ml-2 h-4 w-4" />
 			</a>
 		</Button>
