@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types'
 	import { Separator } from '$lib/components/ui/separator'
+	import * as Table from '$lib/components/ui/table'
 	import * as Card from '$lib/components/ui/card'
 	import * as Tabs from '$lib/components/ui/tabs'
 	import type { ApexOptions } from 'apexcharts'
@@ -473,5 +474,45 @@
 				</Card.Root>
 			</Tabs.Content>
 		</Tabs.Root>
+		<Card.Root class="col-span-2 h-full min-h-[600px]">
+			<Card.Header class="border-b">
+				<Card.Title>Last 10 Visits</Card.Title>
+			</Card.Header>
+			<Card.Content class="p-0">
+				{#await data.last10Visitors}
+					<Skeleton class="h-32 w-full rounded-none" />
+				{:then last10Visitors}
+					<Table.Root>
+						<Table.Header>
+							<Table.Row>
+								<Table.Head>Country</Table.Head>
+								<Table.Head>City</Table.Head>
+								<Table.Head>Device</Table.Head>
+								<Table.Head>Browser</Table.Head>
+								<Table.Head>Referrer</Table.Head>
+							</Table.Row>
+						</Table.Header>
+						<Table.Body>
+							{#each last10Visitors as visitor}
+								<Table.Row>
+									<Table.Cell>
+										<div class="flex items-center gap-2">
+											<img
+												src={`https://flagsapi.com/${visitor.countryCode}/flat/32.png`}
+												alt="" />
+											<p>{visitor.country}</p>
+										</div>
+									</Table.Cell>
+									<Table.Cell>{visitor.city}</Table.Cell>
+									<Table.Cell>{visitor.deviceType}</Table.Cell>
+									<Table.Cell>{visitor.browser}</Table.Cell>
+									<Table.Cell>{visitor.referer}</Table.Cell>
+								</Table.Row>
+							{/each}
+						</Table.Body>
+					</Table.Root>
+				{/await}
+			</Card.Content>
+		</Card.Root>
 	</div>
 </div>

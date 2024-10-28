@@ -175,6 +175,12 @@ export const load = (async (event) => {
 		.groupBy(visitorSchema.referer)
 		.orderBy(desc(sql<number>`cast(count(*) as int)`))
 
+	const last10Visitors = db.query.visitor.findMany({
+		where: (visitor, { eq }) => eq(visitor.shortenerId, shortener.id),
+		orderBy: (visitor, { desc }) => desc(visitor.createdAt),
+		limit: 10,
+	})
+
 	const page_title = 'Shortener | ' + shortener.link
 
 	return {
@@ -188,6 +194,7 @@ export const load = (async (event) => {
 		visitorByDeviceVendor,
 		visitorByDeviceType,
 		visitorByReferer,
+		last10Visitors,
 		page_title,
 	}
 }) satisfies PageServerLoad
