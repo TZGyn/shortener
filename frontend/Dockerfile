@@ -2,10 +2,12 @@ FROM node:22
 
 WORKDIR /app
 
+RUN npm install -g bun
+
 COPY ./package.json ./
 COPY ./bun.lockb ./
 
-RUN npm install
+RUN bun install
 
 COPY . .
 # COPY ./.env.example ./.env
