@@ -33,6 +33,7 @@
 		"svelte-adapter-bun": "^0.5.1",
 		"svelte-check": "^4.0.0",
 		"tailwindcss": "^3.3.2",
+		"tailwindcss-animate": "^1.0.7",
 		"tslib": "^2.4.1",
 		"typescript": "^5.5.0",
 		"vite": "^5.4.4"
@@ -47,12 +48,12 @@
 		"arctic": "^1.9.2",
 		"argon2": "^0.41.0",
 		"bits-ui": "^0.21.15",
-		"clsx": "^2.0.0",
+		"clsx": "^2.1.1",
 		"cmdk-sv": "^0.0.13",
 		"drizzle-orm": "^0.32.1",
 		"formsnap": "^1.0.0",
 		"he": "^1.2.0",
-		"lucide-svelte": "^0.441.0",
+		"lucide-svelte": "^0.456.0",
 		"mode-watcher": "^0.1.2",
 		"nanoid": "^5.0.3",
 		"node-html-parser": "^6.1.12",
@@ -64,8 +65,8 @@
 		"stripe": "^16.8.0",
 		"svelte-sonner": "^0.3.10",
 		"sveltekit-superforms": "^2.12.2",
-		"tailwind-merge": "^2.0.0",
-		"tailwind-variants": "^0.1.18",
+		"tailwind-merge": "^2.5.4",
+		"tailwind-variants": "^0.2.1",
 		"vaul-svelte": "^0.3.1",
 		"zod": "^3.22.4"
 	}
