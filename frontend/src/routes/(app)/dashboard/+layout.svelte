@@ -1,10 +1,12 @@
 <script lang="ts">
-	import * as Select from '$lib/components/ui/select/index.js'
-	import type { PageData } from './$types'
-	import ThemeToggle from '$lib/components/theme-toggle.svelte'
-	import * as Breadcrumb from '$lib/components/ui/breadcrumb'
 	import { page } from '$app/stores'
+	import ThemeToggle from '$lib/components/theme-toggle.svelte'
+	import * as Avatar from '$lib/components/ui/avatar'
+	import * as Breadcrumb from '$lib/components/ui/breadcrumb'
 	import { Button } from '$lib/components/ui/button'
+	import * as Dialog from '$lib/components/ui/dialog'
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+	import * as Select from '$lib/components/ui/select/index.js'
 	import {
 		Blocks,
 		CreditCardIcon,
@@ -13,16 +15,13 @@
 		Settings,
 		UserIcon,
 	} from 'lucide-svelte'
-	import * as Avatar from '$lib/components/ui/avatar'
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
-	import * as Dialog from '$lib/components/ui/dialog'
 
-	import { Loader2, User } from 'lucide-svelte'
 	import { goto } from '$app/navigation'
+	import { Loader2, User } from 'lucide-svelte'
 	import { toast } from 'svelte-sonner'
 
-	let dialogOpen = false
-	let isLoading = false
+	let dialogOpen = $state(false)
+	let isLoading = $state(false)
 	const logout = async () => {
 		isLoading = true
 
@@ -34,7 +33,7 @@
 		goto('/login')
 	}
 
-	export let data: PageData
+	let { data, children } = $props()
 
 	const routes = [
 		{
@@ -87,14 +86,14 @@
 						<DropdownMenu.Label>{data.user.email}</DropdownMenu.Label>
 						<DropdownMenu.Separator />
 						<DropdownMenu.Item
-							on:click={() => {
+							onclick={() => {
 								goto('/dashboard/settings')
 							}}>
 							Settings
 						</DropdownMenu.Item>
 						<DropdownMenu.Separator />
 						<DropdownMenu.Item
-							on:click={() => (dialogOpen = true)}
+							onclick={() => (dialogOpen = true)}
 							class="text-destructive data-[highlighted]:bg-destructive">
 							Log Out
 						</DropdownMenu.Item>
@@ -176,7 +175,7 @@
 								: 'ghost'}
 							href={route.href}
 							class="hover:bg-secondary/50 flex items-center justify-start gap-4 text-base">
-							<svelte:component this={route.icon} class="h-4 w-4" />
+							<route.icon class="h-4 w-4" />
 							<div class="hidden lg:flex">
 								{route.name}
 							</div>
@@ -193,7 +192,7 @@
 
 	<div class="flex flex-grow overflow-hidden">
 		<div class="flex h-auto w-full flex-col">
-			<slot />
+			{@render children()}
 		</div>
 	</div>
 </div>
@@ -217,7 +216,7 @@
 				<Button
 					variant="outline"
 					class="w-full"
-					on:click={() => {
+					onclick={() => {
 						dialogOpen = false
 					}}
 					disabled={isLoading}>
@@ -225,7 +224,7 @@
 				</Button>
 				<Button
 					variant="destructive"
-					on:click={logout}
+					onclick={logout}
 					class="flex w-full gap-2"
 					disabled={isLoading}>
 					{#if isLoading}

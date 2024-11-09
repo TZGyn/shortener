@@ -4,6 +4,8 @@
 	import { ModeWatcher } from 'mode-watcher'
 	import { ProgressBar } from '@prgm/sveltekit-progress-bar'
 	import { page } from '$app/stores'
+
+	let { children } = $props()
 </script>
 
 <svelte:head>
@@ -29,5 +31,5 @@
 
 <ModeWatcher />
 <ProgressBar class="text-orange-400" />
-<slot />
+{@render children()}
 <Toaster />
