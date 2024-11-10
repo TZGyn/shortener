@@ -1,11 +1,10 @@
 <script lang="ts">
-	import type { PageData } from './$types'
 	import { page } from '$app/stores'
 	import { Button } from '$lib/components/ui/button'
 	import { Separator } from '$lib/components/ui/separator'
 	import { ScrollArea } from '$lib/components/ui/scroll-area'
 
-	export let data: PageData
+	let { data, children } = $props()
 </script>
 
 <div class="flex h-fit flex-col gap-2 px-4 pt-8 md:px-10">
@@ -40,5 +39,5 @@
 </div>
 
 <div class="flex w-full flex-grow flex-col overflow-hidden">
-	<slot />
+	{@render children()}
 </div>

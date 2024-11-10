@@ -5,14 +5,13 @@
 	import { Separator } from '$lib/components/ui/separator'
 	import * as Dialog from '$lib/components/ui/dialog'
 	import { Check, LoaderCircleIcon } from 'lucide-svelte'
-	import type { PageData } from './$types'
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import { cancelSubscriptionSchema } from './schema'
 	import { superForm } from 'sveltekit-superforms'
 	import { toast } from 'svelte-sonner'
 	import { ScrollArea } from '$lib/components/ui/scroll-area'
 
-	export let data: PageData
+	let { data } = $props()
 
 	let cancelPlanDialogOpen = false
 
@@ -158,7 +157,7 @@
 									<Dialog.Footer>
 										<Button
 											variant={'outline'}
-											on:click={() => (cancelPlanDialogOpen = false)}>
+											onclick={() => (cancelPlanDialogOpen = false)}>
 											Cancel
 										</Button>
 										<form

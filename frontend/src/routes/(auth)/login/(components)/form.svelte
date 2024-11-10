@@ -11,7 +11,7 @@
 	import { toast } from 'svelte-sonner'
 	import { LoaderCircle } from 'lucide-svelte'
 
-	export let data: SuperValidated<Infer<FormSchema>>
+	let { data }: { data: SuperValidated<Infer<FormSchema>> } = $props()
 
 	const form = superForm(data, {
 		validators: zodClient(formSchema),

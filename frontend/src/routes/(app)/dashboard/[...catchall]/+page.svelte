@@ -9,7 +9,7 @@
 			<div class="text-4xl font-bold">404</div>
 			<div class="text-4xl font-bold">Page Not Found</div>
 		</div>
-		<Button on:click={() => goto('/dashboard')} class="w-fit">
+		<Button onclick={() => goto('/dashboard')} class="w-fit">
 			Return Home
 		</Button>
 	</div>

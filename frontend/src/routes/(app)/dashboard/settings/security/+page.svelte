@@ -10,7 +10,7 @@
 	import * as Dialog from '$lib/components/ui/dialog'
 	import { Button } from '$lib/components/ui/button'
 
-	export let data
+	let { data } = $props()
 
 	const form = superForm(data.form, {
 		validators: zodClient(changePasswordFormSchema),
@@ -28,7 +28,7 @@
 
 	const { form: formData, enhance, submitting } = form
 
-	let deleteDialogOpen = false
+	let deleteDialogOpen = $state(false)
 
 	const deleteAccountForm = superForm(data.deleteAccountForm, {
 		invalidateAll: 'force',
@@ -163,7 +163,7 @@
 						<div class="flex justify-end gap-2">
 							<Button
 								variant="outline"
-								on:click={() => (deleteDialogOpen = false)}>
+								onclick={() => (deleteDialogOpen = false)}>
 								Cancel
 							</Button>
 							<Form.Button variant="destructive" class="w-fit">

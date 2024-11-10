@@ -14,8 +14,11 @@
 	import { Checkbox } from '$lib/components/ui/checkbox'
 	import { onMount } from 'svelte'
 
-	export let data: SuperValidated<Infer<FormSchema>>
-	export let code: string
+	let {
+		data,
+		code,
+	}: { data: SuperValidated<Infer<FormSchema>>; code: string } =
+		$props()
 
 	const form = superForm(data, {
 		validators: zodClient(formSchema),
@@ -33,9 +36,9 @@
 
 	const { form: formData, enhance, submitting } = form
 
-	let inputTimer: any
-	let previewData: any
-	let isPreviewLoading: boolean = false
+	let inputTimer: any = $state()
+	let previewData: any = $state()
+	let isPreviewLoading: boolean = $state(false)
 
 	const getMetadata = async () => {
 		isPreviewLoading = true
@@ -91,7 +94,7 @@
 				{...attrs}
 				bind:value={$formData.link}
 				placeholder="https://example.com"
-				on:input={getMetadata} />
+				oninput={getMetadata} />
 		</Form.Control>
 		<Form.Description>Shortener link</Form.Description>
 		<Form.FieldErrors />

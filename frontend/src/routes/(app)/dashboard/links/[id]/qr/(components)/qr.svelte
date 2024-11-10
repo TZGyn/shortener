@@ -1,20 +1,30 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button'
+	import { Button, buttonVariants } from '$lib/components/ui/button'
 	import { toast } from 'svelte-sonner'
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
 	import { Badge } from '$lib/components/ui/badge'
 	import { browser } from '$app/environment'
+	import { cn } from '$lib/utils'
 
-	export let background = '#fff'
-	export let color = '#000'
-	export let value = ''
-	export let code = ''
-	export let cornerSquareStyle: 'dot' | 'square' | 'extra-rounded' =
-		'square'
-	export let dotStyle: 'square' | 'rounded' = 'square'
-	export let existingQrImage: string | null = null
+	let {
+		background = '#fff',
+		color = '#000',
+		value = '',
+		code = '',
+		cornerSquareStyle = 'square',
+		dotStyle = 'square',
+		existingQrImage = null,
+	}: {
+		background: string
+		color: string
+		value: string
+		code: string
+		cornerSquareStyle: 'dot' | 'square' | 'extra-rounded'
+		dotStyle: 'square' | 'rounded'
+		existingQrImage: string | null
+	} = $props()
 
-	let image = ''
+	let image = $state('')
 
 	const copyImageToClipboard = async () => {
 		if (!image) return
@@ -70,7 +80,11 @@
 		image = URL.createObjectURL(blob)
 	}
 
-	$: value && browser && generateQrCode()
+	$effect(() => {
+		if (value && browser) {
+			generateQrCode()
+		}
+	})
 </script>
 
 <div class="flex h-full flex-col items-center gap-4">
@@ -79,22 +93,25 @@
 	</Badge>
 	<img src={image} alt={value} width={300} height={300} />
 	<div class="flex w-full gap-4">
-		<Button class="w-full" on:click={copyImageToClipboard}>
+		<Button class="w-full" onclick={copyImageToClipboard}>
 			Copy Image
 		</Button>
 		<DropdownMenu.Root>
-			<DropdownMenu.Trigger asChild let:builder>
-				<Button builders={[builder]} class="w-full">QR Link</Button>
+			<DropdownMenu.Trigger
+				class={cn(buttonVariants({ variant: 'default' }), 'w-full')}>
+				QR Link
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content>
-				<DropdownMenu.Item href={`/url/${code}/qr`} target="_blank">
-					Standard
-				</DropdownMenu.Item>
-				<DropdownMenu.Item
-					href={`/url/${code}/qr?color=true`}
-					target="_blank">
-					With Style
-				</DropdownMenu.Item>
+				<DropdownMenu.Group>
+					<DropdownMenu.Item href={`/url/${code}/qr`} target="_blank">
+						Standard
+					</DropdownMenu.Item>
+					<DropdownMenu.Item
+						href={`/url/${code}/qr?color=true`}
+						target="_blank">
+						With Style
+					</DropdownMenu.Item>
+				</DropdownMenu.Group>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</div>

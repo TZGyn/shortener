@@ -3,8 +3,10 @@
 	import type { PageData } from './$types'
 	import QR from './(components)/qr.svelte'
 
-	export let data: PageData
-	export let shallowRouting = false
+	let {
+		data,
+		shallowRouting,
+	}: { data: PageData; shallowRouting: boolean } = $props()
 
 	const url =
 		data.project.enable_custom_domain && data.project.custom_domain

@@ -8,7 +8,7 @@
 	import { toast } from 'svelte-sonner'
 	import { LoaderCircle, CheckIcon, XIcon } from 'lucide-svelte'
 
-	export let data
+	let { data } = $props()
 
 	const form = superForm(data.form, {
 		validators: zodClient(formSchema),

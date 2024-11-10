@@ -2,8 +2,12 @@
 	import { cn } from '$lib/utils'
 	import { page } from '$app/stores'
 	import { Button } from '$lib/components/ui/button'
-	let className: string | undefined | null = undefined
-	export { className as class }
+
+	let {
+		class: className = undefined,
+	}: {
+		class: string | undefined | null
+	} = $props()
 
 	const items = [
 		{

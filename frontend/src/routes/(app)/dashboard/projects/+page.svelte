@@ -11,9 +11,9 @@
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import { toast } from 'svelte-sonner'
 
-	export let data
+	let { data } = $props()
 
-	let dialogOpen = false
+	let dialogOpen = $state(false)
 
 	const form = superForm(data.form, {
 		validators: zodClient(formSchema),
@@ -102,7 +102,7 @@
 						<p class="text-muted-foreground">Add a new project</p>
 					</div>
 					<Button
-						on:click={() => {
+						onclick={() => {
 							dialogOpen = true
 						}}
 						class="w-fit">

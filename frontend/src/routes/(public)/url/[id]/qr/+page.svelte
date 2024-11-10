@@ -5,9 +5,9 @@
 	import { onMount } from 'svelte'
 	import * as Card from '$lib/components/ui/card'
 
-	export let data
+	let { data } = $props()
 
-	let image = ''
+	let image = $state('')
 
 	const copyImageToClipboard = async () => {
 		if (!image) return
@@ -79,7 +79,7 @@
 			alt={data.url + '/' + data.shortenerId}
 			width={300}
 			height={300} />
-		<Button class="w-full" on:click={copyImageToClipboard}>
+		<Button class="w-full" onclick={copyImageToClipboard}>
 			Copy Image
 		</Button>
 	</Card.Header>

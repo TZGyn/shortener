@@ -2,11 +2,19 @@
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js'
 	import { InfoIcon } from 'lucide-svelte'
 
-	export let domain: string
-	export let custom_ip: string | null
-	export let cname_record: string
-	export let a_record: string
-	export let aaaa_record: string
+	let {
+		a_record,
+		aaaa_record,
+		cname_record,
+		custom_ip,
+		domain,
+	}: {
+		domain: string
+		custom_ip: string | null
+		cname_record: string
+		a_record: string
+		aaaa_record: string
+	} = $props()
 </script>
 
 <Tooltip.Root>

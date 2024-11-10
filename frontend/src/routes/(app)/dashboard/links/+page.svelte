@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { PageData } from './$types'
 	import { page } from '$app/stores'
 
 	import { Button } from '$lib/components/ui/button'
@@ -24,23 +23,23 @@
 	import type { Project, Shortener } from '$lib/db/types'
 	import type { Selected } from 'bits-ui'
 
-	export let data: PageData
+	let { data } = $props()
 
-	let dialogOpen = false
+	let dialogOpen = $state(false)
 
-	let search: string | null = ''
-	let searchUpdateTimeout: any
+	let search = $state<string | null>('')
+	let searchUpdateTimeout = $state<any>()
 
-	let pageNumber = 1
-	let perPage = 12
-	let sortBy: Selected<string> = {
+	let pageNumber = $state(1)
+	let perPage = $state(12)
+	let sortBy = $state<Selected<string>>({
 		label: 'Latest',
 		value: 'latest',
-	}
-	let selectedProject: Selected<string> = {
+	})
+	let selectedProject = $state<Selected<string>>({
 		label: 'All',
 		value: 'all',
-	}
+	})
 
 	const fetchShorteners = async (
 		page: number,
@@ -72,8 +71,13 @@
 		}
 	}
 
-	$: projectLinkQROpen = !!$page.state.projectLinkQR
-	$: linkQROpen = !!$page.state.linkQR
+	let projectLinkQROpen = $state(!!$page.state.projectLinkQR)
+	let linkQROpen = $state(!!$page.state.linkQR)
+
+	$effect(() => {
+		projectLinkQROpen = !!$page.state.projectLinkQR
+		linkQROpen = !!$page.state.linkQR
+	})
 </script>
 
 <div
@@ -152,14 +156,14 @@
 						placeholder="search"
 						autofocus
 						value={search}
-						on:input={({ target }) => {
+						oninput={({ target }) => {
 							clearTimeout(searchUpdateTimeout)
 							searchUpdateTimeout = setTimeout(() => {
 								search = target.value
 								pageNumber = 1
 							}, 500)
 						}} />
-					<Button disabled={!search} on:click={() => (search = '')}>
+					<Button disabled={!search} onclick={() => (search = '')}>
 						Clear
 					</Button>
 				</div>
@@ -230,14 +234,14 @@
 			class="max-w-[250px]"
 			autofocus
 			value={search}
-			on:input={({ target }) => {
+			oninput={({ target }) => {
 				clearTimeout(searchUpdateTimeout)
 				searchUpdateTimeout = setTimeout(() => {
 					search = target.value
 					pageNumber = 1
 				}, 500)
 			}} />
-		<Button disabled={!search} on:click={() => (search = '')}>
+		<Button disabled={!search} onclick={() => (search = '')}>
 			Clear
 		</Button>
 	</div>
@@ -346,7 +350,7 @@
 							<p class="text-muted-foreground">Add a new shortener</p>
 						</div>
 						<Button
-							on:click={() => {
+							onclick={() => {
 								dialogOpen = true
 							}}
 							class="w-fit">

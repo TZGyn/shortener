@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { CheckCircle2Icon, XCircleIcon } from 'lucide-svelte'
 	import { Button } from '$lib/components/ui/button'
-	export let data
+	let { data } = $props()
 </script>
 
 <div

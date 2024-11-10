@@ -2,8 +2,6 @@
 	import { Button } from '$lib/components/ui/button'
 	import { CheckCircleIcon } from 'lucide-svelte'
 	import * as Dialog from '$lib/components/ui/dialog'
-
-	export let data
 </script>
 
 <Dialog.Root open>

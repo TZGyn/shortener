@@ -14,30 +14,31 @@
 
 	import { SortAscIcon, SortDescIcon } from 'lucide-svelte'
 
-	import type { PageData } from './$types'
 	import { ScrollArea } from '$lib/components/ui/scroll-area'
 	import Form from './(components)/form.svelte'
 	import EditProjectLinkPage from './links/[linkid]/edit/+page.svelte'
 	import ProjectLinkQRPage from './links/[linkid]/qr/+page.svelte'
 
-	export let data: PageData
+	let { data } = $props()
 
-	let dialogOpen = false
+	let dialogOpen = $state(false)
 
-	let search: string | null = data.search
-	let searchUpdateTimeout: any
+	let search = $state<string | null>(data.search)
+	let searchUpdateTimeout = $state<any>()
 
-	$: browser &&
-		search &&
-		goto(
-			updateSearchParam([
-				{ name: 'search', value: search },
-				{
-					name: 'page',
-					value: 1,
-				},
-			]),
-		)
+	$effect(() => {
+		if (browser && (search || true)) {
+			goto(
+				updateSearchParam([
+					{ name: 'search', value: search },
+					{
+						name: 'page',
+						value: 1,
+					},
+				]),
+			)
+		}
+	})
 
 	const updateSearchParam = (
 		params: { name: string; value: any }[],
@@ -61,10 +62,13 @@
 		}
 	}
 
-	let editProjectLinkOpen = false
+	let editProjectLinkOpen = $state(false)
+	let projectLinkQROpen = $state(false)
 
-	$: editProjectLinkOpen = !!$page.state.editProjectLink
-	$: projectLinkQROpen = !!$page.state.projectLinkQR
+	$effect(() => {
+		editProjectLinkOpen = !!$page.state.editProjectLink
+		projectLinkQROpen = !!$page.state.projectLinkQR
+	})
 </script>
 
 <div
@@ -108,24 +112,13 @@
 						type="text"
 						placeholder="search"
 						value={search}
-						on:input={({ target }) => {
+						oninput={({ target }) => {
 							clearTimeout(searchUpdateTimeout)
 							searchUpdateTimeout = setTimeout(() => {
 								search = target.value
 							}, 500)
 						}} />
-					<Button
-						disabled={!search}
-						on:click={() =>
-							goto(
-								updateSearchParam([
-									{ name: 'search', value: search },
-									{
-										name: 'page',
-										value: 1,
-									},
-								]),
-							)}>
+					<Button disabled={!search} onclick={() => (search = '')}>
 						Clear
 					</Button>
 				</div>
@@ -168,24 +161,13 @@
 			class="max-w-[250px]"
 			autofocus
 			value={search}
-			on:input={({ target }) => {
+			oninput={({ target }) => {
 				clearTimeout(searchUpdateTimeout)
 				searchUpdateTimeout = setTimeout(() => {
 					search = target.value
 				}, 500)
 			}} />
-		<Button
-			disabled={!search}
-			on:click={() =>
-				goto(
-					updateSearchParam([
-						{ name: 'search', value: search },
-						{
-							name: 'page',
-							value: 1,
-						},
-					]),
-				)}>
+		<Button disabled={!search} onclick={() => (search = '')}>
 			Clear
 		</Button>
 	</div>
@@ -223,7 +205,7 @@
 							<p class="text-muted-foreground">Add a new shortener</p>
 						</div>
 						<Button
-							on:click={() => {
+							onclick={() => {
 								dialogOpen = true
 							}}
 							class="w-fit">

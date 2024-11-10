@@ -3,8 +3,10 @@
 	import type { PageData } from './$types'
 	import QR from './(components)/qr.svelte'
 
-	export let data: PageData
-	export let shallowRouting = false
+	let {
+		data,
+		shallowRouting = $bindable(false),
+	}: { data: PageData; shallowRouting: boolean } = $props()
 </script>
 
 {#if !shallowRouting}

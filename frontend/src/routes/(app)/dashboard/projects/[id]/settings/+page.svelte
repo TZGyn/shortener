@@ -26,9 +26,9 @@
 	import DnsInfo from './(components)/dns-info.svelte'
 	import DnsTooltip from './(components)/dns-tooltip.svelte'
 
-	export let data
+	let { data } = $props()
 
-	let deleteDialogOpen = false
+	let deleteDialogOpen = $state(false)
 
 	const form = superForm(data.deleteForm, {
 		invalidateAll: 'force',
@@ -211,7 +211,7 @@
 												Cancel
 											</Button>
 										</Dialog.Close>
-										<Button on:click={enableCustomDomainSubmit}>
+										<Button onclick={enableCustomDomainSubmit}>
 											{#if $enableCustomDomainSubmitting}
 												<LoaderCircle class="animate-spin" />
 											{/if}
@@ -239,7 +239,7 @@
 									<AlertDialog.Footer>
 										<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
 										<AlertDialog.Action
-											on:click={async () => {
+											onclick={async () => {
 												await fetch('?/disable_custom_domain', {
 													method: 'POST',
 													headers: {
@@ -368,7 +368,7 @@
 							<div class="flex justify-end gap-2">
 								<Button
 									variant="outline"
-									on:click={() => (deleteDialogOpen = false)}>
+									onclick={() => (deleteDialogOpen = false)}>
 									Cancel
 								</Button>
 								<Form.Button variant="destructive" class="w-fit">

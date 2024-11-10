@@ -2,14 +2,13 @@
 	import ThemeToggle from '$lib/components/theme-toggle.svelte'
 	import Form from './(components)/form.svelte'
 
-	import type { PageData } from './$types'
 	import { Button } from '$lib/components/ui/button'
 	import { LoaderIcon } from 'lucide-svelte'
 	import Google from '$lib/components/icons/google.svelte'
 
-	export let data: PageData
+	let { data } = $props()
 
-	let isLoading = false
+	let isLoading = $state(false)
 
 	const loginGoogle = async () => {
 		// isLoading = true

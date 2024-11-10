@@ -2,10 +2,17 @@
 	import * as Tabs from '$lib/components/ui/tabs/index.js'
 	import * as Card from '$lib/components/ui/card/index.js'
 
-	export let host: string
-	export let cname_record: string
-	export let a_record: string
-	export let aaaa_record: string
+	let {
+		host,
+		a_record,
+		aaaa_record,
+		cname_record,
+	}: {
+		host: string
+		cname_record: string
+		a_record: string
+		aaaa_record: string
+	} = $props()
 
 	const defaultValue = cname_record ? 'cname' : 'a'
 </script>

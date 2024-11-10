@@ -18,10 +18,16 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area'
 	import type { Project } from '$lib/db/types'
 
-	export let data: SuperValidated<Infer<FormSchema>>
-	export let projects: Project[]
-	export let dialogOpen: boolean
-	let shortenerCategory: any = undefined
+	let {
+		data,
+		projects,
+		dialogOpen = $bindable(),
+	}: {
+		data: SuperValidated<Infer<FormSchema>>
+		projects: Project[]
+		dialogOpen: boolean
+	} = $props()
+	let shortenerCategory = $state<any>(undefined)
 
 	const form = superForm(data, {
 		validators: zodClient(formSchema),
@@ -40,9 +46,9 @@
 
 	const { form: formData, enhance, submitting } = form
 
-	let inputTimer: any
-	let previewData: any
-	let isPreviewLoading: boolean = false
+	let inputTimer = $state<any>()
+	let previewData = $state<any>()
+	let isPreviewLoading = $state(false)
 
 	const getMetadata = async () => {
 		isPreviewLoading = true
@@ -108,7 +114,7 @@
 							{...attrs}
 							bind:value={$formData.link}
 							placeholder="https://example.com"
-							on:input={getMetadata} />
+							oninput={getMetadata} />
 					</Form.Control>
 					<Form.Description>Shortener link</Form.Description>
 					<Form.FieldErrors />
@@ -167,8 +173,9 @@
 								bind:value={$formData.custom_code}
 								placeholder="abcde" />
 						</Form.Control>
-						<Form.Description
-							>Custom Code For The Shortener</Form.Description>
+						<Form.Description>
+							Custom Code For The Shortener
+						</Form.Description>
 						<Form.FieldErrors />
 					</Form.Field>
 				{/if}
@@ -192,8 +199,9 @@
 								bind:value={$formData.ios_link}
 								placeholder="https://example.com" />
 						</Form.Control>
-						<Form.Description
-							>Shortener link for iOS</Form.Description>
+						<Form.Description>
+							Shortener link for iOS
+						</Form.Description>
 						<Form.FieldErrors />
 					</Form.Field>
 				{/if}
@@ -217,8 +225,9 @@
 								bind:value={$formData.android_link}
 								placeholder="https://example.com" />
 						</Form.Control>
-						<Form.Description
-							>Shortener link for Android</Form.Description>
+						<Form.Description>
+							Shortener link for Android
+						</Form.Description>
 						<Form.FieldErrors />
 					</Form.Field>
 				{/if}

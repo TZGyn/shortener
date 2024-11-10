@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Separator } from '$lib/components/ui/separator'
-	import type { PageData } from './$types'
 	import * as Form from '$lib/components/ui/form'
 	import { Input } from '$lib/components/ui/input'
 	import { formSchema } from './schema'
@@ -12,7 +11,7 @@
 	import { Button } from '$lib/components/ui/button'
 	import { cn } from '$lib/utils'
 
-	export let data: PageData
+	let { data } = $props()
 
 	let qrImageInput: HTMLInputElement
 
@@ -81,7 +80,7 @@
 				<div>
 					{#if !$formData.qrImage && !data.qrImageBase64}
 						<button
-							on:click={(e) => {
+							onclick={(e) => {
 								e.preventDefault()
 								qrImageInput.click()
 							}}>
@@ -91,7 +90,7 @@
 						</button>
 					{:else}
 						<button
-							on:click={(e) => {
+							onclick={(e) => {
 								e.preventDefault()
 								qrImageInput.click()
 							}}>
@@ -113,7 +112,7 @@
 					accept="image/png, image/jpeg"
 					type="file"
 					disabled={data.user.plan === 'free'}
-					on:input={(e) => {
+					oninput={(e) => {
 						const file = e.currentTarget.files?.item(0)
 						if (!file) return
 
@@ -141,7 +140,7 @@
 			<div class="flex gap-4">
 				<Button
 					disabled={data.user.plan === 'free'}
-					on:click={() => ($formData.qrCornerSquareStyle = 'square')}
+					onclick={() => ($formData.qrCornerSquareStyle = 'square')}
 					class={cn(
 						'flex flex-col gap-3 border p-12',
 						$formData.qrCornerSquareStyle === 'square'
@@ -153,7 +152,7 @@
 				</Button>
 				<Button
 					disabled={data.user.plan === 'free'}
-					on:click={() => ($formData.qrCornerSquareStyle = 'dot')}
+					onclick={() => ($formData.qrCornerSquareStyle = 'dot')}
 					class={cn(
 						'flex flex-col gap-3 border p-12',
 						$formData.qrCornerSquareStyle === 'dot'
@@ -165,7 +164,7 @@
 				</Button>
 				<Button
 					disabled={data.user.plan === 'free'}
-					on:click={() =>
+					onclick={() =>
 						($formData.qrCornerSquareStyle = 'extra-rounded')}
 					class={cn(
 						'flex flex-col gap-3 border p-12',
@@ -193,7 +192,7 @@
 			<div class="flex gap-4">
 				<Button
 					disabled={data.user.plan === 'free'}
-					on:click={() => ($formData.qrDotStyle = 'square')}
+					onclick={() => ($formData.qrDotStyle = 'square')}
 					class={cn(
 						'flex flex-col gap-3 border p-12',
 						$formData.qrDotStyle === 'square'
@@ -205,7 +204,7 @@
 				</Button>
 				<Button
 					disabled={data.user.plan === 'free'}
-					on:click={() => ($formData.qrDotStyle = 'rounded')}
+					onclick={() => ($formData.qrDotStyle = 'rounded')}
 					class={cn(
 						'flex flex-col gap-3 border p-12',
 						$formData.qrDotStyle === 'rounded'

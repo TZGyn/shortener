@@ -1,9 +1,8 @@
 <script lang="ts">
 	import ThemeToggle from '$lib/components/theme-toggle.svelte'
 	import Form from './(components)/form.svelte'
-	import type { PageData } from './$types'
 
-	export let data: PageData
+	let { data } = $props()
 </script>
 
 <svelte:head>

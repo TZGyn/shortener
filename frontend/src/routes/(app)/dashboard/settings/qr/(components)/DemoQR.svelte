@@ -2,16 +2,25 @@
 	import { onMount } from 'svelte'
 	import { browser } from '$app/environment'
 
-	export let background = '#fff'
-	export let color = '#000'
-	export let value = 'abcdefghajskdadsj'
-	export let cornerSquareStyle: 'dot' | 'square' | 'extra-rounded' =
-		'square'
-	export let dotStyle: 'square' | 'rounded' = 'square'
-	export let existingQrImage: string | null = null
-	export let qrImage: File | null = null
+	let {
+		background = '#fff',
+		color = '#000',
+		value = 'abcdefghajskdadsj',
+		cornerSquareStyle = 'square',
+		dotStyle = 'square',
+		existingQrImage = null,
+		qrImage = null,
+	}: {
+		background: string
+		color: string
+		value: string
+		cornerSquareStyle: 'dot' | 'square' | 'extra-rounded'
+		dotStyle: 'square' | 'rounded'
+		existingQrImage: string | null
+		qrImage: File | null
+	} = $props()
 
-	let image = ''
+	let image = $state('')
 
 	async function generateQrCode() {
 		if (!document || !window) {
@@ -58,13 +67,18 @@
 		}
 	}
 
-	$: browser &&
-		background &&
-		color &&
-		cornerSquareStyle &&
-		dotStyle &&
-		(qrImage === null || qrImage) &&
-		generateQrCode()
+	$effect(() => {
+		if (
+			browser &&
+			background &&
+			color &&
+			cornerSquareStyle &&
+			dotStyle &&
+			(qrImage === null || qrImage)
+		) {
+			generateQrCode()
+		}
+	})
 
 	onMount(() => {
 		generateQrCode()
