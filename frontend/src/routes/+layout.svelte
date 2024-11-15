@@ -32,4 +32,4 @@
 <ModeWatcher />
 <ProgressBar class="text-orange-400" />
 {@render children()}
-<Toaster />
+<Toaster richColors={true} />

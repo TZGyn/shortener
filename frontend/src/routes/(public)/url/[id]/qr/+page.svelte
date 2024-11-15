@@ -70,7 +70,7 @@
 
 <Card.Root
 	class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-	<Card.Header class="flex-col items-center gap-4">
+	<Card.Content class="flex flex-col items-center gap-4">
 		<Badge variant="secondary" class="w-fit">
 			{data.url + '/' + data.shortenerId}
 		</Badge>
@@ -82,5 +82,5 @@
 		<Button class="w-full" onclick={copyImageToClipboard}>
 			Copy Image
 		</Button>
-	</Card.Header>
+	</Card.Content>
 </Card.Root>

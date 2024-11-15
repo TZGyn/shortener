@@ -5,9 +5,11 @@
 	import { invalidateAll } from '$app/navigation'
 	import { toast } from 'svelte-sonner'
 
-	export let deleteDialogOpen = false
-	export let deleteShortenerCode = ''
-	let isDeleteLoading = false
+	let {
+		deleteDialogOpen = $bindable(false),
+		deleteShortenerCode = '',
+	} = $props()
+	let isDeleteLoading = $state(false)
 
 	const deleteShortener = async () => {
 		isDeleteLoading = true
@@ -30,11 +32,12 @@
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel disabled={isDeleteLoading}
-				>Cancel</AlertDialog.Cancel>
+			<AlertDialog.Cancel disabled={isDeleteLoading}>
+				Cancel
+			</AlertDialog.Cancel>
 			<Button
 				variant="destructive"
-				on:click={deleteShortener}
+				onclick={deleteShortener}
 				class="flex gap-2"
 				disabled={isDeleteLoading}>
 				{#if isDeleteLoading}

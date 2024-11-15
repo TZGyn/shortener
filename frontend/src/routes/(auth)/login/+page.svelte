@@ -40,7 +40,7 @@
 					Enter your email below to login to your account
 				</p>
 			</div>
-			<Button variant="outline" on:click={loginGoogle}>
+			<Button variant="outline" onclick={loginGoogle}>
 				{#if isLoading}
 					<LoaderIcon class="mr-2 h-4 w-4 animate-spin" />
 				{:else}

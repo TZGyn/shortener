@@ -27,14 +27,19 @@
 	import { cn } from '$lib/utils'
 	import type { page } from '$app/stores'
 
-	export let shortener: Shortener & {
-		visitorCount: number
-	}
-	export let project: Project | null
-	export let shortener_url: string
+	let {
+		shortener,
+		project,
+		shortener_url,
+	}: {
+		shortener: Shortener & { visitorCount: number }
+		project: Project | null
+		shortener_url: string
+	} = $props()
 
-	let deleteDialogOpen = false
-	let deleteShortenerCode = ''
+	let deleteDialogOpen = $state(false)
+	let deleteShortenerCode = $state('')
+
 	const openDeleteDialog = (code: string) => {
 		deleteShortenerCode = code
 		deleteDialogOpen = true
@@ -47,11 +52,12 @@
 		return '/dashboard'
 	}
 
-	let editProjectLinkOpen = false
-	let isLoadingEditProjectData = false
+	let editProjectLinkOpen = $state(false)
+	let isLoadingEditProjectData = $state(false)
 	let editData:
 		| typeof $page.state.editLink
 		| typeof $page.state.editProjectLink
+		| undefined = $state()
 
 	const showEditModal = async (code: string) => {
 		isLoadingEditProjectData = true
@@ -74,7 +80,7 @@
 		}
 	}
 
-	let isLoadingQrModal = false
+	let isLoadingQrModal = $state(false)
 	const showQRModal = async (e: MouseEvent) => {
 		isLoadingQrModal = true
 		const { href } = e.currentTarget as HTMLAnchorElement
@@ -107,24 +113,27 @@
 				<Avatar.Image
 					src={'https://www.google.com/s2/favicons?sz=128&domain_url=' +
 						shortener.link}
-					alt="favicon" />
-				<Avatar.Fallback class="bg-opacity-0">
+					alt="favicon"
+					class="h-10 w-10" />
+				<Avatar.Fallback class="h-10 w-10 bg-opacity-0">
 					<img src="/favicon.png" alt="favicon" />
 				</Avatar.Fallback>
 			</Avatar.Root>
 
 			<div class="flex flex-grow flex-col items-start gap-2">
-				<Tooltip.Root>
-					<Tooltip.Trigger>
-						<div
-							class="max-w-[250px] overflow-x-clip overflow-ellipsis whitespace-nowrap">
-							{shortener.link}
-						</div>
-					</Tooltip.Trigger>
-					<Tooltip.Content>
-						<p>{shortener.link}</p>
-					</Tooltip.Content>
-				</Tooltip.Root>
+				<Tooltip.Provider>
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							<div
+								class="max-w-[250px] overflow-x-clip overflow-ellipsis whitespace-nowrap">
+								{shortener.link}
+							</div>
+						</Tooltip.Trigger>
+						<Tooltip.Content>
+							<p>{shortener.link}</p>
+						</Tooltip.Content>
+					</Tooltip.Root>
+				</Tooltip.Provider>
 
 				<div
 					class="text-muted-foreground flex items-center gap-2 text-sm">
@@ -146,14 +155,16 @@
 					<DropdownMenu.Group>
 						<a
 							href={`/dashboard/links/${shortener.code}/edit`}
-							on:click|preventDefault={() =>
-								showEditModal(shortener.code)}>
+							onclick={(event) => {
+								event.preventDefault()
+								showEditModal(shortener.code)
+							}}>
 							<DropdownMenu.Item class="flex items-center gap-2">
 								<EditIcon size={16} />Edit
 							</DropdownMenu.Item>
 						</a>
 						<DropdownMenu.Item
-							on:click={() => openDeleteDialog(shortener.id)}
+							onclick={() => openDeleteDialog(shortener.id)}
 							class="text-destructive data-[highlighted]:bg-destructive flex items-center gap-2">
 							<TrashIcon size={16} />
 							Delete
@@ -180,7 +191,10 @@
 						'bg-secondary flex h-8 items-center justify-center gap-1 rounded text-sm',
 					)}
 					href={`${getUrl()}/links/${shortener.code}/qr`}
-					on:click|preventDefault={showQRModal}>
+					onclick={(event) => {
+						event.preventDefault()
+						showQRModal(event)
+					}}>
 					{#if isLoadingQrModal}
 						<Loader2Icon size={20} class="animate-spin" />
 					{:else}
@@ -191,26 +205,32 @@
 					<Separator orientation="vertical" class="hidden sm:block" />
 				{/if}
 				{#if shortener.ios && shortener.ios_link}
-					<Tooltip.Root>
-						<Tooltip.Trigger class="hidden gap-2 sm:inline-flex">
-							<Badge variant="outline" class="flex gap-2">iOS</Badge>
-						</Tooltip.Trigger>
-						<Tooltip.Content>
-							<p>{shortener.ios_link}</p>
-						</Tooltip.Content>
-					</Tooltip.Root>
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger class="hidden gap-2 sm:inline-flex">
+								<Badge variant="outline" class="flex gap-2">
+									iOS
+								</Badge>
+							</Tooltip.Trigger>
+							<Tooltip.Content>
+								<p>{shortener.ios_link}</p>
+							</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
 				{/if}
 				{#if shortener.android && shortener.android_link}
-					<Tooltip.Root>
-						<Tooltip.Trigger class="hidden gap-2 sm:inline-flex">
-							<Badge variant="outline" class="flex gap-2">
-								Android
-							</Badge>
-						</Tooltip.Trigger>
-						<Tooltip.Content>
-							<p>{shortener.android_link}</p>
-						</Tooltip.Content>
-					</Tooltip.Root>
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger class="hidden gap-2 sm:inline-flex">
+								<Badge variant="outline" class="flex gap-2">
+									Android
+								</Badge>
+							</Tooltip.Trigger>
+							<Tooltip.Content>
+								<p>{shortener.android_link}</p>
+							</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
 				{/if}
 			</div>
 			<div class="flex gap-4">

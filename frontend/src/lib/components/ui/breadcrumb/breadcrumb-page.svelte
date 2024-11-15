@@ -1,26 +1,23 @@
 <script lang="ts">
-	import type { HTMLAnchorAttributes } from 'svelte/elements'
-	import { cn } from '$lib/utils.js'
+	import type { WithElementRef } from "bits-ui";
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils.js";
 
-	type $$Props = HTMLAnchorAttributes & {
-		el?: HTMLSpanElement
-	}
-
-	export let el: $$Props['el'] = undefined
-	export let className: $$Props['class'] = undefined
-	export let href: $$Props['href'] = undefined
-	export { className as class }
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	}: WithElementRef<HTMLAttributes<HTMLSpanElement>> = $props();
 </script>
 
-<a
-	bind:this={el}
+<span
+	bind:this={ref}
+	role="link"
 	aria-disabled="true"
 	aria-current="page"
-	{href}
-	class={cn(
-		'font-normal text-foreground hover:cursor-pointer',
-		className,
-	)}
-	{...$$restProps}>
-	<slot />
-</a>
+	class={cn("text-foreground font-normal", className)}
+	{...restProps}
+>
+	{@render children?.()}
+</span>

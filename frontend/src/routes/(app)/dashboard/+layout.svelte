@@ -22,6 +22,7 @@
 
 	let dialogOpen = $state(false)
 	let isLoading = $state(false)
+
 	const logout = async () => {
 		isLoading = true
 
@@ -34,6 +35,14 @@
 	}
 
 	let { data, children } = $props()
+
+	let value = $state<string>(
+		($page.data.project?.id as string) || 'none',
+	)
+
+	const triggerContent = $derived(
+		data.projects.find((f) => f.id === value)?.name ?? 'None',
+	)
 
 	const routes = [
 		{
@@ -137,17 +146,16 @@
 			class={'flex h-full flex-col justify-between lg:min-w-[300px]'}>
 			<div>
 				<div class="flex flex-col gap-4 p-2 lg:p-4">
-					<Select.Root
-						selected={{
-							label: $page.data.project?.name || 'None',
-							value: $page.data.project?.id || 'none',
-						}}>
+					<!-- <Select.Root
+						type="single"
+						name={'selected_project'}
+						bind:value>
 						<Select.Trigger class="hidden lg:flex">
-							<Select.Value placeholder="Select a project" />
+							{triggerContent}
 						</Select.Trigger>
 						<Select.Content>
 							<Select.Group>
-								<Select.Label>Projects</Select.Label>
+								<Select.GroupHeading>Projects</Select.GroupHeading>
 								<Select.Separator />
 								<a href={`/dashboard/links`}>
 									<Select.Item value={'none'} label={'None'}>
@@ -166,8 +174,7 @@
 								{/each}
 							</Select.Group>
 						</Select.Content>
-						<Select.Input name="favoriteFruit" />
-					</Select.Root>
+					</Select.Root> -->
 					{#each routes as route}
 						<Button
 							variant={route.match($page.url.pathname)

@@ -1,30 +1,26 @@
 <script lang="ts">
-	import { Separator } from '$lib/components/ui/separator'
-	import { Button } from '$lib/components/ui/button'
-	import * as Dialog from '$lib/components/ui/dialog'
+	import { env } from '$env/dynamic/public'
+	import { Button, buttonVariants } from '$lib/components/ui/button'
 	import * as Card from '$lib/components/ui/card'
-	import EditForm from './(components)/form.svelte'
-	import * as Form from '$lib/components/ui/form'
-	import { superForm } from 'sveltekit-superforms'
-	import { toast } from 'svelte-sonner'
 	import { Checkbox } from '$lib/components/ui/checkbox'
+	import * as Dialog from '$lib/components/ui/dialog'
+	import * as Form from '$lib/components/ui/form'
 	import { Input } from '$lib/components/ui/input'
-	import { LoaderCircle } from 'lucide-svelte'
 	import { ScrollArea } from '$lib/components/ui/scroll-area'
+	import { Separator } from '$lib/components/ui/separator'
 	import * as Tooltip from '$lib/components/ui/tooltip'
-	import * as AlertDialog from '$lib/components/ui/alert-dialog'
-	import * as Alert from '$lib/components/ui/alert'
 	import {
-		InfoIcon,
+		CircleCheckBigIcon,
 		CircleDashedIcon,
 		CircleXIcon,
-		CircleCheckBigIcon,
-		TriangleAlertIcon,
+		InfoIcon,
+		LoaderCircle,
 	} from 'lucide-svelte'
-	import { env } from '$env/dynamic/public'
-	import { invalidateAll } from '$app/navigation'
+	import { toast } from 'svelte-sonner'
+	import { superForm } from 'sveltekit-superforms'
 	import DnsInfo from './(components)/dns-info.svelte'
 	import DnsTooltip from './(components)/dns-tooltip.svelte'
+	import EditForm from './(components)/form.svelte'
 
 	let { data } = $props()
 
@@ -95,7 +91,7 @@
 		<Separator />
 
 		<Card.Root>
-			<Card.Header>
+			<Card.Content>
 				<div class="flex items-center gap-4">
 					<div class="">
 						{#if data.project.domain_status === 'pending'}
@@ -133,10 +129,9 @@
 					<div>
 						{#if !data.project.enable_custom_domain}
 							<Dialog.Root>
-								<Dialog.Trigger asChild let:builder>
-									<Button builders={[builder]}>
-										Enable Custom Domain
-									</Button>
+								<Dialog.Trigger
+									class={buttonVariants({ variant: 'default' })}>
+									Enable Custom Domain
 								</Dialog.Trigger>
 
 								<Dialog.Content>
@@ -158,38 +153,43 @@
 											form={enableCustomDomainForm}
 											name="enableDomain"
 											class="flex flex-col gap-2">
-											<Form.Control let:attrs>
-												<Form.Label>Add Custom Domain</Form.Label>
-												<div class="flex items-center space-x-2">
-													<Input
-														{...attrs}
-														bind:value={$enableCustomDomainFormData.enableDomain}
-														placeholder="your-custom-domain.com" />
-												</div>
+											<Form.Control>
+												{#snippet children({ props })}
+													<Form.Label>Add Custom Domain</Form.Label>
+													<div class="flex items-center space-x-2">
+														<Input
+															{...props}
+															bind:value={$enableCustomDomainFormData.enableDomain}
+															placeholder="your-custom-domain.com" />
+													</div>
+												{/snippet}
 											</Form.Control>
 											<Form.Description
 												class="flex items-center justify-between gap-2">
-												<Tooltip.Root>
-													<Tooltip.Trigger
-														class="flex items-center gap-2">
-														<InfoIcon class="h-4 w-4" />
-														Update Project Domain (leave blank to use default)
-													</Tooltip.Trigger>
-													<Tooltip.Content>
-														<p>
-															Only include the domain name, not the
-															protocol.
-														</p>
-														<p>
-															Make sure the domain is pointing to our
-															server.
-														</p>
-														<p>
-															Please contact us if you need a custom
-															domain.
-														</p>
-													</Tooltip.Content>
-												</Tooltip.Root>
+												<Tooltip.Provider>
+													<Tooltip.Root>
+														<Tooltip.Trigger
+															class="flex items-center gap-2">
+															<InfoIcon class="h-4 w-4" />
+															Update Project Domain (leave blank to use
+															default)
+														</Tooltip.Trigger>
+														<Tooltip.Content>
+															<p>
+																Only include the domain name, not the
+																protocol.
+															</p>
+															<p>
+																Make sure the domain is pointing to
+																our server.
+															</p>
+															<p>
+																Please contact us if you need a custom
+																domain.
+															</p>
+														</Tooltip.Content>
+													</Tooltip.Root>
+												</Tooltip.Provider>
 											</Form.Description>
 											<Form.FieldErrors />
 										</Form.Field>
@@ -204,12 +204,9 @@
 									{/if}
 
 									<Dialog.Footer>
-										<Dialog.Close asChild let:builder>
-											<Button
-												builders={[builder]}
-												variant={'outline'}>
-												Cancel
-											</Button>
+										<Dialog.Close
+											class={buttonVariants({ variant: 'outline' })}>
+											Cancel
 										</Dialog.Close>
 										<Button onclick={enableCustomDomainSubmit}>
 											{#if $enableCustomDomainSubmitting}
@@ -256,7 +253,7 @@
 						{/if}
 					</div>
 				</div>
-			</Card.Header>
+			</Card.Content>
 		</Card.Root>
 		{#if data.project.enable_custom_domain}
 			<form
@@ -267,34 +264,44 @@
 					form={customDomainForm}
 					name="domain"
 					class="flex flex-col gap-2">
-					<Form.Control let:attrs>
-						<Form.Label>Add Custom Domain</Form.Label>
-						<div class="flex items-center space-x-2">
-							<Input
-								{...attrs}
-								bind:value={$customDomainFormData.domain}
-								placeholder="your-custom-domain.com" />
-							<Form.Button class="w-fit">
-								{#if $customDomainSubmitting}
-									<LoaderCircle class="animate-spin" />
-								{/if}
-								Update
-							</Form.Button>
-						</div>
+					<Form.Control>
+						{#snippet children({ props })}
+							<Form.Label>Add Custom Domain</Form.Label>
+							<div class="flex items-center space-x-2">
+								<Input
+									{...props}
+									bind:value={$customDomainFormData.domain}
+									placeholder="your-custom-domain.com" />
+								<Form.Button class="w-fit">
+									{#if $customDomainSubmitting}
+										<LoaderCircle class="animate-spin" />
+									{/if}
+									Update
+								</Form.Button>
+							</div>
+						{/snippet}
 					</Form.Control>
 					<Form.Description
 						class="flex items-center justify-between gap-2">
-						<Tooltip.Root>
-							<Tooltip.Trigger class="flex items-center gap-2">
-								<InfoIcon class="h-4 w-4" />
-								Update Project Domain (leave blank to use default)
-							</Tooltip.Trigger>
-							<Tooltip.Content>
-								<p>Only include the domain name, not the protocol.</p>
-								<p>Make sure the domain is pointing to our server.</p>
-								<p>Please contact us if you need a custom domain.</p>
-							</Tooltip.Content>
-						</Tooltip.Root>
+						<Tooltip.Provider>
+							<Tooltip.Root>
+								<Tooltip.Trigger class="flex items-center gap-2">
+									<InfoIcon class="h-4 w-4" />
+									Update Project Domain (leave blank to use default)
+								</Tooltip.Trigger>
+								<Tooltip.Content>
+									<p>
+										Only include the domain name, not the protocol.
+									</p>
+									<p>
+										Make sure the domain is pointing to our server.
+									</p>
+									<p>
+										Please contact us if you need a custom domain.
+									</p>
+								</Tooltip.Content>
+							</Tooltip.Root>
+						</Tooltip.Provider>
 					</Form.Description>
 					<Form.FieldErrors />
 				</Form.Field>
@@ -330,8 +337,9 @@
 				<Dialog.Root
 					open={deleteDialogOpen}
 					onOpenChange={(open) => (deleteDialogOpen = open)}>
-					<Dialog.Trigger>
-						<Button variant="destructive">Delete Project</Button>
+					<Dialog.Trigger
+						class={buttonVariants({ variant: 'destructive' })}>
+						Delete Project
 					</Dialog.Trigger>
 					<Dialog.Content>
 						<Dialog.Header>
@@ -348,20 +356,22 @@
 								{form}
 								name="deleteShorteners"
 								class="flex flex-col gap-2">
-								<Form.Control let:attrs>
-									<Input
-										{...attrs}
-										bind:value={$formData.deleteShorteners}
-										type="hidden" />
-									<div class="flex items-center gap-2">
-										<Checkbox
-											{...attrs}
-											id="deleteShorteners"
-											bind:checked={$formData.deleteShorteners} />
-										<Form.Label for="deleteShorteners">
-											Delete Shorteners?
-										</Form.Label>
-									</div>
+								<Form.Control>
+									{#snippet children({ props })}
+										<Input
+											{...props}
+											bind:value={$formData.deleteShorteners}
+											type="hidden" />
+										<div class="flex items-center gap-2">
+											<Checkbox
+												{...props}
+												id="deleteShorteners"
+												bind:checked={$formData.deleteShorteners} />
+											<Form.Label for="deleteShorteners">
+												Delete Shorteners?
+											</Form.Label>
+										</div>
+									{/snippet}
 								</Form.Control>
 								<Form.FieldErrors />
 							</Form.Field>

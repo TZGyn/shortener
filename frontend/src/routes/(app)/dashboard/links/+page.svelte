@@ -2,7 +2,7 @@
 	import { page } from '$app/stores'
 
 	import { Button } from '$lib/components/ui/button'
-	import * as Select from '$lib/components/ui/select'
+	import * as Select from '$lib/components/ui/select/index.js'
 	import * as Dialog from '$lib/components/ui/dialog'
 	import { Input } from '$lib/components/ui/input'
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
@@ -21,7 +21,6 @@
 	import ProjectLinkQRPage from '../projects/[id]/links/[linkid]/qr/+page.svelte'
 	import LinkQRPage from './[id]/qr/+page.svelte'
 	import type { Project, Shortener } from '$lib/db/types'
-	import type { Selected } from 'bits-ui'
 
 	let { data } = $props()
 
@@ -32,14 +31,8 @@
 
 	let pageNumber = $state(1)
 	let perPage = $state(12)
-	let sortBy = $state<Selected<string>>({
-		label: 'Latest',
-		value: 'latest',
-	})
-	let selectedProject = $state<Selected<string>>({
-		label: 'All',
-		value: 'all',
-	})
+	let sortBy = $state('latest')
+	let selectedProject = $state('all')
 
 	const fetchShorteners = async (
 		page: number,
@@ -70,19 +63,11 @@
 			pagination: data.pagination as { total: number },
 		}
 	}
-
-	let projectLinkQROpen = $state(!!$page.state.projectLinkQR)
-	let linkQROpen = $state(!!$page.state.linkQR)
-
-	$effect(() => {
-		projectLinkQROpen = !!$page.state.projectLinkQR
-		linkQROpen = !!$page.state.linkQR
-	})
 </script>
 
 <div
 	class="flex flex-wrap-reverse items-center justify-start gap-4 p-4">
-	<Drawer.Root>
+	<!-- <Drawer.Root>
 		<Drawer.Trigger class="md:hidden">
 			<Button size="icon"><SortAscIcon /></Button>
 		</Drawer.Trigger>
@@ -173,24 +158,22 @@
 				</Drawer.Close>
 			</Drawer.Footer>
 		</Drawer.Content>
-	</Drawer.Root>
+	</Drawer.Root> -->
 	<div class="hidden items-center gap-4 md:flex">
 		{#await data.projects}
 			<Skeleton class="h-[40px] w-[180px]" />
 		{:then projects}
 			<Select.Root
-				selected={selectedProject}
-				onSelectedChange={(selected) => {
-					if (!selected) return
-					selectedProject = selected
-					pageNumber = 1
-				}}>
+				name="selected_project"
+				type="single"
+				bind:value={selectedProject}>
 				<Select.Trigger class="w-[180px]">
-					<Select.Value placeholder="Sort By" />
+					{projects.find((project) => project.id == selectedProject)
+						?.name || 'All'}
 				</Select.Trigger>
 				<Select.Content>
 					<Select.Group>
-						<Select.Label>Project</Select.Label>
+						<Select.GroupHeading>Project</Select.GroupHeading>
 						<Select.Separator />
 						<Select.Item value={'all'} label={'All'}>All</Select.Item>
 						<Select.Separator />
@@ -201,30 +184,22 @@
 						{/each}
 					</Select.Group>
 				</Select.Content>
-				<Select.Input name="favoriteFruit" />
 			</Select.Root>
 		{/await}
-		<Select.Root
-			selected={sortBy}
-			onSelectedChange={(selected) => {
-				if (!selected) return
-				sortBy = selected
-				pageNumber = 1
-			}}>
+		<Select.Root name="sort_by" type="single" bind:value={sortBy}>
 			<Select.Trigger class="w-[180px]">
-				<Select.Value placeholder="Sort By" />
+				{sortBy}
 			</Select.Trigger>
 			<Select.Content>
 				<Select.Group>
-					<Select.Label>Sort By</Select.Label>
+					<Select.GroupHeading>Sort By</Select.GroupHeading>
 					{#each [{ label: 'Latest', value: 'latest' }, { label: 'Oldest', value: 'oldest' }, { label: 'Most Visited', value: 'most_visited' }] as sortBy}
-						<Select.Item value={sortBy.value} label={sortBy.label}>
+						<Select.Item value={sortBy.value}>
 							{sortBy.label}
 						</Select.Item>
 					{/each}
 				</Select.Group>
 			</Select.Content>
-			<Select.Input name="favoriteFruit" />
 		</Select.Root>
 	</div>
 	<div class="hidden items-center gap-4 sm:flex">
@@ -250,7 +225,7 @@
 	{/await}
 </div>
 
-{#await fetchShorteners(pageNumber, perPage, sortBy.value, selectedProject.value, search)}
+{#await fetchShorteners(pageNumber, perPage, sortBy, selectedProject, search)}
 	<div class="flex-grow">
 		<div class="flex flex-wrap gap-4 p-4">
 			{#each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as _}
@@ -273,69 +248,63 @@
 		</ScrollArea>
 		<div class="flex items-center justify-between border-t p-4">
 			<Select.Root
-				selected={{ label: perPage.toString(), value: perPage }}
-				onSelectedChange={(value) => {
-					if (value) {
-						perPage = value.value
-						pageNumber = 1
-					}
+				name="page_size"
+				type="single"
+				value={perPage.toString()}
+				onValueChange={(value) => {
+					perPage = parseInt(value)
+					pageNumber = 1
 				}}>
 				<Select.Trigger class="w-[180px]">
-					<Select.Value placeholder="Page Size" />
+					{perPage}
 				</Select.Trigger>
 				<Select.Content>
 					<Select.Group>
-						<Select.Label>Page Size</Select.Label>
+						<Select.GroupHeading>Page Size</Select.GroupHeading>
 						{#each [12, 24, 48, 96] as pageSize}
-							<Select.Item
-								value={pageSize}
-								label={pageSize.toString()}>
+							<Select.Item value={pageSize.toString()}>
 								{pageSize}
 							</Select.Item>
 						{/each}
 					</Select.Group>
 				</Select.Content>
-				<Select.Input name="favoriteFruit" />
 			</Select.Root>
 			<Pagination.Root
 				class="items-end"
 				count={result.pagination.total}
 				{perPage}
-				page={pageNumber}
-				let:pages
-				let:currentPage
-				onPageChange={(page) => {
-					pageNumber = page
-				}}>
-				<Pagination.Content>
-					<Pagination.Item>
-						<Pagination.PrevButton>
-							<ChevronLeft class="h-4 w-4" />
-							<span class="hidden sm:block">Previous</span>
-						</Pagination.PrevButton>
-					</Pagination.Item>
-					{#each pages as page (page.key)}
-						{#if page.type === 'ellipsis'}
-							<Pagination.Item>
-								<Pagination.Ellipsis />
-							</Pagination.Item>
-						{:else}
-							<Pagination.Item>
-								<Pagination.Link
-									{page}
-									isActive={currentPage === page.value}>
-									{page.value}
-								</Pagination.Link>
-							</Pagination.Item>
-						{/if}
-					{/each}
-					<Pagination.Item>
-						<Pagination.NextButton>
-							<span class="hidden sm:block">Next</span>
-							<ChevronRight class="h-4 w-4" />
-						</Pagination.NextButton>
-					</Pagination.Item>
-				</Pagination.Content>
+				bind:page={pageNumber}>
+				{#snippet children({ pages, currentPage })}
+					<Pagination.Content>
+						<Pagination.Item>
+							<Pagination.PrevButton>
+								<ChevronLeft class="h-4 w-4" />
+								<span class="hidden sm:block">Previous</span>
+							</Pagination.PrevButton>
+						</Pagination.Item>
+						{#each pages as page (page.key)}
+							{#if page.type === 'ellipsis'}
+								<Pagination.Item>
+									<Pagination.Ellipsis />
+								</Pagination.Item>
+							{:else}
+								<Pagination.Item>
+									<Pagination.Link
+										{page}
+										isActive={currentPage === page.value}>
+										{page.value}
+									</Pagination.Link>
+								</Pagination.Item>
+							{/if}
+						{/each}
+						<Pagination.Item>
+							<Pagination.NextButton>
+								<span class="hidden sm:block">Next</span>
+								<ChevronRight class="h-4 w-4" />
+							</Pagination.NextButton>
+						</Pagination.Item>
+					</Pagination.Content>
+				{/snippet}
 			</Pagination.Root>
 		</div>
 	{:else}
@@ -363,44 +332,48 @@
 	{/if}
 {/await}
 
-<Dialog.Root
-	bind:open={linkQROpen}
-	onOpenChange={(open) => {
-		if (!open) {
-			history.back()
-		}
-	}}>
-	<Dialog.Content class="sm:max-w-[425px]">
-		<Dialog.Header>
-			<Dialog.Title>Shortener QR</Dialog.Title>
-			<Dialog.Description>
-				Use this QR code to share the shortener.
-			</Dialog.Description>
-		</Dialog.Header>
-		<ScrollArea class="max-h-[calc(100vh-200px)]">
-			<LinkQRPage data={$page.state.linkQR} shallowRouting />
-		</ScrollArea>
-	</Dialog.Content>
-</Dialog.Root>
+{#if $page.state.linkQR}
+	<Dialog.Root
+		open
+		onOpenChange={(open) => {
+			if (!open) {
+				history.back()
+			}
+		}}>
+		<Dialog.Content class="sm:max-w-[425px]">
+			<Dialog.Header>
+				<Dialog.Title>Shortener QR</Dialog.Title>
+				<Dialog.Description>
+					Use this QR code to share the shortener.
+				</Dialog.Description>
+			</Dialog.Header>
+			<ScrollArea class="max-h-[calc(100vh-200px)]">
+				<LinkQRPage data={$page.state.linkQR} shallowRouting />
+			</ScrollArea>
+		</Dialog.Content>
+	</Dialog.Root>
+{/if}
 
-<Dialog.Root
-	bind:open={projectLinkQROpen}
-	onOpenChange={(open) => {
-		if (!open) {
-			history.back()
-		}
-	}}>
-	<Dialog.Content class="sm:max-w-[425px]">
-		<Dialog.Header>
-			<Dialog.Title>Shortener QR</Dialog.Title>
-			<Dialog.Description>
-				Use this QR code to share the shortener.
-			</Dialog.Description>
-		</Dialog.Header>
-		<ScrollArea class="max-h-[calc(100vh-200px)]">
-			<ProjectLinkQRPage
-				data={$page.state.projectLinkQR}
-				shallowRouting />
-		</ScrollArea>
-	</Dialog.Content>
-</Dialog.Root>
+{#if $page.state.projectLinkQR}
+	<Dialog.Root
+		open
+		onOpenChange={(open) => {
+			if (!open) {
+				history.back()
+			}
+		}}>
+		<Dialog.Content class="sm:max-w-[425px]">
+			<Dialog.Header>
+				<Dialog.Title>Shortener QR</Dialog.Title>
+				<Dialog.Description>
+					Use this QR code to share the shortener.
+				</Dialog.Description>
+			</Dialog.Header>
+			<ScrollArea class="max-h-[calc(100vh-200px)]">
+				<ProjectLinkQRPage
+					data={$page.state.projectLinkQR}
+					shallowRouting />
+			</ScrollArea>
+		</Dialog.Content>
+	</Dialog.Root>
+{/if}

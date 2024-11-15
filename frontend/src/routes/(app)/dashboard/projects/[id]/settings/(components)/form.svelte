@@ -50,9 +50,11 @@
 	class="flex flex-col gap-4"
 	action="?/update">
 	<Form.Field {form} name="name" class="flex flex-col gap-2">
-		<Form.Control let:attrs>
-			<Form.Label>Name</Form.Label>
-			<Input {...attrs} bind:value={$formData.name} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Name</Form.Label>
+				<Input {...props} bind:value={$formData.name} />
+			{/snippet}
 		</Form.Control>
 		<Form.Description>Update Project Name</Form.Description>
 		<Form.FieldErrors />
@@ -67,88 +69,96 @@
 			qrImage={$formData.qrImage} />
 	</div>
 	<Form.Field {form} name="qr_background" class="flex flex-col gap-2">
-		<Form.Control let:attrs>
-			<Form.Label>Background Color</Form.Label>
-			<Input {...attrs} bind:value={$formData.qr_background} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Background Color</Form.Label>
+				<Input {...props} bind:value={$formData.qr_background} />
+			{/snippet}
 		</Form.Control>
 		<Form.Description>QR Code background color</Form.Description>
 		<Form.FieldErrors />
 	</Form.Field>
 	<Form.Field {form} name="qr_foreground" class="flex flex-col gap-2">
-		<Form.Control let:attrs>
-			<Form.Label>Foreground Color</Form.Label>
-			<Input {...attrs} bind:value={$formData.qr_foreground} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Foreground Color</Form.Label>
+				<Input {...props} bind:value={$formData.qr_foreground} />
+			{/snippet}
 		</Form.Control>
 		<Form.Description>QR Code foreground color</Form.Description>
 		<Form.FieldErrors />
 	</Form.Field>
 	<Form.Field {form} name="qrImage">
-		<Form.Control let:attrs>
-			<Form.Label>
-				Image <span class="text-brand">(Pro)</span>
-			</Form.Label>
-			<div>
-				{#if !$formData.qrImage && !qrImageBase64}
-					<button
-						onclick={(e) => {
-							e.preventDefault()
-							qrImageInput.click()
-						}}>
-						<div
-							class="flex h-16 w-16 items-center justify-center rounded-lg border-4 border-dashed">
-						</div>
-					</button>
-				{:else}
-					<button
-						onclick={(e) => {
-							e.preventDefault()
-							qrImageInput.click()
-						}}>
-						<div
-							class="flex h-16 w-16 items-center justify-center rounded-lg">
-							<img
-								src={$formData.qrImage
-									? URL.createObjectURL($formData.qrImage)
-									: qrImageBase64}
-								alt={'image'}
-								width={64}
-								height={64} />
-						</div>
-					</button>
-				{/if}
-			</div>
-			<Form.Description>Click to edit</Form.Description>
-			<input
-				{...attrs}
-				hidden
-				bind:this={qrImageInput}
-				accept="image/png, image/jpeg"
-				type="file"
-				disabled={!isPro}
-				oninput={(e) => {
-					const file = e.currentTarget.files?.item(0)
-					if (!file) return
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>
+					Image <span class="text-brand">(Pro)</span>
+				</Form.Label>
+				<div>
+					{#if !$formData.qrImage && !qrImageBase64}
+						<button
+							onclick={(e) => {
+								e.preventDefault()
+								qrImageInput.click()
+							}}>
+							<div
+								class="flex h-16 w-16 items-center justify-center rounded-lg border-4 border-dashed">
+							</div>
+						</button>
+					{:else}
+						<button
+							onclick={(e) => {
+								e.preventDefault()
+								qrImageInput.click()
+							}}>
+							<div
+								class="flex h-16 w-16 items-center justify-center rounded-lg">
+								<img
+									src={$formData.qrImage
+										? URL.createObjectURL($formData.qrImage)
+										: qrImageBase64}
+									alt={'image'}
+									width={64}
+									height={64} />
+							</div>
+						</button>
+					{/if}
+				</div>
+				<Form.Description>Click to edit</Form.Description>
+				<input
+					{...props}
+					hidden
+					bind:this={qrImageInput}
+					accept="image/png, image/jpeg"
+					type="file"
+					disabled={!isPro}
+					oninput={(e) => {
+						const file = e.currentTarget.files?.item(0)
+						if (!file) return
 
-					if (file.size > 2097152) {
-						toast.error('Too Big! Max file size is 2MB')
-						return
-					}
-					$formData.qrImage = file
-				}} />
+						if (file.size > 2097152) {
+							toast.error('Too Big! Max file size is 2MB')
+							return
+						}
+						$formData.qrImage = file
+					}} />
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
 	<Form.Field {form} name="qrCornerSquareStyle">
-		<Form.Control let:attrs>
-			<Form.Label>
-				Corner Square Style <span class="text-brand">(Pro)</span>
-			</Form.Label>
-			<Input
-				{...attrs}
-				class="hidden"
-				hidden
-				aria-hidden
-				bind:value={$formData.qrCornerSquareStyle} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>
+					Corner Square Style <span class="text-brand">(Pro)</span>
+				</Form.Label>
+				<Input
+					{...props}
+					class="hidden"
+					hidden
+					aria-hidden
+					bind:value={$formData.qrCornerSquareStyle} />
+			{/snippet}
 		</Form.Control>
 		<div class="flex gap-4">
 			<Button
@@ -191,16 +201,18 @@
 		</div>
 	</Form.Field>
 	<Form.Field {form} name="qrDotStyle">
-		<Form.Control let:attrs>
-			<Form.Label>
-				Dot Style <span class="text-brand">(Pro)</span>
-			</Form.Label>
-			<Input
-				{...attrs}
-				class="hidden"
-				hidden
-				aria-hidden
-				bind:value={$formData.qrDotStyle} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>
+					Dot Style <span class="text-brand">(Pro)</span>
+				</Form.Label>
+				<Input
+					{...props}
+					class="hidden"
+					hidden
+					aria-hidden
+					bind:value={$formData.qrDotStyle} />
+			{/snippet}
 		</Form.Control>
 		<div class="flex gap-4">
 			<Button

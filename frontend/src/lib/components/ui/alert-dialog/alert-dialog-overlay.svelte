@@ -1,23 +1,19 @@
 <script lang="ts">
-	import { AlertDialog as AlertDialogPrimitive } from 'bits-ui'
-	import { cn } from '$lib/utils'
-	import { fade } from 'svelte/transition'
+	import { AlertDialog as AlertDialogPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
 
-	type $$Props = AlertDialogPrimitive.OverlayProps
-
-	let className: $$Props['class'] = undefined
-	export let transition: $$Props['transition'] = fade
-	export let transitionConfig: $$Props['transitionConfig'] = {
-		duration: 150,
-	}
-	export { className as class }
+	let {
+		ref = $bindable(null),
+		class: className,
+		...restProps
+	}: AlertDialogPrimitive.OverlayProps = $props();
 </script>
 
 <AlertDialogPrimitive.Overlay
-	{transition}
-	{transitionConfig}
+	bind:ref
 	class={cn(
-		'fixed inset-0 z-50 bg-background/80 backdrop-blur-sm ',
-		className,
+		"data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0  fixed inset-0 z-50 bg-black/80",
+		className
 	)}
-	{...$$restProps} />
+	{...restProps}
+/>

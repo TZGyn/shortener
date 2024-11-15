@@ -8,7 +8,7 @@
 	import { toast } from 'svelte-sonner'
 	import { LoaderCircle } from 'lucide-svelte'
 	import * as Dialog from '$lib/components/ui/dialog'
-	import { Button } from '$lib/components/ui/button'
+	import { Button, buttonVariants } from '$lib/components/ui/button'
 
 	let { data } = $props()
 
@@ -64,37 +64,43 @@
 		class="flex flex-col gap-6"
 		action="?/change_password">
 		<Form.Field {form} name="old_password">
-			<Form.Control let:attrs>
-				<Form.Label>Old Password</Form.Label>
-				<Input
-					{...attrs}
-					bind:value={$formData.old_password}
-					type="password"
-					placeholder="••••••••" />
+			<Form.Control>
+				{#snippet children({ props })}
+					<Form.Label>Old Password</Form.Label>
+					<Input
+						{...props}
+						bind:value={$formData.old_password}
+						type="password"
+						placeholder="••••••••" />
+				{/snippet}
 			</Form.Control>
 			<Form.Description>Old Password To Confirm</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
 		<Form.Field {form} name="new_password">
-			<Form.Control let:attrs>
-				<Form.Label>New Password</Form.Label>
-				<Input
-					{...attrs}
-					bind:value={$formData.new_password}
-					type="password"
-					placeholder="••••••••" />
+			<Form.Control>
+				{#snippet children({ props })}
+					<Form.Label>New Password</Form.Label>
+					<Input
+						{...props}
+						bind:value={$formData.new_password}
+						type="password"
+						placeholder="••••••••" />
+				{/snippet}
 			</Form.Control>
 			<Form.Description>Update Password</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
 		<Form.Field {form} name="confirm_password">
-			<Form.Control let:attrs>
-				<Form.Label>Confirm Password</Form.Label>
-				<Input
-					{...attrs}
-					bind:value={$formData.confirm_password}
-					type="password"
-					placeholder="••••••••" />
+			<Form.Control>
+				{#snippet children({ props })}
+					<Form.Label>Confirm Password</Form.Label>
+					<Input
+						{...props}
+						bind:value={$formData.confirm_password}
+						type="password"
+						placeholder="••••••••" />
+				{/snippet}
 			</Form.Control>
 			<Form.Description>Confirm New Password</Form.Description>
 			<Form.FieldErrors />
@@ -126,8 +132,9 @@
 				</span>
 			</div>
 			<Dialog.Root bind:open={deleteDialogOpen}>
-				<Dialog.Trigger>
-					<Button variant="destructive">Delete Account</Button>
+				<Dialog.Trigger
+					class={buttonVariants({ variant: 'destructive' })}>
+					Delete Account
 				</Dialog.Trigger>
 				<Dialog.Content class="max-w-xl">
 					<Dialog.Header class="flex-row items-center gap-2">
@@ -147,13 +154,15 @@
 						action="?/delete_account"
 						use:deleteAccountEnhance>
 						<Form.Field form={deleteAccountForm} name="password">
-							<Form.Control let:attrs>
-								<Form.Label>Password</Form.Label>
-								<Input
-									{...attrs}
-									bind:value={$deleteAccountFormData.password}
-									type="password"
-									placeholder="••••••••" />
+							<Form.Control>
+								{#snippet children({ props })}
+									<Form.Label>Password</Form.Label>
+									<Input
+										{...props}
+										bind:value={$deleteAccountFormData.password}
+										type="password"
+										placeholder="••••••••" />
+								{/snippet}
 							</Form.Control>
 							<Form.Description>
 								Enter your password to delete account

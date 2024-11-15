@@ -27,7 +27,11 @@
 		projects: Project[]
 		dialogOpen: boolean
 	} = $props()
-	let shortenerCategory = $state<any>(undefined)
+	let shortenerCategory = $state<string>('')
+	let selectedProjectName = $derived(
+		projects.find((project) => project.id == shortenerCategory)
+			?.name || 'None',
+	)
 
 	const form = superForm(data, {
 		validators: zodClient(formSchema),
@@ -108,45 +112,43 @@
 				class="flex flex-col gap-6"
 				action="?/create">
 				<Form.Field {form} name="link" class="flex flex-col gap-2">
-					<Form.Control let:attrs>
-						<Form.Label>Link</Form.Label>
-						<Input
-							{...attrs}
-							bind:value={$formData.link}
-							placeholder="https://example.com"
-							oninput={getMetadata} />
+					<Form.Control>
+						{#snippet children({ props })}
+							<Form.Label>Link</Form.Label>
+							<Input
+								{...props}
+								bind:value={$formData.link}
+								placeholder="https://example.com"
+								oninput={getMetadata} />
+						{/snippet}
 					</Form.Control>
 					<Form.Description>Shortener link</Form.Description>
 					<Form.FieldErrors />
 				</Form.Field>
 				<Form.Field {form} name="project" class="flex flex-col gap-2">
-					<Form.Control let:attrs>
-						<Form.Label>Project</Form.Label>
-						<Select.Root
-							bind:selected={shortenerCategory}
-							onSelectedChange={(v) => {
-								v && ($formData.project = v.value)
-							}}
-							multiple={false}>
-							<Select.Trigger {...attrs} class="col-span-3">
-								<Select.Value placeholder="Select a Project" />
-							</Select.Trigger>
-							<Select.Content>
-								<Select.Item value={''}>None</Select.Item>
-								<Select.Separator />
-								<Select.Group>
-									{#each projects as project}
-										<Select.Item value={project.uuid}>
-											{project.name}
-										</Select.Item>
-									{/each}
-								</Select.Group>
-							</Select.Content>
-						</Select.Root>
-						<input
-							hidden
-							bind:value={$formData.project}
-							name={attrs.name} />
+					<Form.Control>
+						{#snippet children({ props })}
+							<Form.Label>Project</Form.Label>
+							<Select.Root
+								bind:value={shortenerCategory}
+								type={'single'}
+								name={props.name}>
+								<Select.Trigger {...props} class="col-span-3">
+									{selectedProjectName}
+								</Select.Trigger>
+								<Select.Content>
+									<Select.Group>
+										<Select.Item value={''}>None</Select.Item>
+										<Select.Separator />
+										{#each projects as project}
+											<Select.Item value={project.id}>
+												{project.name}
+											</Select.Item>
+										{/each}
+									</Select.Group>
+								</Select.Content>
+							</Select.Root>
+						{/snippet}
 					</Form.Control>
 					<Form.Description>Shortener Project</Form.Description>
 					<Form.FieldErrors />
@@ -155,11 +157,13 @@
 					{form}
 					name="custom_code_enable"
 					class="flex items-center gap-2 space-y-0">
-					<Form.Control let:attrs>
-						<Switch
-							{...attrs}
-							bind:checked={$formData.custom_code_enable} />
-						<Form.Label>Custom Code</Form.Label>
+					<Form.Control>
+						{#snippet children({ props })}
+							<Switch
+								{...props}
+								bind:checked={$formData.custom_code_enable} />
+							<Form.Label>Custom Code</Form.Label>
+						{/snippet}
 					</Form.Control>
 				</Form.Field>
 				{#if $formData.custom_code_enable}
@@ -167,11 +171,13 @@
 						{form}
 						name="custom_code"
 						class="flex flex-col gap-2">
-						<Form.Control let:attrs>
-							<Input
-								{...attrs}
-								bind:value={$formData.custom_code}
-								placeholder="abcde" />
+						<Form.Control>
+							{#snippet children({ props })}
+								<Input
+									{...props}
+									bind:value={$formData.custom_code}
+									placeholder="abcde" />
+							{/snippet}
 						</Form.Control>
 						<Form.Description>
 							Custom Code For The Shortener
@@ -183,9 +189,11 @@
 					{form}
 					name="ios"
 					class="flex items-center gap-2 space-y-0">
-					<Form.Control let:attrs>
-						<Switch {...attrs} bind:checked={$formData.ios} />
-						<Form.Label>iOS Link</Form.Label>
+					<Form.Control>
+						{#snippet children({ props })}
+							<Switch {...props} bind:checked={$formData.ios} />
+							<Form.Label>iOS Link</Form.Label>
+						{/snippet}
 					</Form.Control>
 				</Form.Field>
 				{#if $formData.ios}
@@ -193,11 +201,13 @@
 						{form}
 						name="ios_link"
 						class="flex flex-col gap-2">
-						<Form.Control let:attrs>
-							<Input
-								{...attrs}
-								bind:value={$formData.ios_link}
-								placeholder="https://example.com" />
+						<Form.Control>
+							{#snippet children({ props })}
+								<Input
+									{...props}
+									bind:value={$formData.ios_link}
+									placeholder="https://example.com" />
+							{/snippet}
 						</Form.Control>
 						<Form.Description>
 							Shortener link for iOS
@@ -209,9 +219,11 @@
 					{form}
 					name="android"
 					class="flex items-center gap-2 space-y-0">
-					<Form.Control let:attrs>
-						<Switch {...attrs} bind:checked={$formData.android} />
-						<Form.Label>Android Link</Form.Label>
+					<Form.Control>
+						{#snippet children({ props })}
+							<Switch {...props} bind:checked={$formData.android} />
+							<Form.Label>Android Link</Form.Label>
+						{/snippet}
 					</Form.Control>
 				</Form.Field>
 				{#if $formData.android}
@@ -219,11 +231,13 @@
 						{form}
 						name="android_link"
 						class="flex flex-col gap-2">
-						<Form.Control let:attrs>
-							<Input
-								{...attrs}
-								bind:value={$formData.android_link}
-								placeholder="https://example.com" />
+						<Form.Control>
+							{#snippet children({ props })}
+								<Input
+									{...props}
+									bind:value={$formData.android_link}
+									placeholder="https://example.com" />
+							{/snippet}
 						</Form.Control>
 						<Form.Description>
 							Shortener link for Android
@@ -235,9 +249,11 @@
 					{form}
 					name="active"
 					class="flex items-center gap-2 space-y-0">
-					<Form.Control let:attrs>
-						<Checkbox {...attrs} bind:checked={$formData.active} />
-						<Form.Label>Active</Form.Label>
+					<Form.Control>
+						{#snippet children({ props })}
+							<Checkbox {...props} bind:checked={$formData.active} />
+							<Form.Label>Active</Form.Label>
+						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>

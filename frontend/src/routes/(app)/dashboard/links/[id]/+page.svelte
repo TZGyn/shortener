@@ -1,6 +1,4 @@
 <script lang="ts">
-	import type { PageData } from './$types'
-	import { Separator } from '$lib/components/ui/separator'
 	import * as Table from '$lib/components/ui/table'
 	import * as Card from '$lib/components/ui/card'
 	import * as Tabs from '$lib/components/ui/tabs'
@@ -17,9 +15,9 @@
 	import { Skeleton } from '$lib/components/ui/skeleton'
 	import * as Avatar from '$lib/components/ui/avatar'
 
-	export let data: PageData
+	let { data } = $props()
 
-	let options = {
+	let options: ApexOptions = $state({
 		series: [
 			{
 				name: 'Clicks',
@@ -81,15 +79,9 @@
 		tooltip: {
 			theme: 'dark',
 		},
-	} satisfies ApexOptions
-
-	data.visitor.map((visitor) => {
-		options.series[0].data[visitor.month - 1] = visitor.count
 	})
 
-	$: options.tooltip.theme = $mode === 'dark' ? 'dark' : 'light'
-
-	let container: HTMLElement | undefined
+	let container: HTMLElement | undefined = $state()
 
 	const renderChart = async (options: ApexOptions) => {
 		if (container) {
@@ -99,11 +91,19 @@
 		chart.render()
 	}
 
-	$: container && ApexChart && renderChart(options)
-
 	let ApexChart: typeof ApexCharts
 	onMount(async () => {
+		data.visitor.map((visitor) => {
+			if (options.series) {
+				options.series[0].data[visitor.month - 1] = visitor.count
+			}
+		})
+
+		if (options && options.tooltip) {
+			options.tooltip.theme = $mode === 'dark' ? 'dark' : 'light'
+		}
 		ApexChart = (await import('apexcharts')).default
+		renderChart(options)
 	})
 </script>
 
@@ -130,7 +130,7 @@
 	</div>
 
 	<div
-		class="grid grid-cols-[repeat(auto-fit,_minmax(600px,_1fr))] gap-4 gap-y-8 p-4">
+		class="flex flex-col gap-4 gap-y-8 p-4 2xl:grid 2xl:grid-cols-[repeat(auto-fit,_minmax(600px,_1fr))]">
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>Clicks</Card.Title>
@@ -475,7 +475,7 @@
 			</Tabs.Content>
 		</Tabs.Root>
 		<Card.Root class="col-span-2 h-full min-h-[600px]">
-			<Card.Header class="border-b">
+			<Card.Header class="border-b pb-4">
 				<Card.Title>Last 10 Visits</Card.Title>
 			</Card.Header>
 			<Card.Content class="p-0">

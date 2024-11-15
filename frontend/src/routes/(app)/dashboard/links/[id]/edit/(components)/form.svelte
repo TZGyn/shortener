@@ -88,13 +88,15 @@
 	class="flex flex-col gap-6"
 	action={`/dashboard/links/${code}/edit`}>
 	<Form.Field {form} name="link" class="flex flex-col gap-2">
-		<Form.Control let:attrs>
-			<Form.Label>Link</Form.Label>
-			<Input
-				{...attrs}
-				bind:value={$formData.link}
-				placeholder="https://example.com"
-				oninput={getMetadata} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Link</Form.Label>
+				<Input
+					{...props}
+					bind:value={$formData.link}
+					placeholder="https://example.com"
+					oninput={getMetadata} />
+			{/snippet}
 		</Form.Control>
 		<Form.Description>Shortener link</Form.Description>
 		<Form.FieldErrors />
@@ -103,20 +105,24 @@
 		{form}
 		name="custom_code_enable"
 		class="flex items-center gap-2 space-y-0">
-		<Form.Control let:attrs>
-			<Switch
-				{...attrs}
-				bind:checked={$formData.custom_code_enable} />
-			<Form.Label>Custom Code</Form.Label>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Switch
+					{...props}
+					bind:checked={$formData.custom_code_enable} />
+				<Form.Label>Custom Code</Form.Label>
+			{/snippet}
 		</Form.Control>
 	</Form.Field>
 	{#if $formData.custom_code_enable}
 		<Form.Field {form} name="custom_code" class="flex flex-col gap-2">
-			<Form.Control let:attrs>
-				<Input
-					{...attrs}
-					bind:value={$formData.custom_code}
-					placeholder="abcde" />
+			<Form.Control>
+				{#snippet children({ props })}
+					<Input
+						{...props}
+						bind:value={$formData.custom_code}
+						placeholder="abcde" />
+				{/snippet}
 			</Form.Control>
 			<Form.Description>
 				Custom Code For The Shortener
@@ -128,18 +134,22 @@
 		{form}
 		name="ios"
 		class="flex items-center gap-2 space-y-0">
-		<Form.Control let:attrs>
-			<Switch {...attrs} bind:checked={$formData.ios} />
-			<Form.Label>iOS Link</Form.Label>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Switch {...props} bind:checked={$formData.ios} />
+				<Form.Label>iOS Link</Form.Label>
+			{/snippet}
 		</Form.Control>
 	</Form.Field>
 	{#if $formData.ios}
 		<Form.Field {form} name="ios_link" class="flex flex-col gap-2">
-			<Form.Control let:attrs>
-				<Input
-					{...attrs}
-					bind:value={$formData.ios_link}
-					placeholder="https://example.com" />
+			<Form.Control>
+				{#snippet children({ props })}
+					<Input
+						{...props}
+						bind:value={$formData.ios_link}
+						placeholder="https://example.com" />
+				{/snippet}
 			</Form.Control>
 			<Form.Description>Shortener link for iOS</Form.Description>
 			<Form.FieldErrors />
@@ -149,9 +159,11 @@
 		{form}
 		name="android"
 		class="flex items-center gap-2 space-y-0">
-		<Form.Control let:attrs>
-			<Switch {...attrs} bind:checked={$formData.android} />
-			<Form.Label>Android Link</Form.Label>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Switch {...props} bind:checked={$formData.android} />
+				<Form.Label>Android Link</Form.Label>
+			{/snippet}
 		</Form.Control>
 	</Form.Field>
 	{#if $formData.android}
@@ -159,11 +171,13 @@
 			{form}
 			name="android_link"
 			class="flex flex-col gap-2">
-			<Form.Control let:attrs>
-				<Input
-					{...attrs}
-					bind:value={$formData.android_link}
-					placeholder="https://example.com" />
+			<Form.Control>
+				{#snippet children({ props })}
+					<Input
+						{...props}
+						bind:value={$formData.android_link}
+						placeholder="https://example.com" />
+				{/snippet}
 			</Form.Control>
 			<Form.Description>Shortener link for Android</Form.Description>
 			<Form.FieldErrors />
@@ -173,9 +187,11 @@
 		{form}
 		name="active"
 		class="flex items-center gap-2 space-y-0">
-		<Form.Control let:attrs>
-			<Checkbox {...attrs} bind:checked={$formData.active} />
-			<Form.Label>Active</Form.Label>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Checkbox {...props} bind:checked={$formData.active} />
+				<Form.Label>Active</Form.Label>
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>

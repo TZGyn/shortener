@@ -103,14 +103,12 @@
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content>
 				<DropdownMenu.Group>
-					<DropdownMenu.Item href={`/url/${code}/qr`} target="_blank">
-						Standard
-					</DropdownMenu.Item>
-					<DropdownMenu.Item
-						href={`/url/${code}/qr?color=true`}
-						target="_blank">
-						With Style
-					</DropdownMenu.Item>
+					<a href={`/url/${code}/qr`} target="_blank">
+						<DropdownMenu.Item>Standard</DropdownMenu.Item>
+					</a>
+					<a href={`/url/${code}/qr?color=true`} target="_blank">
+						<DropdownMenu.Item>With Style</DropdownMenu.Item>
+					</a>
 				</DropdownMenu.Group>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>

@@ -12,12 +12,19 @@
 	import * as Dialog from '$lib/components/ui/dialog'
 	import * as Drawer from '$lib/components/ui/drawer'
 
-	import { SortAscIcon, SortDescIcon } from 'lucide-svelte'
+	import {
+		ChevronLeft,
+		ChevronRight,
+		SortAscIcon,
+		SortDescIcon,
+	} from 'lucide-svelte'
 
 	import { ScrollArea } from '$lib/components/ui/scroll-area'
 	import Form from './(components)/form.svelte'
 	import EditProjectLinkPage from './links/[linkid]/edit/+page.svelte'
 	import ProjectLinkQRPage from './links/[linkid]/qr/+page.svelte'
+	import type { Project, Shortener } from '$lib/db/types'
+	import * as Pagination from '$lib/components/ui/pagination'
 
 	let { data } = $props()
 
@@ -26,41 +33,10 @@
 	let search = $state<string | null>(data.search)
 	let searchUpdateTimeout = $state<any>()
 
-	$effect(() => {
-		if (browser && (search || true)) {
-			goto(
-				updateSearchParam([
-					{ name: 'search', value: search },
-					{
-						name: 'page',
-						value: 1,
-					},
-				]),
-			)
-		}
-	})
-
-	const updateSearchParam = (
-		params: { name: string; value: any }[],
-	) => {
-		const urlParams = new URLSearchParams(window.location.search)
-		params.map(({ name, value }) => {
-			if (value) {
-				urlParams.set(name, value)
-			} else {
-				urlParams.delete(name)
-			}
-		})
-		const searchParams = urlParams.toString()
-		if (searchParams) {
-			return (
-				`/dashboard/projects/${data.selectedProject.uuid}?` +
-				searchParams
-			)
-		} else {
-			return '/dashboard/projects/' + data.selectedProject.uuid
-		}
-	}
+	let pageNumber = $state(1)
+	let perPage = $state(12)
+	let sortBy = $state('latest')
+	const selectedProject = data.selectedProject.id
 
 	let editProjectLinkOpen = $state(false)
 	let projectLinkQROpen = $state(false)
@@ -69,89 +45,55 @@
 		editProjectLinkOpen = !!$page.state.editProjectLink
 		projectLinkQROpen = !!$page.state.projectLinkQR
 	})
+
+	const fetchShorteners = async (
+		page: number,
+		perPage: number,
+		sortBy: string,
+		project: string,
+		search: string | null,
+	) => {
+		const searchParams = new URLSearchParams()
+
+		if (page) searchParams.set('page', page.toString())
+		if (perPage) searchParams.set('perPage', perPage.toString())
+		if (sortBy) searchParams.set('sortBy', sortBy)
+		if (project) searchParams.set('project', project)
+		if (search) searchParams.set('search', search)
+
+		const response = await fetch(
+			`/api/shortener?${searchParams.toString()}`,
+		)
+
+		const data = await response.json()
+
+		return {
+			shorteners: data.shorteners as (Shortener & {
+				visitorCount: number
+				project: Project
+			})[],
+			pagination: data.pagination as { total: number },
+		}
+	}
 </script>
 
 <div
 	class="flex flex-wrap-reverse items-center justify-start gap-4 px-4 py-4 md:px-10">
-	<Drawer.Root>
-		<Drawer.Trigger class="md:hidden">
-			<Button size="icon"><SortAscIcon /></Button>
-		</Drawer.Trigger>
-		<Drawer.Content>
-			<Drawer.Header>
-				<Drawer.Title>Filter</Drawer.Title>
-				<Drawer.Description>Sort & Search</Drawer.Description>
-			</Drawer.Header>
-			<Drawer.Footer class="gap-6">
-				<Select.Root
-					selected={{ label: data.sortBy, value: data.sortBy }}>
-					<Select.Trigger>
-						<Select.Value placeholder="Sort By" />
-					</Select.Trigger>
-					<Select.Content>
-						<Select.Group>
-							<Select.Label>Sort By</Select.Label>
-							{#each ['latest', 'oldest', 'most_visited'] as sortBy}
-								<a
-									href={updateSearchParam([
-										{ name: 'sortBy', value: sortBy },
-										{ name: 'page', value: 1 },
-									])}>
-									<Select.Item value={sortBy} label={sortBy}>
-										{sortBy.removeUnderscores().capitalize()}
-									</Select.Item>
-								</a>
-							{/each}
-						</Select.Group>
-					</Select.Content>
-					<Select.Input name="favoriteFruit" />
-				</Select.Root>
-
-				<div class="flex gap-2">
-					<Input
-						type="text"
-						placeholder="search"
-						value={search}
-						oninput={({ target }) => {
-							clearTimeout(searchUpdateTimeout)
-							searchUpdateTimeout = setTimeout(() => {
-								search = target.value
-							}, 500)
-						}} />
-					<Button disabled={!search} onclick={() => (search = '')}>
-						Clear
-					</Button>
-				</div>
-				<div></div>
-				<Drawer.Close>
-					<Button class="w-full">Close</Button>
-				</Drawer.Close>
-			</Drawer.Footer>
-		</Drawer.Content>
-	</Drawer.Root>
 	<div class="hidden items-center gap-4 md:flex">
-		<Select.Root
-			selected={{ label: data.sortBy, value: data.sortBy }}>
+		<Select.Root bind:value={sortBy} type="single" name="sortBy">
 			<Select.Trigger class="w-[180px]">
-				<Select.Value placeholder="Sort By" />
+				{sortBy}
 			</Select.Trigger>
 			<Select.Content>
 				<Select.Group>
-					<Select.Label>Sort By</Select.Label>
+					<Select.GroupHeading>Sort By</Select.GroupHeading>
 					{#each ['latest', 'oldest', 'most_visited'] as sortBy}
-						<a
-							href={updateSearchParam([
-								{ name: 'sortBy', value: sortBy },
-								{ name: 'page', value: 1 },
-							])}>
-							<Select.Item value={sortBy} label={sortBy}>
-								{sortBy.removeUnderscores().capitalize()}
-							</Select.Item>
-						</a>
+						<Select.Item value={sortBy} label={sortBy}>
+							{sortBy.removeUnderscores().capitalize()}
+						</Select.Item>
 					{/each}
 				</Select.Group>
 			</Select.Content>
-			<Select.Input name="favoriteFruit" />
 		</Select.Root>
 	</div>
 	<div class="hidden items-center gap-4 sm:flex">
@@ -174,18 +116,18 @@
 	<Form bind:dialogOpen data={data.form} />
 </div>
 
-{#await data.shorteners}
+{#await fetchShorteners(pageNumber, perPage, sortBy, selectedProject, search)}
 	<div class="flex flex-wrap gap-4 px-4 py-4 md:px-10">
 		{#each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as _}
 			<Skeleton class="h-[150px] w-[500px] rounded-lg" />
 		{/each}
 	</div>
-{:then shorteners}
-	{#if shorteners.length > 0}
+{:then result}
+	{#if result.shorteners.length > 0}
 		<ScrollArea class="flex-grow">
 			<div
 				class="grid grid-cols-[repeat(auto-fit,_minmax(500px,_1fr))] gap-4 px-4 py-4 md:px-10">
-				{#each shorteners as shortener}
+				{#each result.shorteners as shortener}
 					<ShortenerCard
 						{shortener}
 						project={data.project}
@@ -193,6 +135,67 @@
 				{/each}
 			</div>
 		</ScrollArea>
+		<div class="flex items-center justify-between border-t p-4">
+			<Select.Root
+				name="page_size"
+				type="single"
+				value={perPage.toString()}
+				onValueChange={(value) => {
+					perPage = parseInt(value)
+					pageNumber = 1
+				}}>
+				<Select.Trigger class="w-[180px]">
+					{perPage}
+				</Select.Trigger>
+				<Select.Content>
+					<Select.Group>
+						<Select.GroupHeading>Page Size</Select.GroupHeading>
+						{#each [12, 24, 48, 96] as pageSize}
+							<Select.Item value={pageSize.toString()}>
+								{pageSize}
+							</Select.Item>
+						{/each}
+					</Select.Group>
+				</Select.Content>
+			</Select.Root>
+			<Pagination.Root
+				class="items-end"
+				count={result.pagination.total}
+				{perPage}
+				bind:page={pageNumber}>
+				{#snippet children({ pages, currentPage })}
+					<Pagination.Content>
+						<Pagination.Item>
+							<Pagination.PrevButton>
+								<ChevronLeft class="h-4 w-4" />
+								<span class="hidden sm:block">Previous</span>
+							</Pagination.PrevButton>
+						</Pagination.Item>
+						{#each pages as page (page.key)}
+							{#if page.type === 'ellipsis'}
+								<Pagination.Item>
+									<Pagination.Ellipsis />
+								</Pagination.Item>
+							{:else}
+								<Pagination.Item>
+									<Pagination.Link
+										{page}
+										isActive={currentPage === page.value}>
+										{page.value}
+									</Pagination.Link>
+								</Pagination.Item>
+							{/if}
+						{/each}
+						<Pagination.Item>
+							<Pagination.NextButton>
+								<span class="hidden sm:block">Next</span>
+								<ChevronRight class="h-4 w-4" />
+							</Pagination.NextButton>
+						</Pagination.Item>
+					</Pagination.Content>
+				{/snippet}
+			</Pagination.Root>
+		</div>
 	{:else}
 		<div class="flex flex-grow px-4 py-4 md:px-10">
 			<div
@@ -216,14 +219,6 @@
 			</div>
 		</div>
 	{/if}
-{/await}
-
-{#await data.pagination then pagination}
-	<CustomPaginationBar
-		perPage={data.perPage}
-		page={data.page}
-		total={pagination[0].total}
-		path={'/dashboard/projects/' + data.selectedProject.uuid} />
 {/await}
 
 <Dialog.Root

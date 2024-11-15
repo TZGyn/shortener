@@ -2,10 +2,13 @@
 	import * as Select from '$lib/components/ui/select'
 	import * as Pagination from '$lib/components/ui/pagination'
 
-	export let perPage: number
-	export let page: number
-	export let total: number
-	export let path: string
+	let {
+		page,
+		path,
+		perPage,
+		total,
+	}: { perPage: number; page: number; total: number; path: string } =
+		$props()
 
 	const updateSearchParam = (
 		params: { name: string; value: any }[],

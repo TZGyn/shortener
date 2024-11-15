@@ -13,7 +13,7 @@
 
 	let { data } = $props()
 
-	let cancelPlanDialogOpen = false
+	let cancelPlanDialogOpen = $state(false)
 
 	const cancelSubscriptionForm = superForm(
 		data.cancel_subscription_form,
