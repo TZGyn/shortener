@@ -1,8 +1,20 @@
 <script lang="ts">
 	import ThemeToggle from '$lib/components/theme-toggle.svelte'
 	import Form from './(components)/form.svelte'
+	import { Button } from '$lib/components/ui/button'
+	import { LoaderIcon } from 'lucide-svelte'
+	import Google from '$lib/components/icons/google.svelte'
 
 	let { data } = $props()
+
+	let isLoading = $state(false)
+
+	const loginGoogle = async () => {
+		// isLoading = true
+		// await fetch('/login/google')
+		// isLoading = false
+		window.location.href = '/login/google'
+	}
 </script>
 
 <svelte:head>
@@ -30,6 +42,24 @@
 				<p class="text-muted-foreground text-sm">
 					Enter your email below to create your account
 				</p>
+			</div>
+			<Button variant="outline" onclick={loginGoogle}>
+				{#if isLoading}
+					<LoaderIcon class="mr-2 h-4 w-4 animate-spin" />
+				{:else}
+					<Google class="mr-2 h-4 w-4" />
+				{/if}
+				Signup with Google
+			</Button>
+			<div class="relative">
+				<div class="absolute inset-0 flex items-center">
+					<span class="w-full border-t" />
+				</div>
+				<div class="relative flex justify-center text-xs uppercase">
+					<span class="bg-background text-muted-foreground px-2">
+						Or continue with
+					</span>
+				</div>
 			</div>
 			<Form data={data.form} />
 			<p class="text-muted-foreground px-8 text-center text-sm">

@@ -32,23 +32,27 @@
 
 <form method="POST" use:enhance class="flex flex-col gap-4">
 	<Form.Field {form} name="email" class="flex flex-col gap-2">
-		<Form.Control let:attrs>
-			<Form.Label>Email</Form.Label>
-			<Input
-				{...attrs}
-				bind:value={$formData.email}
-				placeholder="name@example.com" />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Email</Form.Label>
+				<Input
+					{...props}
+					bind:value={$formData.email}
+					placeholder="name@example.com" />
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
 	<Form.Field {form} name="password" class="flex flex-col gap-2">
-		<Form.Control let:attrs>
-			<Form.Label>Password</Form.Label>
-			<Input
-				{...attrs}
-				type="password"
-				bind:value={$formData.password}
-				placeholder="••••••••" />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Password</Form.Label>
+				<Input
+					{...props}
+					type="password"
+					bind:value={$formData.password}
+					placeholder="••••••••" />
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
