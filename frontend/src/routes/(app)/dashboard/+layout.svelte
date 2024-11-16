@@ -15,6 +15,9 @@
 		Settings,
 		UserIcon,
 	} from 'lucide-svelte'
+	import AppSidebar from '$lib/components/app-sidebar.svelte'
+	import { Separator } from '$lib/components/ui/separator/index.js'
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js'
 
 	import { goto } from '$app/navigation'
 	import { Loader2, User } from 'lucide-svelte'
@@ -35,174 +38,53 @@
 	}
 
 	let { data, children } = $props()
-
-	let value = $state<string>(
-		($page.data.project?.id as string) || 'none',
-	)
-
-	const triggerContent = $derived(
-		data.projects.find((f) => f.id === value)?.name ?? 'None',
-	)
-
-	const routes = [
-		{
-			href: '/dashboard',
-			name: 'Home',
-			match: (path: string) => path === '/dashboard',
-			icon: Home,
-		},
-		{
-			href: '/dashboard/links',
-			name: 'Links',
-			match: (path: string) => path.startsWith('/dashboard/links'),
-			icon: Link,
-		},
-		{
-			href: '/dashboard/projects',
-			name: 'Projects',
-			match: (path: string) => path.startsWith('/dashboard/projects'),
-			icon: Blocks,
-		},
-		{
-			href: '/dashboard/billing',
-			name: 'Billing',
-			match: (path: string) => path.startsWith('/dashboard/billing'),
-			icon: CreditCardIcon,
-		},
-		{
-			href: '/dashboard/settings/account',
-			name: 'Settings',
-			match: (path: string) => path.startsWith('/dashboard/settings'),
-			icon: Settings,
-		},
-	] as const
 </script>
 
-<div
-	class="max-w-screen flex h-screen max-h-screen w-screen overflow-hidden">
-	<div class="bg-muted/40 flex max-w-[300px] flex-col border-r">
-		<div
-			class="flex h-[60px] max-h-[60px] min-h-[60px] w-full items-center justify-center gap-4 border-b px-2 py-2 lg:px-4">
-			<DropdownMenu.Root>
-				<DropdownMenu.Trigger>
-					<Avatar.Root>
-						<Avatar.Image src="" alt="@shadcn" />
-						<Avatar.Fallback><User /></Avatar.Fallback>
-					</Avatar.Root>
-				</DropdownMenu.Trigger>
-				<DropdownMenu.Content>
-					<DropdownMenu.Group>
-						<DropdownMenu.Label>{data.user.email}</DropdownMenu.Label>
-						<DropdownMenu.Separator />
-						<DropdownMenu.Item
-							onclick={() => {
-								goto('/dashboard/settings')
-							}}>
-							Settings
-						</DropdownMenu.Item>
-						<DropdownMenu.Separator />
-						<DropdownMenu.Item
-							onclick={() => (dialogOpen = true)}
-							class="text-destructive data-[highlighted]:bg-destructive">
-							Log Out
-						</DropdownMenu.Item>
-					</DropdownMenu.Group>
-				</DropdownMenu.Content>
-			</DropdownMenu.Root>
+<Sidebar.Provider>
+	<AppSidebar user={data.user} />
+	<Sidebar.Inset>
+		<header
+			class="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+			<Sidebar.Trigger class="-ml-1" />
+			<Separator orientation="vertical" class="mr-2 h-4" />
+			<Breadcrumb.Root>
+				<Breadcrumb.List>
+					{#if $page.data.breadcrumbs}
+						{#each $page.data.breadcrumbs as breadcrumb, index}
+							{#if index == $page.data.breadcrumbs.length - 1}
+								<Breadcrumb.Item>
+									<Breadcrumb.Page>
+										{breadcrumb.name}
+									</Breadcrumb.Page>
+								</Breadcrumb.Item>
+							{:else}
+								<Breadcrumb.Item class="hidden md:block">
+									<Breadcrumb.Link href={breadcrumb.path}>
+										{breadcrumb.name}
+									</Breadcrumb.Link>
+								</Breadcrumb.Item>
+								<Breadcrumb.Separator class="hidden md:block" />
+							{/if}
+						{/each}
+					{:else}
+						<Breadcrumb.Item>
+							<Breadcrumb.Link href={'/dashboard'}>
+								Home
+							</Breadcrumb.Link>
+						</Breadcrumb.Item>
+					{/if}
+				</Breadcrumb.List>
+			</Breadcrumb.Root>
+		</header>
 
-			<div class="hidden w-full lg:flex">
-				<Breadcrumb.Root>
-					<Breadcrumb.List>
-						{#if $page.data.breadcrumbs}
-							{#each $page.data.breadcrumbs as breadcrumb, index}
-								{#if index == $page.data.breadcrumbs.length - 1}
-									<Breadcrumb.Item>
-										<Breadcrumb.Page href={breadcrumb.path}>
-											{breadcrumb.name}
-										</Breadcrumb.Page>
-									</Breadcrumb.Item>
-								{:else}
-									<Breadcrumb.Item>
-										<Breadcrumb.Link href={breadcrumb.path}>
-											{breadcrumb.name}
-										</Breadcrumb.Link>
-									</Breadcrumb.Item>
-								{/if}
-								{#if index != $page.data.breadcrumbs.length - 1}
-									<Breadcrumb.Separator />
-								{/if}
-							{/each}
-						{:else}
-							<Breadcrumb.Item>
-								<Breadcrumb.Link href={'/'}>Home</Breadcrumb.Link>
-							</Breadcrumb.Item>
-						{/if}
-					</Breadcrumb.List>
-				</Breadcrumb.Root>
+		<div
+			class="flex max-h-[calc(100vh-64px)] flex-grow overflow-hidden">
+			<div class="flex h-auto w-full flex-col">
+				{@render children()}
 			</div>
 		</div>
-
-		<div
-			class={'flex h-full flex-col justify-between lg:min-w-[300px]'}>
-			<div>
-				<div class="flex flex-col gap-4 p-2 lg:p-4">
-					<!-- <Select.Root
-						type="single"
-						name={'selected_project'}
-						bind:value>
-						<Select.Trigger class="hidden lg:flex">
-							{triggerContent}
-						</Select.Trigger>
-						<Select.Content>
-							<Select.Group>
-								<Select.GroupHeading>Projects</Select.GroupHeading>
-								<Select.Separator />
-								<a href={`/dashboard/links`}>
-									<Select.Item value={'none'} label={'None'}>
-										None
-									</Select.Item>
-								</a>
-								<Select.Separator />
-								{#each data.projects as project}
-									<a href={`/dashboard/projects/${project.uuid}`}>
-										<Select.Item
-											value={project.id}
-											label={project.name}>
-											{project.name}
-										</Select.Item>
-									</a>
-								{/each}
-							</Select.Group>
-						</Select.Content>
-					</Select.Root> -->
-					{#each routes as route}
-						<Button
-							variant={route.match($page.url.pathname)
-								? 'secondary'
-								: 'ghost'}
-							href={route.href}
-							class="hover:bg-secondary/50 flex items-center justify-start gap-4 text-base">
-							<route.icon class="h-4 w-4" />
-							<div class="hidden lg:flex">
-								{route.name}
-							</div>
-						</Button>
-					{/each}
-				</div>
-			</div>
-		</div>
-		<div
-			class="flex items-center justify-center border-t px-2 py-4 lg:justify-end lg:px-4">
-			<ThemeToggle />
-		</div>
-	</div>
-
-	<div class="flex flex-grow overflow-hidden">
-		<div class="flex h-auto w-full flex-col">
-			{@render children()}
-		</div>
-	</div>
-</div>
+	</Sidebar.Inset>
+</Sidebar.Provider>
 
 <Dialog.Root bind:open={dialogOpen}>
 	<Dialog.Content>

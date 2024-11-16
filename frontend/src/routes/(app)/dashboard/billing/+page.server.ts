@@ -6,7 +6,11 @@ import { zod } from 'sveltekit-superforms/adapters'
 import { cancelSubscriptionSchema } from './schema'
 
 export const load = (async () => {
+	const breadcrumbs = [
+		{ name: 'Billing', path: '/dashboard/billing' },
+	]
 	return {
+		breadcrumbs,
 		cancel_subscription_form: await superValidate(
 			zod(cancelSubscriptionSchema),
 		),
