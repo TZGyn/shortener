@@ -187,7 +187,10 @@ export const load = (async (event) => {
 
 	const breadcrumbs = [
 		...parentBreadcrumbs,
-		{ name: shortener.link, path: '/dashboard/' + shortener.id },
+		{
+			name: shortener.link,
+			path: '/dashboard/links/' + shortener.id,
+		},
 	]
 
 	return {
