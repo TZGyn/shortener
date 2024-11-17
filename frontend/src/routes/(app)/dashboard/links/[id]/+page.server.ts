@@ -183,6 +183,13 @@ export const load = (async (event) => {
 
 	const page_title = 'Shortener | ' + shortener.link
 
+	const { breadcrumbs: parentBreadcrumbs } = await event.parent()
+
+	const breadcrumbs = [
+		...parentBreadcrumbs,
+		{ name: shortener.link, path: '/dashboard/' + shortener.id },
+	]
+
 	return {
 		shortener,
 		visitor,
@@ -196,5 +203,6 @@ export const load = (async (event) => {
 		visitorByReferer,
 		last10Visitors,
 		page_title,
+		breadcrumbs,
 	}
 }) satisfies PageServerLoad

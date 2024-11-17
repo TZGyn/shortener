@@ -2,6 +2,7 @@
 	import * as Table from '$lib/components/ui/table'
 	import * as Card from '$lib/components/ui/card'
 	import * as Tabs from '$lib/components/ui/tabs'
+	import { ScrollArea } from '$lib/components/ui/scroll-area'
 	import type { ApexOptions } from 'apexcharts'
 	import { mode } from 'mode-watcher'
 	import { onMount } from 'svelte'
@@ -107,12 +108,7 @@
 	})
 </script>
 
-<div
-	class="flex max-h-[80px] items-center justify-between border-b p-4">
-	<div class="text-xl font-bold">{data.shortener.link}</div>
-</div>
-
-<div class="overflow-y-scroll">
+<ScrollArea>
 	<div class="flex p-4">
 		<Card.Root class="w-[400px]">
 			<Card.Header>
@@ -515,4 +511,4 @@
 			</Card.Content>
 		</Card.Root>
 	</div>
-</div>
+</ScrollArea>
