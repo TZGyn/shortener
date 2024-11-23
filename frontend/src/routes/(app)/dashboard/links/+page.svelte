@@ -332,48 +332,44 @@
 	{/if}
 {/await}
 
-{#if $page.state.linkQR}
-	<Dialog.Root
-		open
-		onOpenChange={(open) => {
-			if (!open) {
-				history.back()
-			}
-		}}>
-		<Dialog.Content class="sm:max-w-[425px]">
-			<Dialog.Header>
-				<Dialog.Title>Shortener QR</Dialog.Title>
-				<Dialog.Description>
-					Use this QR code to share the shortener.
-				</Dialog.Description>
-			</Dialog.Header>
-			<ScrollArea class="max-h-[calc(100vh-200px)]">
-				<LinkQRPage data={$page.state.linkQR} shallowRouting />
-			</ScrollArea>
-		</Dialog.Content>
-	</Dialog.Root>
-{/if}
+<Dialog.Root
+	open={!!$page.state.linkQR}
+	onOpenChange={(open) => {
+		if (!open) {
+			history.back()
+		}
+	}}>
+	<Dialog.Content class="sm:max-w-[425px]">
+		<Dialog.Header>
+			<Dialog.Title>Shortener QR</Dialog.Title>
+			<Dialog.Description>
+				Use this QR code to share the shortener.
+			</Dialog.Description>
+		</Dialog.Header>
+		<ScrollArea class="max-h-[calc(100vh-200px)]">
+			<LinkQRPage data={$page.state.linkQR} shallowRouting />
+		</ScrollArea>
+	</Dialog.Content>
+</Dialog.Root>
 
-{#if $page.state.projectLinkQR}
-	<Dialog.Root
-		open
-		onOpenChange={(open) => {
-			if (!open) {
-				history.back()
-			}
-		}}>
-		<Dialog.Content class="sm:max-w-[425px]">
-			<Dialog.Header>
-				<Dialog.Title>Shortener QR</Dialog.Title>
-				<Dialog.Description>
-					Use this QR code to share the shortener.
-				</Dialog.Description>
-			</Dialog.Header>
-			<ScrollArea class="max-h-[calc(100vh-200px)]">
-				<ProjectLinkQRPage
-					data={$page.state.projectLinkQR}
-					shallowRouting />
-			</ScrollArea>
-		</Dialog.Content>
-	</Dialog.Root>
-{/if}
+<Dialog.Root
+	open={!!$page.state.projectLinkQR}
+	onOpenChange={(open) => {
+		if (!open) {
+			history.back()
+		}
+	}}>
+	<Dialog.Content class="sm:max-w-[425px]">
+		<Dialog.Header>
+			<Dialog.Title>Shortener QR</Dialog.Title>
+			<Dialog.Description>
+				Use this QR code to share the shortener.
+			</Dialog.Description>
+		</Dialog.Header>
+		<ScrollArea class="max-h-[calc(100vh-200px)]">
+			<ProjectLinkQRPage
+				data={$page.state.projectLinkQR}
+				shallowRouting />
+		</ScrollArea>
+	</Dialog.Content>
+</Dialog.Root>
