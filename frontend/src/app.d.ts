@@ -107,6 +107,57 @@ declare global {
 					}
 				>
 			}
+			newEditProjectLink: {
+				project: Project | undefined
+				user: User
+				breadcrumbs: {
+					name: string
+					path: string
+				}[]
+				page_title: string
+				projects: Project[]
+				activeProject: Project | undefined
+				activeProjectId: string
+				activeProjectName: string
+				shortener_url: string
+				shortener: Shortener
+				form: SuperValidated<
+					{
+						link: string
+						ios: boolean
+						ios_link: string
+						android: boolean
+						android_link: string
+						active: boolean
+					},
+					any,
+					{
+						link: string
+						ios: boolean
+						ios_link: string
+						android: boolean
+						android_link: string
+						active: boolean
+					}
+				>
+			}
+			newProjectLinkQR: {
+				user: User
+				breadcrumbs: {
+					name: string
+					path: string
+				}[]
+				page_title: string
+				shortener_url: string
+				shortener: {
+					code: string
+				}
+				project: Project | undefined
+				projects: Project[]
+				activeProject: Project | undefined
+				activeProjectId: string
+				activeProjectName: string
+			}
 		}
 	}
 	// prototype functions are declared in ./lib/utils

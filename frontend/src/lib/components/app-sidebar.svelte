@@ -7,8 +7,9 @@
 <script lang="ts">
 	import NavMain from '$lib/components/nav-main.svelte'
 	import NavUser from '$lib/components/nav-user.svelte'
-	import TeamSwitcher from '$lib/components/team-switcher.svelte'
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js'
+	import { useSidebar } from '$lib/components/ui/sidebar/index.js'
+	import { Button } from '$lib/components/ui/button/index.js'
 	import type { ComponentProps } from 'svelte'
 	import {
 		BlocksIcon,
@@ -16,6 +17,8 @@
 		HomeIcon,
 		LinkIcon,
 		SettingsIcon,
+		StarIcon,
+		SparkleIcon,
 	} from 'lucide-svelte'
 	import { page } from '$app/stores'
 	import type { User } from 'lucia'
@@ -82,6 +85,8 @@
 			},
 		],
 	})
+
+	const sidebar = useSidebar()
 </script>
 
 <Sidebar.Root bind:ref {collapsible} {...restProps}>
@@ -92,6 +97,13 @@
 	<Sidebar.Content>
 		<NavMain items={data.navMain} />
 	</Sidebar.Content>
-	<Sidebar.Footer></Sidebar.Footer>
+	<Sidebar.Footer>
+		{#if sidebar.open}
+			<Button href="/dashboard-new" variant="outline">
+				<SparkleIcon class="text-brand" />
+				Try New Dashboard
+			</Button>
+		{/if}
+	</Sidebar.Footer>
 	<Sidebar.Rail />
 </Sidebar.Root>

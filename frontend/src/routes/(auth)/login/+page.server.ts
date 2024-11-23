@@ -32,6 +32,10 @@ export const actions: Actions = {
 
 		const user = users[0]
 
+		if (!user) {
+			return setError(form, 'email', 'Invalid credentials')
+		}
+
 		if (user.googleId) {
 			return setError(
 				form,
