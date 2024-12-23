@@ -18,6 +18,7 @@ Made with [SvelteKit](https://kit.svelte.dev/) and [shadcn-svelte](https://www.s
 ![links_preview](./docs/screenshot_links.png)
 ![qr_preview](./docs/screenshot_qr.png)
 ![analytics_preview](./docs/screenshot_analytics.png)
+![file_upload](./docs/file-upload.png)
 
 ### One Click Deploy on Railway
 
@@ -28,6 +29,7 @@ Made with [SvelteKit](https://kit.svelte.dev/) and [shadcn-svelte](https://www.s
 ### Frontend
 
 ```bash
+# copy .env.example to .env and fill in the environments
 bun install
 npm run dev
 ```
@@ -35,6 +37,7 @@ npm run dev
 ### Redirect
 
 ```bash
+# copy .env.example to .env and fill in the environments
 go mod download
 go run main.go # or air run main.go
 ```
@@ -57,6 +60,10 @@ go build
 ```
 
 ## Breaking Changes (For builds before this date)
+
+### 24 December 2024
+
+New file upload feature requires a tigris/s3 bucket with webhook setup in order to work properly
 
 ### 29 August 2024
 
