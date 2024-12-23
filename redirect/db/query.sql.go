@@ -57,7 +57,7 @@ func (q *Queries) CreateVisitor(ctx context.Context, arg CreateVisitorParams) er
 }
 
 const getShortener = `-- name: GetShortener :one
-SELECT shortener.id, link, code, created_at, shortener.user_id, project_id, active, ios, ios_link, android, android_link, project.id, uuid, name, project.user_id, qr_background, qr_foreground, custom_domain, domain_status, enable_custom_domain, custom_ip, custom_domain_id, qr_corner_square_style, qr_dot_style, qr_image_base64
+SELECT shortener.id, link, code, created_at, shortener.user_id, project_id, active, ios, ios_link, android, android_link, is_file_upload, file_path, project.id, uuid, name, project.user_id, qr_background, qr_foreground, custom_domain, domain_status, enable_custom_domain, custom_ip, custom_domain_id, qr_corner_square_style, qr_dot_style, qr_image_base64
 FROM shortener
 	LEFT JOIN project ON project.id = shortener.project_id
 WHERE code = $1
@@ -80,6 +80,8 @@ type GetShortenerRow struct {
 	IosLink             pgtype.Text
 	Android             bool
 	AndroidLink         pgtype.Text
+	IsFileUpload        bool
+	FilePath            pgtype.Text
 	ID_2                pgtype.Text
 	Uuid                pgtype.UUID
 	Name                pgtype.Text
@@ -111,6 +113,8 @@ func (q *Queries) GetShortener(ctx context.Context, code string) (GetShortenerRo
 		&i.IosLink,
 		&i.Android,
 		&i.AndroidLink,
+		&i.IsFileUpload,
+		&i.FilePath,
 		&i.ID_2,
 		&i.Uuid,
 		&i.Name,
@@ -130,7 +134,7 @@ func (q *Queries) GetShortener(ctx context.Context, code string) (GetShortenerRo
 }
 
 const getShortenerWithDomain = `-- name: GetShortenerWithDomain :one
-SELECT shortener.id, shortener.link, shortener.code, shortener.created_at, shortener.user_id, shortener.project_id, shortener.active, shortener.ios, shortener.ios_link, shortener.android, shortener.android_link,
+SELECT shortener.id, shortener.link, shortener.code, shortener.created_at, shortener.user_id, shortener.project_id, shortener.active, shortener.ios, shortener.ios_link, shortener.android, shortener.android_link, shortener.is_file_upload, shortener.file_path,
 	project.custom_domain as domain
 FROM shortener
 	LEFT JOIN project ON project.id = shortener.project_id
@@ -146,18 +150,20 @@ type GetShortenerWithDomainParams struct {
 }
 
 type GetShortenerWithDomainRow struct {
-	ID          string
-	Link        string
-	Code        string
-	CreatedAt   pgtype.Timestamp
-	UserID      string
-	ProjectID   pgtype.Text
-	Active      bool
-	Ios         bool
-	IosLink     pgtype.Text
-	Android     bool
-	AndroidLink pgtype.Text
-	Domain      pgtype.Text
+	ID           string
+	Link         string
+	Code         string
+	CreatedAt    pgtype.Timestamp
+	UserID       string
+	ProjectID    pgtype.Text
+	Active       bool
+	Ios          bool
+	IosLink      pgtype.Text
+	Android      bool
+	AndroidLink  pgtype.Text
+	IsFileUpload bool
+	FilePath     pgtype.Text
+	Domain       pgtype.Text
 }
 
 func (q *Queries) GetShortenerWithDomain(ctx context.Context, arg GetShortenerWithDomainParams) (GetShortenerWithDomainRow, error) {
@@ -175,13 +181,15 @@ func (q *Queries) GetShortenerWithDomain(ctx context.Context, arg GetShortenerWi
 		&i.IosLink,
 		&i.Android,
 		&i.AndroidLink,
+		&i.IsFileUpload,
+		&i.FilePath,
 		&i.Domain,
 	)
 	return i, err
 }
 
 const listShorteners = `-- name: ListShorteners :many
-SELECT id, link, code, created_at, user_id, project_id, active, ios, ios_link, android, android_link
+SELECT id, link, code, created_at, user_id, project_id, active, ios, ios_link, android, android_link, is_file_upload, file_path
 FROM shortener
 `
 
@@ -206,6 +214,8 @@ func (q *Queries) ListShorteners(ctx context.Context) ([]Shortener, error) {
 			&i.IosLink,
 			&i.Android,
 			&i.AndroidLink,
+			&i.IsFileUpload,
+			&i.FilePath,
 		); err != nil {
 			return nil, err
 		}

@@ -21,12 +21,7 @@
 		</a>
 		<div class="grid grid-cols-4 items-center">
 			<div></div>
-			<a
-				href="#features"
-				on:click|preventDefault={scrollIntoView}
-				class="text-center">
-				Features
-			</a>
+			<a href="/features" class="text-center">Features</a>
 			<a href="/pricing" class="text-center">Pricing</a>
 			<div></div>
 		</div>
@@ -46,7 +41,7 @@
 	</header>
 	<slot />
 	<footer
-		class="flex w-full max-w-6xl flex-col items-center justify-center gap-4 px-8 pb-8 pt-64">
+		class="flex w-full max-w-6xl flex-col items-center justify-center gap-4 px-8 pb-4 pt-64">
 		<div>Kon.sh - Url Shortener</div>
 		<Separator />
 		<nav class="w-full">

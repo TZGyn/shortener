@@ -83,6 +83,19 @@ export const DELETE: RequestHandler = async (event) => {
 
 	const user = event.locals.user
 
+	const shortener = await db.query.shortener.findFirst({
+		where: (shortener, { and, eq }) =>
+			and(eq(shortener.id, id.data), eq(shortener.userId, user.id)),
+	})
+
+	if (shortener?.is_file_upload) {
+		return new Response(
+			JSON.stringify({
+				success: false,
+			}),
+		)
+	}
+
 	await db
 		.delete(shortenerSchema)
 		.where(
@@ -91,6 +104,7 @@ export const DELETE: RequestHandler = async (event) => {
 				eq(shortenerSchema.userId, user.id),
 			),
 		)
+
 	return new Response(
 		JSON.stringify({
 			success: true,

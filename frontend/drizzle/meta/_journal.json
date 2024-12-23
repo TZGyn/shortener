@@ -197,6 +197,13 @@
       "when": 1726769139213,
       "tag": "0027_funny_wasp",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1734847628427,
+      "tag": "0028_hard_red_shift",
+      "breakpoints": true
     }
   ]
 }

@@ -97,7 +97,7 @@
 					<DropdownMenu.Separator />
 				{/if}
 				<DropdownMenu.Group>
-					<a href="/dashboard/settings/account">
+					<a href="/dashboard/account/settings">
 						<DropdownMenu.Item>
 							<BadgeCheck />
 							Account

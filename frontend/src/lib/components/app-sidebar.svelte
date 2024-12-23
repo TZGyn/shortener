@@ -99,7 +99,7 @@
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		{#if sidebar.open}
-			<Button href="/dashboard-new" variant="outline">
+			<Button href="/dashboard" variant="outline">
 				<SparkleIcon class="text-brand" />
 				Try New Dashboard
 			</Button>

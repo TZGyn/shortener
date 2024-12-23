@@ -5,13 +5,8 @@
 		QrCodeIcon,
 		ChartAreaIcon,
 		ExternalLinkIcon,
-	} from 'lucide-svelte'
-
-	import {
-		Calendar,
-		TextSearch,
-		ReceiptText,
-		CodeXml,
+		FileImageIcon,
+		StarsIcon,
 	} from 'lucide-svelte'
 
 	import BentoGrid from './(components)/BentoGrid.svelte'
@@ -40,7 +35,15 @@
 			name: 'Custom Domain',
 			description: 'Use your own domain for branding purposes',
 			href: '/features/custom-domain',
-			class: 'col-span-3 lg:col-span-3',
+			class: 'col-span-3 lg:col-span-2',
+		},
+		{
+			Icon: FileImageIcon,
+			name: 'File Upload',
+			description:
+				'Upload files and we will generate a shortener for it',
+			href: '/features/file-upload',
+			class: 'col-span-3 lg:col-span-1',
 		},
 	]
 </script>
@@ -155,6 +158,10 @@
 								<span class="flex">Everything in free</span>
 							</li>
 							<li class="flex items-center gap-3">
+								<StarsIcon class="text-brand" />
+								<span class="flex">File Upload (100 GB)</span>
+							</li>
+							<li class="flex items-center gap-3">
 								<Check class="text-brand" />
 								<span class="flex">5 custom domains</span>
 							</li>
@@ -194,6 +201,10 @@
 							<li class="flex items-center gap-3">
 								<Check class="text-brand" />
 								<span class="flex">Unlimited Projects</span>
+							</li>
+							<li class="flex items-center gap-3">
+								<StarsIcon class="text-brand" />
+								<span class="flex">Unlimited Upload</span>
 							</li>
 							<li class="flex items-center gap-3">
 								<Check class="text-brand" />

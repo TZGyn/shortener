@@ -15,6 +15,18 @@ type EmailVerificationToken struct {
 	ExpiresAt pgtype.Timestamptz
 }
 
+type File struct {
+	ID             string
+	UserID         string
+	ProjectID      pgtype.Text
+	Key            string
+	Name           string
+	Size           int64
+	Etag           string
+	CreatedAtEpoch int64
+	UpdatedAtEpoch int64
+}
+
 type Project struct {
 	ID                  string
 	Uuid                pgtype.UUID
@@ -39,35 +51,38 @@ type Session struct {
 }
 
 type Shortener struct {
-	ID          string
-	Link        string
-	Code        string
-	CreatedAt   pgtype.Timestamp
-	UserID      string
-	ProjectID   pgtype.Text
-	Active      bool
-	Ios         bool
-	IosLink     pgtype.Text
-	Android     bool
-	AndroidLink pgtype.Text
+	ID           string
+	Link         string
+	Code         string
+	CreatedAt    pgtype.Timestamp
+	UserID       string
+	ProjectID    pgtype.Text
+	Active       bool
+	Ios          bool
+	IosLink      pgtype.Text
+	Android      bool
+	AndroidLink  pgtype.Text
+	IsFileUpload bool
+	FilePath     pgtype.Text
 }
 
 type User struct {
-	ID                  string
-	Uuid                pgtype.UUID
-	Email               string
-	Username            pgtype.Text
-	Password            pgtype.Text
-	CreatedAt           pgtype.Timestamp
-	EmailVerified       bool
-	GoogleID            pgtype.Text
-	Plan                string
-	StripeCustomerID    pgtype.Text
-	QrCornerSquareStyle string
-	QrDotStyle          string
-	QrBackground        string
-	QrForeground        string
-	QrImageBase64       pgtype.Text
+	ID                     string
+	Uuid                   pgtype.UUID
+	Email                  string
+	Username               pgtype.Text
+	Password               pgtype.Text
+	CreatedAt              pgtype.Timestamp
+	EmailVerified          bool
+	GoogleID               pgtype.Text
+	Plan                   string
+	StripeCustomerID       pgtype.Text
+	QrCornerSquareStyle    string
+	QrDotStyle             string
+	QrBackground           string
+	QrForeground           string
+	QrImageBase64          pgtype.Text
+	FileStorageUsageInByte int64
 }
 
 type Visitor struct {

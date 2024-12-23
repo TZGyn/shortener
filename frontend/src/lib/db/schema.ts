@@ -6,6 +6,9 @@ import {
 	uuid,
 	boolean,
 	text,
+	integer,
+	numeric,
+	bigint,
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
@@ -40,6 +43,11 @@ export const user = pgTable('user', {
 		.notNull()
 		.default('square'),
 	qrImageBase64: text('qr_image_base64'),
+	fileStorageUsageInByte: bigint('file_storage_usage_in_byte', {
+		mode: 'number',
+	})
+		.notNull()
+		.default(0),
 })
 
 export const shortener = pgTable('shortener', {
@@ -56,6 +64,24 @@ export const shortener = pgTable('shortener', {
 	userId: text('user_id').notNull(),
 	active: boolean('active').notNull().default(true),
 	projectId: text('project_id'),
+	is_file_upload: boolean('is_file_upload').notNull().default(false),
+	file_path: text('file_path'),
+})
+
+export const file = pgTable('file', {
+	id: text('id').primaryKey(),
+	userId: text('user_id').notNull(),
+	projectId: text('project_id'),
+	key: text('key').notNull(),
+	name: text('name').notNull(),
+	size: bigint('size', {
+		mode: 'number',
+	})
+		.notNull()
+		.default(0),
+	eTag: text('etag').notNull(),
+	createdAt: bigint('created_at_epoch', { mode: 'number' }).notNull(),
+	updatedAt: bigint('updated_at_epoch', { mode: 'number' }).notNull(),
 })
 
 export const project = pgTable('project', {
@@ -178,5 +204,12 @@ export const sessionRelations = relations(session, ({ one }) => ({
 	user: one(user, {
 		fields: [session.userId],
 		references: [user.id],
+	}),
+}))
+
+export const fileRelations = relations(file, ({ one }) => ({
+	shortener: one(shortener, {
+		fields: [file.key],
+		references: [shortener.file_path],
 	}),
 }))

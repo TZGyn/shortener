@@ -54,6 +54,7 @@ export const GET: RequestHandler = async (event) => {
 		.where(
 			and(
 				eq(shortener.userId, user.id),
+				eq(shortener.is_file_upload, false),
 				project_id && project_id !== 'personal'
 					? eq(shortener.projectId, project_id)
 					: isNull(shortener.projectId),

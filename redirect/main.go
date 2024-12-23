@@ -14,6 +14,10 @@ import (
 
 	"math/rand"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	v4 "github.com/aws/aws-sdk-go-v2/aws/signer/v4"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -26,6 +30,31 @@ import (
 	"github.com/robfig/cron/v3"
 	"github.com/ua-parser/uap-go/uaparser"
 )
+
+// Client encapsulates the S3 SDK presign client and provides methods to presign requests.
+type Client struct {
+	PresignClient *s3.PresignClient
+}
+
+// GetObject makes a presigned request that can be used to get an object from a bucket.
+func (p *Client) GetObject(
+	ctx context.Context,
+	bucket string,
+	key string,
+	expiry time.Duration,
+) (*v4.PresignedHTTPRequest, error) {
+	request, err := p.PresignClient.PresignGetObject(ctx, &s3.GetObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(key),
+	}, func(opts *s3.PresignOptions) {
+		opts.Expires = expiry
+	})
+	if err != nil {
+		log.Printf("Couldn't get a presigned request to get %v:%v. Here's why: %v\n",
+			bucket, key, err)
+	}
+	return request, err
+}
 
 func main() {
 	err := godotenv.Load()
@@ -48,6 +77,8 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+	} else {
+		fmt.Println("GeoLite2 DB Found, Skipping Download...")
 	}
 
 	geodb, err := geoip2.Open("./data/GeoLite2-City.mmdb")
@@ -69,14 +100,14 @@ func main() {
 		log.Fatal("DATABASE_URL not found")
 	}
 
-	config, err := pgxpool.ParseConfig(dbUrl)
+	pgconfig, err := pgxpool.ParseConfig(dbUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	config.MinConns = 4
+	pgconfig.MinConns = 4
 
-	conn, err := pgxpool.NewWithConfig(ctx, config)
+	conn, err := pgxpool.NewWithConfig(ctx, pgconfig)
 
 	if err != nil {
 		log.Fatal(err)
@@ -84,6 +115,40 @@ func main() {
 	defer conn.Close()
 
 	fmt.Println("Finished initializing postgres DB and cache")
+
+	fmt.Println("Initializing S3...")
+
+	awsregion := os.Getenv("AWS_REGION")
+	if len(awsregion) == 0 {
+		log.Fatal("AWS_REGION not found")
+	}
+
+	s3endpoint := os.Getenv("AWS_ENDPOINT_URL_S3")
+	if len(s3endpoint) == 0 {
+		log.Fatal("AWS_ENDPOINT_URL_S3 not found")
+	}
+
+	s3bucket := os.Getenv("AWS_BUCKET_NAME")
+	if len(s3bucket) == 0 {
+		log.Fatal("AWS_BUCKET_NAME not found")
+	}
+
+	sdkConfig, err := config.LoadDefaultConfig(context.TODO())
+	if err != nil {
+		log.Printf("Couldn't load default configuration. Here's why: %v\n", err)
+		return
+	}
+
+	svc := s3.NewFromConfig(sdkConfig, func(o *s3.Options) {
+		o.BaseEndpoint = aws.String(s3endpoint)
+		o.Region = awsregion
+	})
+
+	// Presigning a request
+	ps := s3.NewPresignClient(svc)
+	presigner := &Client{PresignClient: ps}
+
+	fmt.Println("Finished initializing S3")
 
 	cache_client := cache.New(1*time.Hour, 5*time.Minute)
 
@@ -135,12 +200,23 @@ func main() {
 			shortenerId = shortener.ID
 
 			iosEnabled = shortener.Ios
-			iosRedirectUrl = shortener.IosLink.String
-
 			androidEnabled = shortener.Android
-			androidRedirectUrl = shortener.AndroidLink.String
 
-			redirecturl = shortener.Link
+			if shortener.IsFileUpload {
+				// Presigned URL to download an object from the bucket
+				presignedGetReq, err := presigner.GetObject(context.TODO(), s3bucket, shortener.FilePath.String, 65*time.Minute)
+				if err != nil {
+					log.Printf("Couldn't get a presigned request to get %s. Here's why: %v\n", shortener.FilePath.String, err)
+					return c.Redirect(invalidUrl)
+				}
+				iosRedirectUrl = presignedGetReq.URL
+				androidRedirectUrl = presignedGetReq.URL
+				redirecturl = presignedGetReq.URL
+			} else {
+				iosRedirectUrl = shortener.IosLink.String
+				androidRedirectUrl = shortener.AndroidLink.String
+				redirecturl = shortener.Link
+			}
 		} else {
 			shortener, err := queries.GetShortenerWithDomain(ctx, db.GetShortenerWithDomainParams{
 				Code:         code,
@@ -152,12 +228,23 @@ func main() {
 			shortenerId = shortener.ID
 
 			iosEnabled = shortener.Ios
-			iosRedirectUrl = shortener.IosLink.String
-
 			androidEnabled = shortener.Android
-			androidRedirectUrl = shortener.AndroidLink.String
 
-			redirecturl = shortener.Link
+			if shortener.IsFileUpload {
+				// Presigned URL to download an object from the bucket
+				presignedGetReq, err := presigner.GetObject(context.TODO(), s3bucket, shortener.FilePath.String, 10*time.Minute)
+				if err != nil {
+					log.Printf("Couldn't get a presigned request to get %s. Here's why: %v\n", shortener.FilePath.String, err)
+					return c.Redirect(invalidUrl)
+				}
+				iosRedirectUrl = presignedGetReq.URL
+				androidRedirectUrl = presignedGetReq.URL
+				redirecturl = presignedGetReq.URL
+			} else {
+				iosRedirectUrl = shortener.IosLink.String
+				androidRedirectUrl = shortener.AndroidLink.String
+				redirecturl = shortener.Link
+			}
 		}
 
 		if len(uastrings) == 0 {

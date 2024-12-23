@@ -40,6 +40,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.705.0",
+		"@aws-sdk/s3-request-presigner": "^3.705.0",
 		"@lucia-auth/adapter-drizzle": "^1.0.7",
 		"@prgm/sveltekit-progress-bar": "^2.0.0",
 		"@stripe/stripe-js": "^4.3.0",
@@ -62,6 +64,7 @@
 		"qr-code-styling": "^1.6.0-rc.1",
 		"resend": "^3.4.0",
 		"stripe": "^16.8.0",
+		"svelte-file-dropzone": "^2.0.9",
 		"svelte-sonner": "^0.3.28",
 		"sveltekit-superforms": "^2.20.0",
 		"tailwind-merge": "^2.5.4",
