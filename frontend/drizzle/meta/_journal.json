@@ -204,6 +204,13 @@
       "when": 1734847628427,
       "tag": "0028_hard_red_shift",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1739092508279,
+      "tag": "0029_chemical_wiccan",
+      "breakpoints": true
     }
   ]
 }

@@ -87,7 +87,9 @@
 				<DropdownMenu.Separator />
 				{#if !user.isPro}
 					<DropdownMenu.Group>
-						<a href="/dashboard/billing/plan/pro">
+						<a
+							href="/dashboard/billing/plan/pro"
+							data-sveltekit-reload>
 							<DropdownMenu.Item>
 								<Sparkles />
 								Upgrade to Pro

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js'
 	import * as Form from '$lib/components/ui/form'
 	import { Button, buttonVariants } from '$lib/components/ui/button'
 	import { Separator } from '$lib/components/ui/separator'
@@ -141,47 +140,60 @@
 						{#if data.user.plan === 'owner'}
 							<Button variant={'brand'} disabled>Owner</Button>
 						{:else if data.user.plan === 'pro'}
-							<Dialog.Root bind:open={cancelPlanDialogOpen}>
-								<Dialog.Trigger
+							{#if data.isPolar}
+								<a
+									href="/api/polar/portal"
+									data-sveltekit-reload
 									class={buttonVariants({ variant: 'destructive' })}>
 									Cancel Plan
-								</Dialog.Trigger>
-								<Dialog.Content class="sm:max-w-[425px]">
-									<Dialog.Header>
-										<Dialog.Title>Cancel plan?</Dialog.Title>
-										<Dialog.Description>
-											Your subscription will still be valid until the
-											next billing
-										</Dialog.Description>
-									</Dialog.Header>
-									<Dialog.Footer>
-										<Button
-											variant={'outline'}
-											onclick={() => (cancelPlanDialogOpen = false)}>
-											Cancel
-										</Button>
-										<form
-											method="POST"
-											use:enhanceCancelSubscription
-											class="flex flex-col gap-6"
-											action="?/cancel_subscription">
-											<Form.Button
-												class="w-fit"
-												variant="destructive"
-												disabled={$submittingCancelSubscription ||
-													!data.user.plan}>
-												{#if $submittingCancelSubscription}
-													<LoaderCircleIcon class="animate-spin" />
-												{/if}
-												Proceed
-											</Form.Button>
-										</form>
-									</Dialog.Footer>
-								</Dialog.Content>
-							</Dialog.Root>
+								</a>
+							{:else}
+								<Dialog.Root bind:open={cancelPlanDialogOpen}>
+									<Dialog.Trigger
+										class={buttonVariants({
+											variant: 'destructive',
+										})}>
+										Cancel Plan
+									</Dialog.Trigger>
+									<Dialog.Content class="sm:max-w-[425px]">
+										<Dialog.Header>
+											<Dialog.Title>Cancel plan?</Dialog.Title>
+											<Dialog.Description>
+												Your subscription will still be valid until
+												the next billing
+											</Dialog.Description>
+										</Dialog.Header>
+										<Dialog.Footer>
+											<Button
+												variant={'outline'}
+												onclick={() =>
+													(cancelPlanDialogOpen = false)}>
+												Cancel
+											</Button>
+											<form
+												method="POST"
+												use:enhanceCancelSubscription
+												class="flex flex-col gap-6"
+												action="?/cancel_subscription">
+												<Form.Button
+													class="w-fit"
+													variant="destructive"
+													disabled={$submittingCancelSubscription ||
+														!data.user.plan}>
+													{#if $submittingCancelSubscription}
+														<LoaderCircleIcon class="animate-spin" />
+													{/if}
+													Proceed
+												</Form.Button>
+											</form>
+										</Dialog.Footer>
+									</Dialog.Content>
+								</Dialog.Root>
+							{/if}
 						{:else}
 							<Button
 								href={'/dashboard/billing/plan/pro'}
+								data-sveltekit-reload
 								variant={'brand'}>
 								Select Plan
 							</Button>

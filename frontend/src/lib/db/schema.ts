@@ -28,6 +28,7 @@ export const user = pgTable('user', {
 		.$type<'free' | 'pro' | 'owner'>()
 		.default('free'),
 	stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
+	polarCustomerId: varchar('polar_customer_id', { length: 255 }),
 	qrBackground: varchar('qr_background', { length: 7 })
 		.notNull()
 		.default('#fff'),

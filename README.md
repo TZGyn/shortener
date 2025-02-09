@@ -61,6 +61,12 @@ go build
 
 ## Breaking Changes (For builds before this date)
 
+### 9 February 2025
+
+Migrate using polar.sh, if you want to keep using stripe you must add `PAYMENT_PROVIDER=stripe` to .env
+
+All stripe related features will be removed soon
+
 ### 24 December 2024
 
 New file upload feature requires a tigris/s3 bucket with webhook setup in order to work properly
