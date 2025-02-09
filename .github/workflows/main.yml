@@ -1,0 +1,20 @@
+on:
+  push:
+    branches:
+      - main
+name: migrate-db
+jobs:
+  migrate-db:
+    name: migrate-db
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: bun install
+        working-directory: ./frontend
+        run: bun install
+      - name: migrate-db
+        working-directory: ./frontend
+        env: # Or as an environment variable
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: bun run db:migrate
