@@ -141,7 +141,7 @@
 							</p>
 						</div>
 						<div class="flex flex-row items-end gap-2">
-							<span class="text-4xl font-bold">$9</span>
+							<span class="text-4xl font-bold">$5</span>
 							<span>/ month</span>
 						</div>
 						<Button

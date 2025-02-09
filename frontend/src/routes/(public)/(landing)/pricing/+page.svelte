@@ -5,6 +5,7 @@
 		ReceiptText,
 		CodeXml,
 		Check,
+		StarsIcon,
 	} from 'lucide-svelte'
 
 	import { Button } from '$lib/components/ui/button/index.js'
@@ -67,7 +68,7 @@
 						</p>
 					</div>
 					<div class="flex flex-row items-end gap-2">
-						<span class="text-4xl font-bold">$9</span>
+						<span class="text-4xl font-bold">$5</span>
 						<span>/ month</span>
 					</div>
 					<Button
@@ -86,6 +87,10 @@
 						<li class="flex items-center gap-3">
 							<Check class="text-brand" />
 							<span class="flex">5 custom domains</span>
+						</li>
+						<li class="flex items-center gap-3">
+							<StarsIcon class="text-brand" />
+							<span class="flex">File Upload (100 GB)</span>
 						</li>
 						<li class="flex items-center gap-3">
 							<Check class="text-brand" />
