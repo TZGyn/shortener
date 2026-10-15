@@ -9,6 +9,7 @@ import { eq } from 'drizzle-orm'
 import { lucia } from '$lib/server/auth'
 import { env } from '$env/dynamic/private'
 import { sendEmailVerification } from '$lib/server/email'
+import { getClientIp } from '$lib/server/request'
 import * as argon2 from 'argon2'
 import { generateId } from 'lucia'
 
@@ -67,6 +68,12 @@ export const actions: Actions = {
 			...sessionCookie.attributes,
 			path: '/',
 			secure: env.APP_ENV === 'prod',
+		})
+
+		console.log('[auth] signup verification email sent', {
+			email: form.data.email,
+			ip: getClientIp(event),
+			userAgent: event.request.headers.get('user-agent'),
 		})
 
 		await sendEmailVerification({

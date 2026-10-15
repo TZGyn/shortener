@@ -11,6 +11,7 @@ import { zod } from 'sveltekit-superforms/adapters'
 import { user } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { sendEmailVerification } from '$lib/server/email'
+import { getClientIp } from '$lib/server/request'
 
 export const load = (async (event) => {
 	const { username, email } = event.locals.user
@@ -57,6 +58,11 @@ export const actions: Actions = {
 		}
 
 		try {
+			console.log('[auth] verification email resent', {
+				email: event.locals.user.email,
+				ip: getClientIp(event),
+			})
+
 			await sendEmailVerification({
 				userId: event.locals.user.id,
 				email: event.locals.user.email,

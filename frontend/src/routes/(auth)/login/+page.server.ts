@@ -8,6 +8,7 @@ import { user as userSchema } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { lucia } from '$lib/server/auth'
 import { env } from '$env/dynamic/private'
+import { getClientIp } from '$lib/server/request'
 import * as argon2 from 'argon2'
 
 export const load = (async (event) => {
@@ -24,6 +25,11 @@ export const actions: Actions = {
 				form,
 			})
 		}
+
+		console.log('[auth] login attempt', {
+			email: form.data.email,
+			ip: getClientIp(event),
+		})
 
 		const users = await db
 			.select()
