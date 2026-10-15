@@ -10,8 +10,45 @@
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import { toast } from 'svelte-sonner'
 	import { LoaderCircle } from 'lucide-svelte'
+	import { onMount } from 'svelte'
+	import { env } from '$env/dynamic/public'
 
 	let { data }: { data: SuperValidated<Infer<FormSchema>> } = $props()
+
+	const siteKey = env.PUBLIC_TURNSTILE_SITE_KEY
+
+	let turnstileContainer: HTMLDivElement | undefined = $state()
+	let turnstileWidgetId: string | undefined = undefined
+
+	const resetTurnstile = () => {
+		if (turnstileWidgetId) {
+			window.turnstile?.reset(turnstileWidgetId)
+		}
+	}
+
+	onMount(() => {
+		const container = turnstileContainer
+		if (!siteKey || !container) return
+
+		const render = () => {
+			turnstileWidgetId = window.turnstile?.render(container, {
+				sitekey: siteKey,
+			})
+		}
+
+		if (window.turnstile) {
+			render()
+			return
+		}
+
+		const script = document.createElement('script')
+		script.src =
+			'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
+		script.async = true
+		script.defer = true
+		script.onload = render
+		document.head.appendChild(script)
+	})
 
 	const form = superForm(data, {
 		validators: zodClient(formSchema),
@@ -22,10 +59,13 @@
 					'Welcome to kon.sh, a verification email has been sent to your mailbox',
 					{ duration: 10000 },
 				)
+			} else {
+				resetTurnstile()
 			}
 		},
 		onError: ({ result }) => {
 			toast.error('Error signing up')
+			resetTurnstile()
 		},
 	})
 
@@ -74,6 +114,9 @@
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
+	{#if siteKey}
+		<div bind:this={turnstileContainer}></div>
+	{/if}
 	<Form.Button>
 		{#if $submitting}
 			<LoaderCircle class="animate-spin" />

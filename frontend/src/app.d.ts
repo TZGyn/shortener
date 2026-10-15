@@ -168,6 +168,15 @@ declare global {
 	interface Number {
 		toDecimalPoint(decimal: number): Number
 	}
+	interface Window {
+		turnstile?: {
+			render: (
+				container: HTMLElement,
+				options: { sitekey: string },
+			) => string
+			reset: (widgetId: string) => void
+		}
+	}
 }
 
 export {}

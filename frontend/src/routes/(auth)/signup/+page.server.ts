@@ -10,6 +10,7 @@ import { lucia } from '$lib/server/auth'
 import { env } from '$env/dynamic/private'
 import { sendEmailVerification } from '$lib/server/email'
 import { getClientIp } from '$lib/server/request'
+import { verifyTurnstile } from '$lib/server/turnstile'
 import * as argon2 from 'argon2'
 import { generateId } from 'lucia'
 
@@ -22,11 +23,28 @@ export const load = (async (event) => {
 
 export const actions: Actions = {
 	default: async (event) => {
-		const form = await superValidate(event, zod(formSchema))
+		const formData = await event.request.formData()
+		const turnstileToken = formData.get('cf-turnstile-response') as
+			| string
+			| null
+
+		const form = await superValidate(formData, zod(formSchema))
 		if (!form.valid) {
 			return fail(400, {
 				form,
 			})
+		}
+
+		const turnstileVerified = await verifyTurnstile(
+			turnstileToken,
+			getClientIp(event),
+		)
+		if (!turnstileVerified) {
+			return setError(
+				form,
+				'email',
+				'Captcha verification failed, please try again',
+			)
 		}
 
 		if (form.data.password !== form.data.password_confirm) {
