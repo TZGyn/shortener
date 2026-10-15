@@ -1,10 +1,19 @@
 import { lucia } from '$lib/server/auth'
+import { getClientIp } from '$lib/server/request'
 import { redirect, type Handle } from '@sveltejs/kit'
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const sessionId = event.cookies.get(lucia.sessionCookieName)
 
 	const pathname = event.url.pathname
+
+	if (!pathname.startsWith('/_app/')) {
+		console.log(
+			`[req] ${event.request.method} ${pathname} ${getClientIp(
+				event,
+			)}`,
+		)
+	}
 
 	if (
 		pathname.startsWith('/dashboard') ||

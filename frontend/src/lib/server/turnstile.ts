@@ -1,18 +1,16 @@
-import { env } from '$env/dynamic/private'
+import { env as privateEnv } from '$env/dynamic/private'
+import { env as publicEnv } from '$env/dynamic/public'
 
-// Optional bot protection for signup. When PRIVATE_TURNSTILE_SECRET_KEY is not
-// configured (e.g. self-hosted instances), verification is skipped so signup
-// keeps working.
+// Turnstile is only enforced when both keys are configured, so self-hosted
+// instances that do not provide them skip it entirely.
 export const verifyTurnstile = async (
 	token: string | null,
 	ip?: string,
 ) => {
-	const secret = env.PRIVATE_TURNSTILE_SECRET_KEY
+	const secret = privateEnv.PRIVATE_TURNSTILE_SECRET_KEY
+	const siteKey = publicEnv.PUBLIC_TURNSTILE_SITE_KEY
 
-	if (!secret) {
-		console.warn(
-			'[turnstile] PRIVATE_TURNSTILE_SECRET_KEY not set, skipping verification',
-		)
+	if (!secret || !siteKey) {
 		return true
 	}
 
