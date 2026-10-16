@@ -11,10 +11,16 @@ export const verifyTurnstile = async (
 	const siteKey = publicEnv.PUBLIC_TURNSTILE_SITE_KEY
 
 	if (!secret || !siteKey) {
+		console.warn(
+			`[turnstile] disabled, skipping (siteKey=${Boolean(
+				siteKey,
+			)}, secret=${Boolean(secret)})`,
+		)
 		return true
 	}
 
 	if (!token) {
+		console.warn('[turnstile] rejected: no token provided')
 		return false
 	}
 
@@ -28,9 +34,23 @@ export const verifyTurnstile = async (
 			'https://challenges.cloudflare.com/turnstile/v0/siteverify',
 			{ method: 'POST', body },
 		)
-		const data = (await response.json()) as { success?: boolean }
-		return data.success === true
-	} catch {
+		const data = (await response.json()) as {
+			success?: boolean
+			'error-codes'?: string[]
+		}
+
+		if (data.success !== true) {
+			console.warn(
+				'[turnstile] rejected:',
+				data['error-codes'] ?? 'unknown',
+			)
+			return false
+		}
+
+		console.log('[turnstile] verified')
+		return true
+	} catch (e) {
+		console.warn('[turnstile] verification request failed', e)
 		return false
 	}
 }
